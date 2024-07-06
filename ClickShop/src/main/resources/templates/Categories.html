@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<style>
+   * {
+      font-size: 100%;
+   }
+ .material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+</style>
+</head>
+<body>
+
+      <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
+         <div class="container-fluid" >
+           <a class="navbar-brand  fw-bolder fs-8 link-light" href="#">ClickTo Shop {Admin}</a>
+           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+             <span class="navbar-toggler-icon"></span>
+           </button>
+           <div class="collapse navbar-collapse" id="navbarSupportedContent">
+             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+               <li class="nav-item">
+                 <a class="nav-link active  link-light" aria-current="page" href="#">Home</a>
+               </li>
+               <li class="nav-item">
+                 <a class="nav-link link-light" href="#">Link</a>
+               </li>
+               <li class="nav-item dropdown text-light">
+                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                   see more . . .
+                 </a>
+                 <ul class="dropdown-menu">
+                   <li><a class="dropdown-item  " href="#">Action</a></li>
+                   <li><a class="dropdown-item" href="#">Another action</a></li>
+                   <li><hr class="dropdown-divider"></li>
+                   <li><a class="dropdown-item" href="#">Something else here</a></li>
+                 </ul>
+               </li>
+              </ul>
+             <form class="d-flex" role="search">
+               <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+               <button class="btn btn-outline-success" type="submit">Search</button>
+             </form>
+             <div class="d-flex m-2 ms-3  " style="color: white;" ><span class="material-symbols-outlined" style=" font-size: xx-large;">
+               account_circle
+               </span> </div>
+            </div>
+         </div>
+       </nav>
+
+<br><br>
+<div th:if="${message!=null}" class="alert alert-success ms-5 me-5" th:text="${message}" ></div>
+
+<h1 class="text-center" style="font-family: monospace;">Welcome to Admin page</h1>
+<br><br>
+
+<div class="">
+   <h2 style="text-align: center;">Categories</h2>
+</div>
+
+       <div class="container-fluid d-flex flex-column m-5 p-5 " style="background-color: whitesmoke; box-shadow: 0px 0px  5px;border-radius: 2px;  width: 90%; height: 50vh;  justify-content: center; align-items: center;">
+
+      
+      
+         <table class="table table-bordered table hover">
+<thead>
+   <tr align="center">
+      <th>Categories</th>
+   </tr>
+</thead>
+<tbody>
+<tr th:each=" category : ${Categories}">
+ <td th:text="${category.category}"></td>
+
+
+
+</tr>
+
+</tbody>
+
+
+         </table>
+      
+      
+      </div>
+  
+</body>
+</html>

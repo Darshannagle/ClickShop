@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<style>
+   * {
+      font-size: 2vh;
+   }
+   td{
+      text-align: center;
+   }
+ .material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+</style>
+</head>
+<body>
+
+      <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
+         <div class="container-fluid" >
+           <a class="navbar-brand  fw-bolder fs-8 link-light" th:href="@{/admin/}" >ClickTo Shop {Admin}</a>
+           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+             <span class="navbar-toggler-icon"></span>
+           </button>
+           <div class="collapse navbar-collapse" id="navbarSupportedContent">
+             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+               <li class="nav-item">
+              <!-- <a class="nav-link active bg-primary p-2 ps-3 pe-3 rounded-3 link-light" aria-current="page" th:href="@{/admin/Products/add}" >+</a>
+                -->  </li>
+               <li class="nav-item">
+                 <a class="nav-link link-light" href="#">Link</a>
+               </li>
+               <li class="nav-item dropdown text-light">
+                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                   see more . . .
+                 </a>
+                 <ul class="dropdown-menu">
+                   <li><a class="dropdown-item  " href="#">Action</a></li>
+                   <li><a class="dropdown-item" href="#">Another action</a></li>
+                   <li><hr class="dropdown-divider"></li>
+                   <li><a class="dropdown-item" href="#">Something else here</a></li>
+                 </ul>
+               </li>
+              </ul>
+             <form class="d-flex" role="search">
+               <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+               <button class="btn btn-outline-success" type="submit">Search</button>
+             </form>
+             <div class="d-flex m-2 ms-3  " style="color: white;" ><span class="material-symbols-outlined" style=" font-size: xx-large;">
+               account_circle
+               </span> </div>
+            </div>
+         </div>
+       </nav>
+
+<br><br>
+<!-- <div th:if="${message!=null}" class="alert alert-success ms-5 me-5" th:text="${message}" ></div>
+ --> 
+<h1 class="text-center" style="font-family: monospace;">Welcome to Admin page</h1>
+<br><br>
+
+<div class="d-flex flex-row  " style="">
+   <h2  style="flex: 3; text-align: center;">Products</h2>   <a class="nav-link active bg-primary p-2 ps-4 fs-4 pe-4 me-3 text-center rounded-3 link-light" aria-current="page" th:href="@{/admin/Products/addForm}" >+</a>
+</div>
+
+       <div class="container-fluid d-flex flex-column m-3 p-3 text-center " style="background-color: white; box-shadow: 0px 0px  5px;border-radius: 2px; width: fit-content;   height: max-content;  justify-content: center; align-items: center;">
+
+      
+      
+         <table class="table table-bordered table hover">
+<thead>
+   <tr align="center">
+      <th>ID</th>
+      <th>Title</th>
+      <th>category</th>
+      <th>Description</th>
+      <th>Image</th>
+      <th>Price</th>
+      <th>Rate</th>
+      <th>Rate_count</th>
+      <th>Stock</th>
+      <th></th>
+   </tr>
+</thead>
+<tbody style="text-align: center; padding: auto " >
+<tr th:each=" product : ${Products}">
+   <td th:text="${product.product_id}" align="center"></td >
+      <td th:text="${product.title}" align="center"></td >
+      <td th:text="${product.category}" align="center"></td >
+      <td th:text="${product.description}" align="center"></td >
+     <!-- <td th:text="${product.image}" align="center"></td > --> 
+       <td align="center"><img  th:src="${product.image}" height="80vh" > </td > 
+      <td th:text="${product.price}" align="center"></td >
+      <td th:text="${product.rate}" align="center"></td >
+      <td th:text="${product.rate_count}" align="center"></td >
+      <td th:text="${product.stock}" align="center"></td >
+         <th> <div class="d-flex " style="justify-content: space-evenly; align-items: center;" >
+      <a th:href="@{'/admin/Products/updateForm/'+${product.product_id}}" class="btn btn-warning m-1" >Update</a>
+      <a th:href="@{'/admin/Products/delete/'+${product.product_id}}" type="DELETE" class="btn btn-danger m-1">Remove</a>
+      
+      </div></th>
+
+
+
+</tr>
+
+</tbody>
+
+
+         </table>
+      
+      
+      </div>
+  
+  <script th:inline ="javascript" >
+//   var message = [[${message}]];
+  
+  
+  
+// if(message!=null && message!=""){
+
+
+// 	alert(message)
+// }
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css">
+
+<title>Insert title here</title>
+</head>
+<body class="container">
+<h1 class="py-5"> Update Product </h1>
+<form method="post" th:action="@{/admin/Products/update}" th:object="${product}" class="col card p-3 mb-5">
+    
+    <div class="form-group">
+        <label for="firstName">Title</label>
+        <input id="firstName" placeholder="Enter Title" required type="text" th:field="*{title}"
+               class="form-control"/>
+    </div>
+    
+    
+    <div class="form-group">
+        <label for="category">Price</label>
+        <select id="category"  th:field="*{category}"
+               class="form-control dropdown">
+               <option value="men's clothing">men's clothing</option>
+               <option value="women's clothing">women's clothing</option>
+               <option value="mobile">mobile</option>
+               <option value="jewellery">jewellery</option>
+               
+               </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" placeholder="Enter Description"  th:field="*{description}"
+               class="form-control" rows="20" cols="1"></textarea>
+    </div>
+    
+       <div class="form-group">
+        <label for="image">image</label>
+        <input id="image" placeholder="Enter image Url" required type="text" th:field="*{image}"
+               class="form-control"/>
+    </div>
+ 
+ 
+    <div class="form-group">
+        <label for="price">Price</label>
+        <input id="price" placeholder="Enter Price" required type="number" th:field="*{price}"
+               class="form-control"/>
+    </div>
+ 
+    <div class="form-group">
+        <label for="rate">rate</label>
+        <input id="rate" placeholder="Enter rate" required type="number" th:field="*{rate}"
+               class="form-control"/>
+    </div>
+       <div class="form-group">
+        <label for="rate_count">rate_count</label>
+        <input id="rate_count" placeholder="Enter rate_count" required type="number" th:field="*{rate_count}"
+               class="form-control"/>
+    </div>
+ 
+    <div class="form-group">
+        <label for="role">Stock</label>
+       <input id="lastName" placeholder="Enter Stock" required type="number" th:field="*{stock}"
+               class="form-control"/>
+    </div>
+    <div style="display: flex; justify-content: space-evenly;align-items: center;"> 
+    <input type="submit" class="btn btn-primary" value="Add">
+    <input type="reset" class="btn btn-danger" value="clear">
+    </div>
+</form>
+
+
+
+
+</body>
+</html>

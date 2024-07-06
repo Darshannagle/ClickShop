@@ -1,0 +1,14 @@
+input[type=checkbox]{
+    border: 2px solid red;
+    color: red;
+ 
+    accent-color: grey;
+}
+
+input[type=checkbox]:checked:active{
+    border-radius:50% ;
+    border: 2px solid green;
+    background-color: green;
+    
+}
+
