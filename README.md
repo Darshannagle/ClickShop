@@ -3,8 +3,9 @@ ClickShop :
      ClickToShop is an e-commerce platform that seamlessly integrates React for the front-end and Spring Boot for the robust backend MySQL. Designed to deliver a streamlined shopping experience, the application offers a range of features catering to the modern online consumer.
 
     Implementation : 
-        Front Page : 
-   [Screenshot_6-7-2024_114455_localhost](https://github.com/Darshannagle/ClickShop/assets/87405932/bdd51033-4535-434f-8f69-128464758e09)
+        Front Page :
+![Uploading Screenshot_6-7-2024_114455_localhost.jpeg…]()
+
         Men's Cloths :
    [Screenshot_6-7-2024_114628_localhost](https://github.com/Darshannagle/ClickShop/assets/87405932/828f6562-25a0-45ef-b46a-95cab7d1a65b)
         Women's Cloths :
