@@ -4,9 +4,9 @@ ClickShop :
 
     Implementation : 
         Front Page :
-![Uploading Screenshot_6-7-2024_114455_localhost.jpeg…]()
+        ![Screenshot_6-7-2024_114455_localhost](https://github.com/Darshannagle/ClickShop/assets/87405932/47515a35-16de-4d9e-99b3-0280f0151e28)
 
-        Men's Cloths :
+                Men's Cloths :
    [Screenshot_6-7-2024_114628_localhost](https://github.com/Darshannagle/ClickShop/assets/87405932/828f6562-25a0-45ef-b46a-95cab7d1a65b)
         Women's Cloths :
    [Screenshot_6-7-2024_14156_localhost](https://github.com/Darshannagle/ClickShop/assets/87405932/5c9fa48e-488f-4014-ac4b-97d536678444)
