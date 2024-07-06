@@ -1,6 +1,7 @@
 # ClickShop :
    ## Ecommerce Website built using React and Spring Boot
-     ClickToShop is an e-commerce platform that seamlessly integrates React for the front-end and Spring Boot for the robust backend MySQL. Designed to deliver a streamlined shopping experience, the application offers a range of features catering to the modern online consumer.
+     ClickToShop is an e-commerce platform that seamlessly integrates React for the front-end and Spring Boot for the robust backend MySQL.
+     Designed to deliver a streamlined shopping experience, the application offers a range of features catering to the modern online consumer.
 
 ## Implementation : 
 ### Front Page :
