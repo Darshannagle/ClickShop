@@ -18,55 +18,51 @@ public class CartService {
 
 	@Autowired
 	private UserDAO userDAO;
-	
+
 	@Autowired
 	private CartDAO cartDAO;
-	
+
 	@Autowired
 	private ProductDAO productDAO;
-	
+
 	public User addUser(User user) {
 		user = userDAO.save(user);
 		return user;
 	}
+
 	public List<User> getAllUsers() {
 		List<User> users = userDAO.findAll();
 		return users;
 	}
+
 	public User getUserbyId(Long id) {
 		Optional<User> user = userDAO.findById(id);
-		
+
 		if (user.isPresent()) {
 			return user.get();
 		} else {
-return null;
+			return null;
 		}
 	}
-	
-	
-	public List<CartItem> getCartItems(){
+
+	public List<CartItem> getCartItems() {
 		List<CartItem> items = cartDAO.findAll();
 		return items;
 	}
 
-	public List<CartItem> getCartItemsbyUser(Long userId){
+	public List<CartItem> getCartItemsbyUser(Long userId) {
 		List<CartItem> items = cartDAO.findCartByUser(userId);
 		return items;
 	}
-	
+
 	public CartItem addCart(CartDTO cartDTO) {
-		
+
 		CartItem item = new CartItem();
 		item.setProduct(productDAO.findById(cartDTO.getProduct_id()).get());
 		item.setQuantity(cartDTO.getQuantity());
 		item.setUser(getUserbyId(cartDTO.getUser_id()));
-		item= cartDAO.save(item);
+		item = cartDAO.save(item);
 		return item;
 	}
 
-	
-
-	
-	
-	
 }
