@@ -6,7 +6,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,13 +32,13 @@ public class User {
 	private String address;
 	private String number;
 	private Long pincode;
-	
-	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<CartItem> items = new ArrayList<CartItem>();
-	
+
 	@JsonIgnore
-	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-	private List<Orders> Orders= new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<Orders> Orders = new ArrayList<>();
 
 	public User(String fname, String lname, String password, String email, String location, String address,
 			String number, Long pincode) {
@@ -54,8 +53,4 @@ public class User {
 		this.pincode = pincode;
 	}
 
-		
-	
-	
-	
 }

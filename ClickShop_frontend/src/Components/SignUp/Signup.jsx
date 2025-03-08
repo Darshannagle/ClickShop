@@ -27,23 +27,23 @@ const Signup = () => {
       address: credentials.address,
     };
 
-      const response = await fetch("http://localhost:5000/api/registration", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+    const response = await fetch("http://localhost:5000/api/registration", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
 
-      
-      if (response.status === 201) {
-        const responseJson = await response.json();
-        console.log("User created:", responseJson);
-        toast("success to create new profile");
-      } else if (response.status === 500) {
-        console.log("Internal server error");
-      } else if (response.status === 400) {
-        console.log("Bad request");
-      }
-   
+    const responseJson = await response.json();
+    if (response.status === 200) {
+      console.log("User created:", responseJson);
+      toast.success(responseJson.message);
+    } else if (response.status === 500) {
+      console.log("Internal server error");
+      toast.error(responseJson.message);
+    } else if (response.status === 400) {
+      console.log("Bad request");
+      toast.error(responseJson.message);
+    }
   };
 
   const [credentials, setCredentials] = useState({
@@ -150,7 +150,7 @@ const Signup = () => {
                           required
                         />
                         <label htmlFor="number" className="form-label ms-2">
-                         Phone Number <span className="text-danger">*</span>
+                          Phone Number <span className="text-danger">*</span>
                         </label>
                       </div>
                       <div className="col-12 form-floating">
@@ -158,7 +158,6 @@ const Signup = () => {
                           type="text"
                           className="form-control"
                           name="location"
-
                           onChange={changeInput}
                           value={credentials.location}
                           id="location"
@@ -180,7 +179,6 @@ const Signup = () => {
                           minLength={6}
                           maxLength={6}
                           size={6}
-                          
                           placeholder="387001"
                           required
                         />

@@ -25,12 +25,15 @@ const Footer = () => {
           </div>
           <div className="col-lg-3">
             <div>
-                <p><span style={{ fontSize: "1.7rem", fontWeight: "bold" }}>
+              <p>
+                <span style={{ fontSize: "1.7rem", fontWeight: "bold" }}>
                   About Us
-                </span></p>
-                <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore.
-                </p>
+                </span>
+              </p>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit sed do
+                eiusmod tempor incididunt ut labore.
+              </p>
             </div>
           </div>
           <div className="col-lg-3">
@@ -44,7 +47,7 @@ const Footer = () => {
                 <li className="nav-item">Home</li>
                 <li className="nav-item ">Home</li>
                 <li className="nav-item ">Home</li>
-                <li className="nav-item ">Home</li>
+                <li className="nav-item ">Contact Us</li>
               </ul>
             </div>
           </div>
@@ -90,7 +93,11 @@ const Footer = () => {
 
               <form action="#" method="post">
                 <label
-                  style={{ fontSize: "1.3rem", marginTop: "1rem",fontWeight:"450" }}
+                  style={{
+                    fontSize: "1.3rem",
+                    marginTop: "1rem",
+                    fontWeight: "450",
+                  }}
                   htmlFor="email_subscribe"
                   className="footer-heading"
                 >
@@ -114,24 +121,24 @@ const Footer = () => {
           </div>
           <div className="col-lg-3">
             <div>
-              <p >
+              <p>
                 <span style={{ fontSize: "1.7rem", fontWeight: "bold" }}>
                   Contact Info
                 </span>
               </p>
-              <p >
+              <p>
                 <ImLocation
                   style={{ color: "red", width: "1.2rem", height: "1.2rem" }}
                 />{" "}
                 203 Fake St. Mountain View, San Francisco, California, USA
               </p>
-              <p >
+              <p>
                 <FaPhone
                   style={{ color: "blue", width: "1.2rem", height: "1.2rem" }}
                 />{" "}
                 +777 2345 7886
               </p>
-              <p >
+              <p>
                 <IoMdMail
                   style={{ color: "yellow", width: "1.2rem", height: "1.2rem" }}
                 />{" "}
@@ -141,9 +148,9 @@ const Footer = () => {
           </div>
         </div>
         <div className="col-lg-12">
-                <div className="d-flex align-content-center justify-content-center m-5" >
-              <p className="mx-auto">  Copyright ©2024 BY Darshan Nagle </p> 
-                </div>
+          <div className="d-flex align-content-center justify-content-center m-5">
+            <p className="mx-auto"> Copyright ©2024 BY Darshan Nagle </p>
+          </div>
         </div>
       </div>
     </>

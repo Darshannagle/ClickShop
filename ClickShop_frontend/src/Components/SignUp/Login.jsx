@@ -5,9 +5,9 @@ import img1 from "./Assets/login.jpg.webp";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 const Login = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const backgroundStyle = {
     backgroundImage: `url(${img})`,
     backgroundSize: "cover",
@@ -34,31 +34,30 @@ const Login = () => {
       },
       body: JSON.stringify(data),
     });
-
+    const jsonResponse = await response.json();
     if (response.status === 200) {
-      const jsonResponse =await response.json();
-
-      console.log(jsonResponse.user,"------------------------------------------")
-      localStorage.setItem('ecommerceUser',JSON.stringify(jsonResponse.email))
+      console.log(
+        jsonResponse.user,
+        "------------------------------------------"
+      );
+      localStorage.setItem("ecommerceUser", JSON.stringify(jsonResponse.email));
       // localStorage.setItem('ecommerceUser',jsonResponse.email)
 
-      // 
-      localStorage.setItem('user_id',JSON.stringify(jsonResponse.user_id))
+      //
+      localStorage.setItem("user_id", JSON.stringify(jsonResponse.user_id));
       // localStorage.setItem('user_id',jsonResponse.user_id)
       console.log("success 200 login");
       console.log(jsonResponse);
-      toast.success('Successfully login');
-    setTimeout(() => {
-      navigate('/')
-      
-    }, 2000);
-    
+      toast.success("Successfully login");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     } else if (response.status == 201) {
-      console.log("success 201");
-      console.log(await response.json(),"------------------------------------------")
+      toast.success(jsonResponse.message);
       // navigate('/');
     } else if (response.status == 400) {
       console.log("400 login");
+      toast.error(jsonResponse.message);
     } else if (response.status == 500) {
       console.log("500 login");
     }
@@ -142,7 +141,7 @@ const Login = () => {
                       <div className="col-12 form-floating">
                         <input
                           type="password"
-                          minLength={9} 
+                          minLength={9}
                           value={credentials.password}
                           onChange={handleChange}
                           className="form-control"
