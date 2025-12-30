@@ -1,0 +1,56 @@
+@use "sass:color";
+@use "../../index.scss" as *;
+.mainContainer {
+  margin-top: 20px;
+  height: 80vh;
+}
+
+.title {
+  margin: 250px;
+  color: "var(--text-color)";
+  margin-top: 150px;
+  text-transform: none;
+}
+p {
+}
+
+.TextInput {
+  text-align: left;
+  font-weight: 300;
+  width: 90%;
+
+  border: 1px solid var(--border-color);
+}
+
+.TextInput:active {
+  color: var(--primary-color);
+  text-align: left;
+  font-weight: 300;
+  width: 90%;
+
+  // border: 1px solid var(--border-color);
+}
+.registerButton {
+  text-transform: "none";
+  font-weight: 400;
+  width: 100%;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: var(--secondary-color);
+}
+
+.inputLabel {
+  margin: "0px auto";
+  // margin-left: 10;
+  // text-align: start;
+  // border: 1px solid red;
+  // align-self: flex-start;
+  // width: 90%;
+}
+
+register-icon {
+  color: var(--border-color);
+  font-size: small;
+  size: small;
+}
