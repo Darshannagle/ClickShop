@@ -18,10 +18,24 @@ interface EndPoint {
   logIn: string;
   signUp: string;
   product: {
+    create: string;
     list: string;
+    details: string;
   };
   user: {
     profile: string;
+  };
+  category: {
+    list: string;
+    create: string;
+  };
+  subcategory: {
+    list: string;
+    create: string;
+    listByCategory: string;
+  };
+  cartItem: {
+    create: string;
   };
 }
 
@@ -43,10 +57,24 @@ const endPoint: EndPoint = {
   logIn: "/api/auth/login",
   signUp: "/api/auth/signup",
   product: {
+    create: "/api/product/create",
     list: "/api/product/list",
+    details: "/api/product/details",
   },
   user: {
     profile: "/api/user/get-profile",
+  },
+  category: {
+    list: "/api/category/list",
+    create: "/api/category/create",
+  },
+  subcategory: {
+    list: "/api/subcategory/list",
+    create: "/api/subcategory/create",
+    listByCategory: "/api/subcategory/list-by-category",
+  },
+  cartItem: {
+    create: "/api/cart-item/create",
   },
 };
 

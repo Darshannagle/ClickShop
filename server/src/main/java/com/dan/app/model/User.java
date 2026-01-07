@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -36,7 +37,7 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	@Column(nullable = false)
-	private String id;
+	private UUID id;
 	@Column(nullable = false)
 	@NotBlank(message = "Full Name is required")
 	private String fullName;
@@ -58,12 +59,9 @@ public class User {
 	@Column(nullable = true)
 	private Long pinCode;
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(
-	    name = "user_roles",
-	    joinColumns = @JoinColumn(name = "user_id"),
-	    inverseJoinColumns = @JoinColumn(name = "role_id")
-	)
-	private Set<Role> roles = new HashSet<>();  // ← Change List → Set + initialize	// @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval =
+	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>(); // ← Change List → Set + initialize // @OneToMany(mappedBy = "user",
+												// cascade = CascadeType.ALL, orphanRemoval =
 	// true)
 	// private List<Address> addresses = new ArrayList<>();
 
@@ -87,17 +85,18 @@ public class User {
 		this.location = location;
 		this.pinCode = pinCode;
 	}
-	public User(String fullName, String email, String password, String phone, 
-            String gender, String location, Long pinCode, Set<Role> roles) {
-    this.fullName = fullName;
-    this.email = email;
-    this.password = password;
-    this.phone = phone;
-    this.gender = gender;
-    this.location = location;
-    this.pinCode = pinCode;
-    this.roles = roles != null ? new HashSet<>(roles) : new HashSet<>();
-}
+
+	public User(String fullName, String email, String password, String phone,
+			String gender, String location, Long pinCode, Set<Role> roles) {
+		this.fullName = fullName;
+		this.email = email;
+		this.password = password;
+		this.phone = phone;
+		this.gender = gender;
+		this.location = location;
+		this.pinCode = pinCode;
+		this.roles = roles != null ? new HashSet<>(roles) : new HashSet<>();
+	}
 	// public User(String fullName, String email, String password, String phone,
 	// String gender, String location,
 	// Long pinCode, Set<Role> roles, List<Address> addresses) {

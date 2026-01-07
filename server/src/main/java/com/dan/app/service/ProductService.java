@@ -3,6 +3,7 @@ package com.dan.app.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import com.dan.app.model.Product;
 import com.dan.app.model.Subcategory;
 import com.dan.app.repository.ProductRepository;
 import com.dan.app.utils.Common;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Service
 public class ProductService {
@@ -84,6 +86,7 @@ public class ProductService {
             System.out.println("Category_id:" + productDTO.getCategory_id());
             System.out.println("subCategory_id:" + productDTO.getSubcategory_id());
             Category category = (Category) categoryService.details("id", productDTO.getCategory_id()).getData();
+            System.out.println("category:" + MapperConfig.toJson(category));
             if (category == null) {
                 return new ApiResponse<>(false, null, "Category not found");
             }
@@ -95,13 +98,28 @@ public class ProductService {
                 return new ApiResponse<>(false, null, "Subcategory not found");
             }
             System.out.println("subcategory:" + MapperConfig.toJson(subcategory));
+            // convert the speification to json
 
             Product p = new Product(productDTO.getName(), productDTO.getBrand(), productDTO.getDescription(),
                     productDTO.getBasePrice(), productDTO.getSalePrice(), productDTO.getStock(), category, subcategory,
-                    productDTO.getImages());
+                    productDTO.getImages(),
+                    MapperConfig.mapper.readTree(MapperConfig.getParser(productDTO.getSpecifications())));
             System.out.println("p:" + MapperConfig.toJson(p));
             p = productRepository.save(p);
             return new ApiResponse(true, p, "Product created");
+        } catch (Exception e) {
+            return new ApiResponse(false, null, "Something went wrong", List.of(e.getMessage()));
+        }
+    }
+
+    public ApiResponse details(UUID id) {
+        try {
+            if (id == null) {
+                // throw error
+                return new ApiResponse(false, null, "Product not found", List.of("Product not found"));
+            }
+            Product product = productRepository.findById(id).orElse(null);
+            return new ApiResponse(true, product, "Product fetched");
         } catch (Exception e) {
             return new ApiResponse(false, null, "Something went wrong", List.of(e.getMessage()));
         }

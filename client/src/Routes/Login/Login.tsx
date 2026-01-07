@@ -10,7 +10,7 @@ import {
   Divider,
 } from "@mui/material";
 import { Facebook, Google, Apple, Email, Lock } from "@mui/icons-material";
-import { useForm, Controller } from "../../../node_modules/react-hook-form/dist";
+import { useForm, Controller } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { useLoader } from "../../context/LoaderContext";

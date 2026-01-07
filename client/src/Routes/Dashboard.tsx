@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import { getAPIData } from "../helpers/apiHelper";
 import Grid from "@mui/material/Grid";
@@ -7,11 +7,10 @@ import {
   CardHeader,
   Avatar,
   IconButton,
-  List,
   CardContent,
   Typography,
 } from "@mui/material";
-import { Email, Menu, More, MoreVert } from "@mui/icons-material";
+import { MoreVert } from "@mui/icons-material";
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
@@ -46,13 +45,13 @@ const Dashboard = () => {
               >
                 <Card key={user?.id}>
                   <CardHeader
-                    avatar={<Avatar aria-label="">{user?.fname[0]}</Avatar>}
+                    avatar={<Avatar aria-label="">{user?.fullName[0]}</Avatar>}
                     action={
                       <IconButton aria-label="">
                         <MoreVert />
                       </IconButton>
                     }
-                    title={user?.fname + " " + user.lname}
+                    title={user.fullName ?? "-"}
                     subheader={user?.location ?? "-"}
                   />
                   <CardContent

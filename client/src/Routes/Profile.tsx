@@ -129,7 +129,7 @@ export default function MyAccount() {
             <Tabs
               orientation={window.innerWidth < 1200 ? "horizontal" : "vertical"}
               value={tab}
-              onChange={(e, v) => setTab(v)}
+              onChange={(_, v) => setTab(v)}
             >
               <Tab
                 icon={<PersonIcon />}

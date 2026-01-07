@@ -2,6 +2,7 @@ package com.dan.app.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,10 +59,10 @@ public class UserController {
 	// create : [
 
 	@PostMapping("/create")
-	public ResponseEntity<ApiResponse<User>> create(@RequestBody UserDTO doctorDTO) {
+	public ResponseEntity<ApiResponse<User>> create(@RequestBody UserDTO userDTO) {
 		try {
-
-			ApiResponse<User> response = doctorService.create(doctorDTO);
+			System.out.println("userDTO:" + MapperConfig.toJson(userDTO));
+			ApiResponse<User> response = doctorService.create(userDTO);
 			if (!response.isStatus()) {
 				return new ResponseEntity<ApiResponse<User>>(response, HttpStatus.BAD_REQUEST);
 			}
@@ -79,10 +80,10 @@ public class UserController {
 	// details : [
 	@GetMapping("/details")
 	public ResponseEntity<ApiResponse> details(@AuthenticationPrincipal UserDetails userDetails,
-			@RequestParam String id) {
+			@RequestParam UUID id) {
 		try {
 			System.out.println("UserDetails:" + MapperConfig.toJson(userDetails));
-			ApiResponse response = doctorService.details(id);
+			ApiResponse response = doctorService.details(id, true);
 			if (!response.isStatus()) {
 				return new ResponseEntity<ApiResponse>(response, HttpStatus.BAD_REQUEST);
 			}
@@ -125,7 +126,7 @@ public class UserController {
 	public ResponseEntity<ApiResponse> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
 		try {
 			System.out.println("UserDetails:" + MapperConfig.toJson(userDetails));
-			ApiResponse response = doctorService.details(userDetails.getId());
+			ApiResponse response = doctorService.details(userDetails.getId(), true);
 			if (!response.isStatus()) {
 				return new ResponseEntity<ApiResponse>(response, HttpStatus.BAD_REQUEST);
 			}

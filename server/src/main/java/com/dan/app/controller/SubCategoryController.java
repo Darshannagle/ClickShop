@@ -1,5 +1,7 @@
 package com.dan.app.controller;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,10 +30,10 @@ public class SubCategoryController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity create(@Valid @RequestBody SubCategoryDTO subCategoryDTO) {
+    public ResponseEntity create(@RequestBody SubCategoryDTO subCategoryDTO) {
         try {
-
-            ApiResponse response = subCategoryService.create(MapperConfig.toJson(subCategoryDTO));
+            System.out.println("SubCategoryDTO" + MapperConfig.toJson(subCategoryDTO));
+            ApiResponse response = subCategoryService.create(subCategoryDTO);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
@@ -49,7 +51,7 @@ public class SubCategoryController {
     }
 
     @GetMapping("/list-by-category")
-    public ResponseEntity list(@RequestParam String field, @RequestParam String category) {
+    public ResponseEntity list(@RequestParam String field, @RequestParam Object category) {
         try {
             System.out.println("field:" + field);
             System.out.println("category:" + category);

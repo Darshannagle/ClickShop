@@ -2,6 +2,7 @@ package com.dan.app.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -26,7 +27,7 @@ import lombok.ToString;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
     @Column
     private String name;
 
@@ -37,7 +38,7 @@ public class Category {
         this.name = name;
     }
 
-    public Category(String id, String name) {
+    public Category(UUID id, String name) {
         this.id = id;
         this.name = name;
 

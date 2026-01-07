@@ -110,7 +110,6 @@ const Home = () => {
       sortField: "name",
       direction: "asc",
     };
-    console.log("url:", url);
     const prodRes = await getAPIData(url, queryparams, "GET");
     if (prodRes?.status) {
       setProducts(prodRes?.data?.content);
@@ -122,6 +121,7 @@ const Home = () => {
     fetchProducts();
   }, [tab]);
   const changeTab = (event, tab) => {
+    console.log(event);
     setTab(tab);
   };
   return (

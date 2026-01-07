@@ -3,6 +3,7 @@ package com.dan.app.service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +91,7 @@ public class UserService {
 	// ] create
 
 	// details : [
-	public ApiResponse details(@NonNull String id) {
+	public ApiResponse details(@NonNull UUID id, boolean asJson) {
 		try {
 
 			Optional<User> existingUser = userRepository.findById(id);
@@ -98,9 +99,13 @@ public class UserService {
 			if (existingUser.isEmpty()) {
 				throw new Exception("User not found");
 			}
-
-			Map<String, Object> user = MapperConfig.toJson(existingUser.get());
-			ApiResponse<User> apiResponse = new ApiResponse(true, user, "User created successfully");
+			ApiResponse<User> apiResponse;
+			if (asJson) {
+				Map<String, Object> user = MapperConfig.toJson(existingUser.get());
+				apiResponse = new ApiResponse(true, user, "User created successfully");
+			} else {
+				apiResponse = new ApiResponse(true, existingUser.get(), "User created successfully");
+			}
 			return apiResponse;
 
 		} catch (Exception e) {
@@ -111,7 +116,7 @@ public class UserService {
 	// ] details
 
 	// update : [
-	public ApiResponse<Map<String, Object>> update(@NotNull String id, @NotNull User body) {
+	public ApiResponse<Map<String, Object>> update(@NotNull UUID id, @NotNull User body) {
 		try {
 
 			User existingUser = userRepository.findById(id).orElseThrow(() -> new Exception("User not found"));
@@ -132,7 +137,7 @@ public class UserService {
 	// ] update
 
 	// details : [
-	public ApiResponse getProfile(@NonNull String id) {
+	public ApiResponse getProfile(@NonNull UUID id) {
 		try {
 
 			Optional<User> existingUser = userRepository.findById(id);

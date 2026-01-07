@@ -8,6 +8,12 @@ import {
   InputAdornment,
   Box,
   Divider,
+  FormControl,
+  FormLabel,
+  FormHelperText,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple, FaFacebook } from "react-icons/fa";
@@ -98,6 +104,7 @@ const Register = () => {
         location: registrationData?.location,
         pinCode: registrationData?.pinCode,
       };
+      console.log("body: ", body);
       const res = await getAPIData(endPoint.signUp, body, "POST");
       console.log("res: ", res);
 
@@ -174,6 +181,16 @@ const Register = () => {
             helperText={errors.fullName}
           />
 
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Gender</InputLabel>
+            <FormLabel></FormLabel>
+            <Select size="small">
+              <MenuItem value="MALE">Male</MenuItem>
+              <MenuItem value="FEMALE">Female</MenuItem>
+              <MenuItem value="OTHERS">Others</MenuItem>
+            </Select>
+            <FormHelperText></FormHelperText>
+          </FormControl>
           <TextField
             name="email"
             label="Email Address"

@@ -63,14 +63,20 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // Allow Vite dev server (change if your frontend runs on different port)
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "*"));
+        // configuration.setAllowedOrigins(List.of("*"));
+        // configuration.setAllowCredentials(true);
+        configuration.addAllowedOriginPattern("*"); // OK for dev only
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
 
         // Or for quick local testing: allow all origins (NOT for production!)
         // configuration.setAllowedOrigins(List.of("*"));
 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true); // Important if you send cookies or Authorization header
+        // configuration.setAllowCredentials(true); // Important if you send cookies or
+        // Authorization header
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

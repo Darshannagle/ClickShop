@@ -5,11 +5,12 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,33 +19,36 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "cartItems")
+@Table(name = "order_items")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class CartItem {
+public class OrderItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-    private Product product;
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // private Order order;
 
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+    // min : 1
     @Column(nullable = false)
     private Integer quantity;
 
     @Column(nullable = false, updatable = false)
     private BigDecimal soldPrice;
 
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @Column(columnDefinition = "json")
+    private JsonNode productSnapshot;
+
+    public OrderItem() {
+        super();
+    }
 
 }

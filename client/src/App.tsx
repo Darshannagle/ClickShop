@@ -10,6 +10,8 @@ import Dashboard from "./Routes/Dashboard";
 import Home from "./Routes/Home";
 import ForgotPassword from "./Routes/Login/ForgotPassword";
 import Profile from "./Routes/Profile";
+import ProductDetails from "./Routes/ProductDetails";
+import SeedingPage from "./Routes/SeedingPage";
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
           <Route path="/contactus" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/product/:productId" element={<ProductDetails />} />
+          <Route path="/seed" element={<SeedingPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </GoogleOAuthProvider>

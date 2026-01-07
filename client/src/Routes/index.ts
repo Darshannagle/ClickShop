@@ -11,4 +11,8 @@ export const pages = [
     label: "Contact Us",
     path: "contactus",
   },
+{
+  label: "Seed",
+  path: "seed",
+}
 ];

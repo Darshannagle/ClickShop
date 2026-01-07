@@ -9,7 +9,6 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    console.log("🚀 ~ token:", token);
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -24,7 +23,6 @@ axiosInstance.interceptors.request.use(
 
 // Helper function to construct URL query
 const buildQueryString = (data: { [x: string]: any } = {}): string => {
-  console.log("🚀 ~ buildQueryString ~ data:", data);
   let query: string = "";
   const dataLength = Object.keys(data).length;
 
@@ -51,7 +49,6 @@ async function getAPIData(
   };
 
   const token = localStorage.getItem("token");
-  console.log("🚀 ~ getAPIData ~ token:", token);
   if (token) {
     defaultHeaders.Authorization = `Bearer ${token}`;
   }
@@ -73,6 +70,7 @@ async function getAPIData(
     : "GET";
 
   const queryString = methodParam === "GET" ? buildQueryString(data) : "";
+  console.log("queryString: ", queryString);
 
   try {
     const finalUrl = customURL
