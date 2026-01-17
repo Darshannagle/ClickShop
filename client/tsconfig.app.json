@@ -22,10 +22,10 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
+    "noUncheckedSideEffectImports": true
     // allow any types in global scope
-    
-    "allowJs": true
+
+    // "allowJs": true
   },
   "include": ["src"]
 }
