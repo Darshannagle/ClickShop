@@ -1,7 +1,6 @@
 package com.dan.app.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +102,7 @@ public class UserController {
 	@PutMapping("/update")
 	public ResponseEntity<ApiResponse> update(@RequestBody User data) {
 		try {
+			System.out.println("data:" + MapperConfig.toJson(data));
 			if (data.getId() == null) {
 				throw new Exception("User Id is required");
 			}

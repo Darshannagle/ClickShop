@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.dan.app.DTO.UserDTO;
 import com.dan.app.config.MapperConfig;
+import com.dan.app.config.Constant.Gender;
 import com.dan.app.config.types.api.ApiResponse;
 import com.dan.app.model.Role;
 import com.dan.app.model.User;
@@ -49,7 +50,7 @@ public class AuthService {
             String encodedPassword = (passwordEncoder.encode(request.getPassword()));
             logger.info("encodedPassword:" + encodedPassword);
             User user = new User(request.getFullName(), request.getEmail(), encodedPassword, request.getPhone(),
-                    request.getGender(), request.getLocation(), request.getPinCode(), Set.of(userRole));
+                    Gender.valueOf(request.getGender()), request.getLocation(), request.getPinCode(), Set.of(userRole));
             logger.info("user: " + user.toString());
 
             user = userRepository.save(user);

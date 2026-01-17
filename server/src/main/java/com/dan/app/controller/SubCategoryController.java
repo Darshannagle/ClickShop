@@ -1,7 +1,5 @@
 package com.dan.app.controller;
 
-import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +13,6 @@ import com.dan.app.DTO.SubCategoryDTO;
 import com.dan.app.config.MapperConfig;
 import com.dan.app.config.types.api.ApiResponse;
 import com.dan.app.service.SubCategoryService;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/subcategory")

@@ -7,6 +7,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.dan.app.config.Constant.AddressType;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,10 +24,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "addresses")
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class Address {
 
@@ -40,7 +45,7 @@ public class Address {
     @Column(nullable = false)
     private String state;
     @Column(nullable = false)
-    private String Country;
+    private String country;
     @Column(nullable = false)
     private String pinCode;
     @Enumerated(EnumType.STRING)
@@ -49,9 +54,27 @@ public class Address {
     private boolean isDefault = false;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
+    // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIdentityReference(alwaysAsId = true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     private User user;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    public Address(User user, String addressLine1, String addressLine2, String city, String state, String country,
+            String pinCode,
+            AddressType addressType) {
+        super();
+        this.user = user;
+        this.addressLine1 = addressLine1;
+        this.addressLine2 = addressLine2;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.pinCode = pinCode;
+        this.addressType = addressType;
+    }
+
 }

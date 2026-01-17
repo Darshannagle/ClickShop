@@ -13,3 +13,7 @@ server/target/
 .DS_Store
 .vscode/
 .idea/
+client/.env.dev
+client/.env.prod
+server/src/main/resources/application.properties
+*.proper

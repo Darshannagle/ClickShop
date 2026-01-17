@@ -73,6 +73,7 @@ public class Product {
 	@Column(columnDefinition = "LONGBLOB")
 	private List<String> images = new ArrayList<>();
 
+	@JdbcTypeCode(SqlTypes.JSON)
 	@Column(columnDefinition = "json")
 	private JsonNode specifications;
 

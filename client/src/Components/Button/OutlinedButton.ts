@@ -3,14 +3,16 @@ import Button from "@mui/material/Button";
 
 const OutlinedButton = styled(Button)(
   ({
-    theme,
+    // theme,
     colorType = "secondary",
     scaleOnHover = true,
     width = "100%",
     fontSize = "12px",
     m = 0,
     onClick = () => {},
+    visibility = "visible",
   }) => ({
+    visibility: visibility,
     onClick: onClick,
     backgroundColor: "transparent",
     textTransform: "none",

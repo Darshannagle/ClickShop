@@ -110,7 +110,7 @@ const SeedingPage = () => {
         category_id: selectedCategory,
         subcategory_id: selectedSubCategory,
         images: images.split(",").map((img) => img.trim()),
-        specifications,
+        specifications: JSON.parse((specifications as any).toString()),
       },
       "POST"
     );

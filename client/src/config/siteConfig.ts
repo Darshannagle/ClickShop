@@ -24,6 +24,7 @@ interface EndPoint {
   };
   user: {
     profile: string;
+    update: string;
   };
   category: {
     list: string;
@@ -36,6 +37,20 @@ interface EndPoint {
   };
   cartItem: {
     create: string;
+    list: string;
+    delete: string;
+    setQuantity: string;
+  };
+  address: {
+    create: string;
+    list: string;
+    update: string;
+    delete: string;
+  };
+  order: {
+    create: string;
+    list: string;
+    delete: string;
   };
 }
 
@@ -63,6 +78,7 @@ const endPoint: EndPoint = {
   },
   user: {
     profile: "/api/user/get-profile",
+    update: "/api/user/update",
   },
   category: {
     list: "/api/category/list",
@@ -75,6 +91,20 @@ const endPoint: EndPoint = {
   },
   cartItem: {
     create: "/api/cart-item/create",
+    list: "/api/cart-item/get-cart",
+    delete: "/api/cart-item/delete",
+    setQuantity: "/api/cart-item/set-quantity",
+  },
+  address: {
+    create: "/api/address/create",
+    list: "/api/address/list",
+    update: "/api/address/update",
+    delete: "/api/address/delete",
+  },
+  order: {
+    create: "/api/order/create",
+    list: "/api/order/list",
+    delete: "/api/order/delete",
   },
 };
 

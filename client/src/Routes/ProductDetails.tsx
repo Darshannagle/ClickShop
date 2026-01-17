@@ -12,9 +12,12 @@ import {
   Paper,
   Stack,
   Divider,
-  ButtonGroup,
   Button,
+  ButtonGroup,
   TextField,
+  // ButtonGroup,
+  // Button,
+  // TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -25,7 +28,7 @@ import toast from "react-hot-toast";
 import ProductImageGallery from "../Components/ProductImageGallery";
 import OutlinedButton from "../Components/Button/OutlinedButton";
 
-const ProductDetails = () => {
+const ProductDetails = ({ isCart = false }: any) => {
   const [product, setProduct] = useState(null);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -46,10 +49,13 @@ const ProductDetails = () => {
       );
 
       if (res?.status) {
-        setProduct({
-          ...res.data,
-          specifications: JSON.parse(res.data.specifications),
-        });
+        console.log("res.data: ", res.data);
+        setProduct(
+          // {...
+          res.data
+          // specifications: JSON.parse(res.data.specifications),
+          // }
+        );
       } else {
         throw new Error(res?.message);
       }
@@ -65,7 +71,7 @@ const ProductDetails = () => {
     try {
       const payload = {
         product_id: product.id,
-        quantity,
+        quantity: 1,
         soldPrice: product.salePrice,
       };
       const cartReponse = await getAPIData(
@@ -75,7 +81,7 @@ const ProductDetails = () => {
       );
       if (cartReponse.status) {
         toast.success("Product added to cart successfully");
-        setQuantity(1);
+        // setQuantity(1);
         fetchProduct();
       } else {
         toast.error(cartReponse?.message || "Something went wrong");
@@ -141,13 +147,13 @@ const ProductDetails = () => {
                         <TableCell
                           sx={{
                             fontWeight: 600,
-                            backgroundColor: "grey.100",
-                            width: "40%",
+                            // backgroundColor: "grey.100",
+                            // width: "40%",
                           }}
                         >
                           {key}
                         </TableCell>
-                        <TableCell>{value}</TableCell>
+                        <TableCell>{value as string}</TableCell>
                       </TableRow>
                     )
                   )}
@@ -156,51 +162,60 @@ const ProductDetails = () => {
             </TableContainer>
 
             <Divider sx={{ my: 3 }} />
-          </Container>
-          <ButtonGroup variant="outlined" color="inherit" aria-label="">
-            <Button
-              onClick={(e) => {
-                setQuantity((prev) => --prev);
-              }}
-              disabled={quantity === 1}
+          </Container>{" "}
+          {isCart ? (
+            <ButtonGroup
+              variant="outlined"
+              color="inherit"
+              aria-label=""
+              sx={{ visibility: isCart ? "visible" : "none" }}
             >
-              -
-            </Button>
-            <TextField
-              id=""
-              label=""
-              value={quantity}
-              size="small"
-              type="number"
-              sx={{ width: "50px" }}
-              onChange={(e: any) =>
-                setQuantity(Number(e.target.value ?? quantity))
-              }
-            />
-            {/* <Button sx={{ color: "black" }}>{quantity}</Button> */}
-            <Button
-              onClick={(e) => {
-                setQuantity((prev) => ++prev);
-              }}
+              <Button
+                onClick={() => {
+                  setQuantity((prev) => {
+                    prev = prev > 1 ? --prev : 1;
+                    return prev;
+                  });
+                }}
+                disabled={quantity <= 1}
+              >
+                -
+              </Button>
+              <TextField
+                id=""
+                label=""
+                value={quantity > 0 ? quantity : 1}
+                size="small"
+                type="number"
+                sx={{ width: "50px" }}
+                onChange={(e: any) =>
+                  setQuantity(Number(e.target.value ?? quantity))
+                }
+              />
+              <Button
+                onClick={() => {
+                  setQuantity((prev) => ++prev);
+                }}
+              >
+                +
+              </Button>
+            </ButtonGroup>
+          ) : (
+            <OutlinedButton
+              width={"80%"}
+              m={5}
+              fontSize={"25px"}
+              onClick={addToCart}
+              visiblitiy={isCart ? "none" : "visible"}
             >
-              +
-            </Button>
-          </ButtonGroup>
-          <br />
-          <br />
-          <OutlinedButton
-            width={"80%"}
-            m={5}
-            fontSize={"25px"}
-            onClick={addToCart}
-          >
-            Add to Cart
-          </OutlinedButton>
+              Add to Cart
+            </OutlinedButton>
+          )}
         </Grid>
       </Grid>
       {/* DESCRIPTION */}
       <Container maxWidth="xl">
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" gutterBottom sx={{ my: 2 }}>
           Description
         </Typography>
         <Typography

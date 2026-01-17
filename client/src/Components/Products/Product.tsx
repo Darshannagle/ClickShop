@@ -33,7 +33,7 @@ const Product = (props) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-justifyContent: "space-around",
+          justifyContent: "space-around",
         }}
         elevation={3}
       >

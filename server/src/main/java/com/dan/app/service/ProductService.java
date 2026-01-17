@@ -99,12 +99,12 @@ public class ProductService {
             }
             System.out.println("subcategory:" + MapperConfig.toJson(subcategory));
             // convert the speification to json
-
+            JsonNode specsNode = MapperConfig.mapper.readTree(
+                    MapperConfig.getParser(productDTO.getSpecifications()));
             Product p = new Product(productDTO.getName(), productDTO.getBrand(), productDTO.getDescription(),
                     productDTO.getBasePrice(), productDTO.getSalePrice(), productDTO.getStock(), category, subcategory,
-                    productDTO.getImages(),
-                    MapperConfig.mapper.readTree(MapperConfig.getParser(productDTO.getSpecifications())));
-            System.out.println("p:" + MapperConfig.toJson(p));
+                    productDTO.getImages(), specsNode);
+            p.setSpecifications(specsNode);
             p = productRepository.save(p);
             return new ApiResponse(true, p, "Product created");
         } catch (Exception e) {

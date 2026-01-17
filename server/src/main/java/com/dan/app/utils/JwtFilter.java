@@ -1,6 +1,7 @@
 package com.dan.app.utils;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,9 +86,11 @@ public class JwtFilter extends OncePerRequestFilter {
                                 .setAuthentication(authToken);
                     } else {
 
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.setContentType("application/json");
-                        response.getWriter().write("{\"message\":\"Invalid token\"}");
+                        // response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        // response.setContentType("application/json");
+                        // response.getWriter().write("{\"message\":\"Invalid token\"}");
+
+                        writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
                         return;
                     }
 
@@ -101,16 +104,22 @@ public class JwtFilter extends OncePerRequestFilter {
             // SecurityContextHolder.clearContext();
             // throw new InsufficientAuthenticationException("Your session is expired please
             // login", e);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter()
-                    .write("{\"status\":false,\"data\":null, \"message\":\"Your session is expired, please login\"}");
 
+            // response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            // response.setContentType("application/json");
+            // response.getWriter()
+            // .write("{\"status\":false,\"data\":null, \"message\":\"Your session is
+            // expired, please login\"}");
+
+            writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Your session is expired, please login");
         } catch (Exception e) {
+            logger.error("Error while validating token: {}" + e.getMessage());
 
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"message\":\"Invalid token\"}");
+            // response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            // response.setContentType("application/json");
+            // response.getWriter().write("{\"message\":\"Invalid token\"}");
+
+            writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         }
     }
 
@@ -147,5 +156,14 @@ public class JwtFilter extends OncePerRequestFilter {
      */
     private boolean isPermitAll(String path) {
         return Arrays.stream(PublicRoutes.PUBLIC_URLS).anyMatch(pattern -> pathMatcher.match(pattern, path));
+    }
+
+    public void writeErrorResponse(HttpServletResponse response, int status, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter writer = response.getWriter();
+        writer.write("{\"status\":false,\"message\":\"" + message + "\"}");
+        writer.flush();
     }
 }

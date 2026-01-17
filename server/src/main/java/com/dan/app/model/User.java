@@ -1,18 +1,16 @@
 package com.dan.app.model;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
+import com.dan.app.config.Constant.Gender;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -52,8 +50,8 @@ public class User {
 	@Column(nullable = true)
 	@Pattern(regexp = "^[0-9]{10}$", message = "Invalid phone number")
 	private String phone;
-	@Column(nullable = true)
-	private String gender;
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
 	@Column(nullable = true)
 	private String location;
 	@Column(nullable = true)
@@ -74,7 +72,7 @@ public class User {
 		super();
 	}
 
-	public User(String fullName, String email, String password, String phone, String gender, String location,
+	public User(String fullName, String email, String passwrd, String phone, Gender gender, String location,
 			Long pinCode) {
 		super();
 		this.fullName = fullName;
@@ -87,7 +85,7 @@ public class User {
 	}
 
 	public User(String fullName, String email, String password, String phone,
-			String gender, String location, Long pinCode, Set<Role> roles) {
+			Gender gender, String location, Long pinCode, Set<Role> roles) {
 		this.fullName = fullName;
 		this.email = email;
 		this.password = password;

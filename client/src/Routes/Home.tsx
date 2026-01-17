@@ -10,98 +10,7 @@ import { endPoint } from "../config/siteConfig";
 import { getAPIData } from "../helpers/apiHelper";
 const Home = () => {
   const [tab, setTab] = useState(0);
-  const [products, setProducts] = useState([
-    {
-      name: "test",
-      image: "C:\\Users\\ASUS\\Desktop\\favicon.ico",
-      price: 100,
-      currency: {
-        key: "INR",
-        label: "₹",
-      },
-    },
-    {
-      name: "test",
-      image: "C:\\Users\\ASUS\\Desktop\\favicon.ico",
-      price: 100,
-      currency: {
-        key: "INR",
-        label: "₹",
-      },
-    },
-    {
-      name: "test",
-      image: "C:\\Users\\ASUS\\Desktop\\favicon.ico",
-      price: 100,
-      currency: {
-        key: "INR",
-        label: "₹",
-      },
-    },
-    {
-      name: "test",
-      image: "C:\\Users\\ASUS\\Desktop\\favicon.ico",
-      price: 100,
-      currency: {
-        key: "INR",
-        label: "₹",
-      },
-    },
-    {
-      name: "test",
-      image: "C:\\Users\\ASUS\\Desktop\\favicon.ico",
-      price: 100,
-      currency: {
-        key: "INR",
-        label: "₹",
-      },
-    },
-    {
-      name: "test",
-      image: "C:\\Users\\ASUS\\Desktop\\favicon.ico",
-      price: 100,
-      currency: {
-        key: "INR",
-        label: "₹",
-      },
-    },
-    {
-      name: "test",
-      image: "C:\\Users\\ASUS\\Desktop\\favicon.ico",
-      price: 100,
-      currency: {
-        key: "INR",
-        label: "₹",
-      },
-    },
-    {
-      name: "test",
-      image: "C:\\Users\\ASUS\\Desktop\\favicon.ico",
-      price: 100,
-      currency: {
-        key: "INR",
-        label: "₹",
-      },
-    },
-    {
-      name: "test",
-      image: "C:\\Users\\ASUS\\Desktop\\favicon.ico",
-      price: 100,
-      currency: {
-        key: "INR",
-        label: "₹",
-      },
-    },
-    {
-      name: "test",
-      image: "C:\\Users\\ASUS\\Desktop\\favicon.ico",
-      price: 100,
-      currency: {
-        key: "INR",
-        label: "₹",
-      },
-    },
-  ]);
+  const [products, setProducts] = useState([]);
   const fetchProducts = async () => {
     const url = endPoint.product.list;
     const queryparams = {
@@ -112,6 +21,7 @@ const Home = () => {
     };
     const prodRes = await getAPIData(url, queryparams, "GET");
     if (prodRes?.status) {
+      console.log("prodRes?.data: ", prodRes?.data);
       setProducts(prodRes?.data?.content);
     } else {
       console.log(prodRes);

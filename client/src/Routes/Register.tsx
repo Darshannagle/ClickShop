@@ -109,7 +109,7 @@ const Register = () => {
       console.log("res: ", res);
 
       if (res?.status) {
-        toast.success("Registration Successful");
+        toast.success(res?.message);
         navigate("/login");
       } else {
         toast.error(res?.message || "Something went wrong");
@@ -184,7 +184,11 @@ const Register = () => {
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel>Gender</InputLabel>
             <FormLabel></FormLabel>
-            <Select size="small">
+            <Select
+              size="small"
+              value={registrationData?.gender}
+              onChange={(e) => handleDataChange("gender", e.target.value)}
+            >
               <MenuItem value="MALE">Male</MenuItem>
               <MenuItem value="FEMALE">Female</MenuItem>
               <MenuItem value="OTHERS">Others</MenuItem>

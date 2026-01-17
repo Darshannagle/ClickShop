@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "dev:server": "cd server && mvn spring-boot:run",
+    "dev:client": "cd client && npm run dev",
     "dev": "vite --mode dev --host",
     "start": "vite --mode prod --host",
     "build": "tsc -b && vite build",
