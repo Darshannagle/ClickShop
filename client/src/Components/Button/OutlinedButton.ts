@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 
-const OutlinedButton = styled(Button)(
+const OutlinedButton: any = styled(Button)(
   ({
     // theme,
     colorType = "secondary",
@@ -47,7 +47,7 @@ const OutlinedButton = styled(Button)(
       boxShadow: scaleOnHover ? "0 0 8px 6px var(--primary-color)" : "none",
       m: m,
     },
-  })
+  }),
 );
 
 export default OutlinedButton;

@@ -45,14 +45,14 @@ const ProductDetails = ({ isCart = false }: any) => {
       const res = await getAPIData(
         endPoint.product.details,
         { id: productId },
-        "GET"
+        "GET",
       );
 
       if (res?.status) {
         console.log("res.data: ", res.data);
         setProduct(
           // {...
-          res.data
+          res.data,
           // specifications: JSON.parse(res.data.specifications),
           // }
         );
@@ -77,7 +77,7 @@ const ProductDetails = ({ isCart = false }: any) => {
       const cartReponse = await getAPIData(
         endPoint.cartItem.create,
         payload,
-        "POST"
+        "POST",
       );
       if (cartReponse.status) {
         toast.success("Product added to cart successfully");
@@ -155,7 +155,7 @@ const ProductDetails = ({ isCart = false }: any) => {
                         </TableCell>
                         <TableCell>{value as string}</TableCell>
                       </TableRow>
-                    )
+                    ),
                   )}
                 </TableBody>
               </Table>
