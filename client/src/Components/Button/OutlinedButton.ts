@@ -1,36 +1,46 @@
 import { styled } from "@mui/material/styles";
-import Button, { type ButtonOwnProps } from "@mui/material/Button";
-import type React from "react";
-interface OutlinedButtonProps extends ButtonOwnProps {
-  colorType?: string;
+import Button from "@mui/material/Button";
+
+/* 1️⃣ Define ONLY custom props */
+interface OutlinedButtonProps {
+  colorType?: "primary" | "secondary";
   scaleOnHover?: boolean;
   width?: string | number;
   fontSize?: string | number;
   m?: string | number;
-  visibility?: string;
-  onClick?: () => void;
-  // add any other custom props you destructure/use
+  visibility?: "visible" | "hidden";
 }
-const OutlinedButton: React.FC<OutlinedButtonProps> = styled(Button)(
+
+/* 2️⃣ Prevent custom props from reaching DOM */
+const OutlinedButton = styled(Button, {
+  shouldForwardProp: (prop) =>
+    ![
+      "colorType",
+      "scaleOnHover",
+      "width",
+      "fontSize",
+      "m",
+      "visibility",
+    ].includes(prop as string),
+})<OutlinedButtonProps>(
   ({
-    // theme,
     colorType = "secondary",
     scaleOnHover = true,
     width = "100%",
     fontSize = "12px",
     m = 0,
-    onClick = () => {},
     visibility = "visible",
   }) => ({
-    visibility: visibility,
-    onClick: onClick,
+    visibility,
     backgroundColor: "transparent",
     textTransform: "none",
     fontWeight: 500,
     borderRadius: "5px",
     padding: "5px 7px",
-    width: width,
-    fontsize: fontSize,
+    width,
+    fontSize,
+    margin: m,
+
     color:
       colorType === "primary"
         ? "var(--primary-color)"
@@ -55,7 +65,6 @@ const OutlinedButton: React.FC<OutlinedButtonProps> = styled(Button)(
 
       transform: scaleOnHover ? "scale(1.1)" : "none",
       boxShadow: scaleOnHover ? "0 0 8px 6px var(--primary-color)" : "none",
-      m: m,
     },
   }),
 );
