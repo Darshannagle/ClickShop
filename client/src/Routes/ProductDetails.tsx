@@ -206,7 +206,7 @@ const ProductDetails = ({ isCart = false }: any) => {
               m={5}
               fontSize={"25px"}
               onClick={addToCart}
-              visiblitiy={isCart ? "none" : "visible"}
+              visibility={isCart ? "none" : "visible"}
             >
               Add to Cart
             </OutlinedButton>

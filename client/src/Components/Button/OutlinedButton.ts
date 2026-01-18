@@ -1,7 +1,17 @@
 import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-
-const OutlinedButton: any = styled(Button)(
+import Button, { type ButtonOwnProps } from "@mui/material/Button";
+import type React from "react";
+interface OutlinedButtonProps extends ButtonOwnProps {
+  colorType?: string;
+  scaleOnHover?: boolean;
+  width?: string | number;
+  fontSize?: string | number;
+  m?: string | number;
+  visibility?: string;
+  onClick?: () => void;
+  // add any other custom props you destructure/use
+}
+const OutlinedButton: React.FC<OutlinedButtonProps> = styled(Button)(
   ({
     // theme,
     colorType = "secondary",
