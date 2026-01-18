@@ -1,6 +1,7 @@
 package com.dan.app.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,64 +23,60 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.dan.app.utils.CustomUserDetailsService;
 import com.dan.app.utils.JwtFilter;
 
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Bean
-    public UserDetailsService userDetailsService() { // Fixed typo: userdetiaDetailsService → userDetailsService
-        return new CustomUserDetailsService();
+    private final JwtFilter jwtAuthFilter;
+
+    public SecurityConfig(JwtFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
     }
 
-    @Autowired
-    private JwtFilter jwtAuthFilter;
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new CustomUserDetailsService();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ← ADD THIS LINE
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/user/**").hasRole("USER")
-                        // .requestMatchers("/api/product/**").hasRole("USER")
-                        // .requestMatchers("/api/category/**").hasRole("USER")
-                        // .requestMatchers("/api/subcategory/**").hasRole("USER")
-                        .anyRequest().permitAll())
+                        .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .formLogin(form -> form.disable())
-                .exceptionHandling().authenticationEntryPoint(new JwtAuthEntryPoint());
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(new JwtAuthEntryPoint()));
+
         return http.build();
     }
 
-    // ← ADD THIS BEAN
+    /* PRODUCTION CORS CONFIG */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Allow Vite dev server (change if your frontend runs on different port)
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:5173", // Vite dev
+                "https://696c82916d9bd9e6ac2247c9--clickshop-dan.netlify.app/" // Netlify prod
+        ));
 
-        configuration.addAllowedOriginPattern("*"); // OK for dev only
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "*"));
-        // configuration.setAllowedOrigins(List.of("*"));
-        // configuration.setAllowCredentials(true);
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
+        configuration.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
-        // Or for quick local testing: allow all origins (NOT for production!)
-        // configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedHeaders(List.of(
+                "Authorization",
+                "Content-Type"));
 
-        // configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE",
-        // "OPTIONS"));
-        // configuration.setAllowedHeaders(List.of("*"));
-        // configuration.setAllowCredentials(true); // Important if you send cookies or
-        // Authorization header
+        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setAllowCredentials(false); // JWT in header, not cookies
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -100,7 +97,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }

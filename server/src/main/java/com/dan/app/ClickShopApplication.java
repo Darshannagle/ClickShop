@@ -3,12 +3,15 @@ package com.dan.app;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.dan.app.model.Role;
 import com.dan.app.repository.RoleRepository;
+
+import jakarta.annotation.PostConstruct;
 
 @SpringBootApplication
 public class ClickShopApplication implements CommandLineRunner {
@@ -33,5 +36,14 @@ public class ClickShopApplication implements CommandLineRunner {
 		} else {
 			System.out.println("Roles already exist, skipping seeding.");
 		}
+	}
+
+	@Value("${spring.profiles.active}")
+	String profile;
+
+	@PostConstruct
+	public void init() {
+		System.out.println("Running profile : " + profile);
+		System.out.println("ClickShopApplication started");
 	}
 }
