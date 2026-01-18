@@ -8,7 +8,7 @@ interface OutlinedButtonProps {
   width?: string | number;
   fontSize?: string | number;
   m?: string | number;
-  visibility?: "visible" | "none";
+  visibility?: "visible" | "hidden";
 }
 
 /* 2️⃣ Prevent custom props from reaching DOM */
