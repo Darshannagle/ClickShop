@@ -18,13 +18,20 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
             HttpServletRequest request,
             HttpServletResponse response,
             AuthenticationException authException) throws IOException {
+        try {
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
 
-        PrintWriter writer = response.getWriter();
-        writer.write("{\"success\":false,\"message\":\"Unauthorized or Invalid Token\"}");
-        writer.flush();
+            PrintWriter writer = response.getWriter();
+            writer.write("{\"success\":false,\"message\":\"Unauthorized or Invalid Token\"}");
+            writer.flush();
+
+        } catch (Exception e) {
+            PrintWriter writer = response.getWriter();
+            writer.write("{\"success\":false,\"message\":\"Something went wrong\",\"error\":\"e.getMessage()\"}");
+            writer.flush();
+        }
     }
 }

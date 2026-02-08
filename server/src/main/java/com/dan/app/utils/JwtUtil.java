@@ -33,7 +33,6 @@ public class JwtUtil {
 	public String generateToken(Authentication authentication) {
 
 		UserDetails user = (UserDetails) authentication.getPrincipal();
-		System.out.println("user:" + user);
 		Map<String, Object> claims = new HashMap<>();
 		// claims.put("email", user.getUsername());
 		claims.put("roles", user.getAuthorities()

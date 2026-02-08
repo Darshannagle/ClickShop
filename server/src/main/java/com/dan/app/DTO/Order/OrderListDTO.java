@@ -19,7 +19,7 @@ import lombok.Data;
 public class OrderListDTO {
     private UUID id;
     private UUID user_id;
-    private List<OrderItemListDTO> orderItems;
+//    private List<OrderItemListDTO> orderItems;
     private BigDecimal totalAmount;
     private OrderStatus orderStatus;
     private LocalDateTime createdAt;
@@ -27,8 +27,8 @@ public class OrderListDTO {
     public static List<OrderListDTO> toList(List<Order> orders) {
         return orders.stream()
                 .map(order -> new OrderListDTO(order.getId(), order.getUser().getId(),
-                        OrderItemListDTO.toList(order.getOrderItems()),
                         order.getTotalAmount(), order.getOrderStatus(), order.getCreatedAt()))
                 .toList();
+//        OrderItemListDTO.toList(order.getOrderItems()),
     }
 }

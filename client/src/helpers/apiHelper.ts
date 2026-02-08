@@ -70,14 +70,11 @@ async function getAPIData(
     : "GET";
 
   const queryString = methodParam === "GET" ? buildQueryString(data) : "";
-  console.log("queryString: ", queryString);
 
   try {
     const finalUrl = customURL
       ? url
       : `${siteConfig.apiURL}${url}${queryString}`;
-
-    console.log("url:", finalUrl);
 
     const options: RequestInit = {
       method: methodParam,
@@ -99,8 +96,12 @@ async function getAPIData(
       const err = await response.json();
       throw new Error(err?.message || err);
     }
-
-    return await response.json();
+    const resData = await response.json();
+    if (resData?.message == "INVALID_TOKEN") {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+    return resData;
   } catch (error) {
     console.error("API Request Error:", error);
     // throw error;

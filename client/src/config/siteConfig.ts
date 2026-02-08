@@ -52,6 +52,9 @@ interface EndPoint {
     list: string;
     delete: string;
   };
+  payment: {
+    confirm: string;
+  };
 }
 
 // Site configuration object
@@ -105,6 +108,9 @@ const endPoint: EndPoint = {
     create: "/api/order/create",
     list: "/api/order/list",
     delete: "/api/order/delete",
+  },
+  payment: {
+    confirm: "/api/payment/confirm",
   },
 };
 

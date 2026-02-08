@@ -32,7 +32,6 @@ public class SubCategoryService {
 			}
 
 			ApiResponse category = categoryService.details("id", (UUID) subCategoryDTO.getCategoryId());
-			System.out.println("category:" + MapperConfig.toJson(category));
 			if (!category.isStatus() || category.getData() == null) {
 
 				return new ApiResponse(true, null, "Associated category not found");
@@ -60,9 +59,6 @@ public class SubCategoryService {
 	public ApiResponse findByCategory(Object categoryField, String fieldName) {
 		try {
 			List<Subcategory> list;
-			System.out.println("fieldName:" + fieldName);
-			System.out.println("fieldName == id" + fieldName.equals("id"));
-			System.out.println("categoryField" + categoryField);
 			if (fieldName.equals("id")) {
 				list = subCategoryRepository.findByCategoryId(UUID.fromString(categoryField.toString()));
 			} else {
@@ -71,7 +67,6 @@ public class SubCategoryService {
 
 			return new ApiResponse(true, list, "Categories fetched");
 		} catch (Exception e) {
-			System.out.println(e);
 			return new ApiResponse(false, null, "Something went wrong", List.of(e.getMessage()));
 		}
 	}
@@ -85,7 +80,6 @@ public class SubCategoryService {
 			} else {
 				subcategory = subCategoryRepository.findByName((String) value);
 			}
-			System.out.println("subcategory:" + MapperConfig.toJson(subcategory));
 
 			if (subcategory == null) {
 				return new ApiResponse<>(false, null, "Subcategory not found");

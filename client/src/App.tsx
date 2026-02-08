@@ -6,15 +6,16 @@ import Register from "./Routes/Register";
 import { Toaster } from "react-hot-toast";
 import NotFound from "./Routes/NotFound";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import Dashboard from "./Routes/Dashboard";
 import Home from "./Routes/Home";
-import ForgotPassword from "./Routes/Login/ForgotPassword";
 import Profile from "./Routes/Profile";
 import ProductDetails from "./Routes/ProductDetails";
-import SeedingPage from "./Routes/SeedingPage";
 import Cart from "./Routes/Cart";
 import Order from "./Routes/Order";
 import Payment from "./Routes/Payment";
+import ProductsRoute from "./Routes/ProductsRoute";
+import PaymentSuccess from "./Routes/PaymentSuccess";
+import PaymentCancel from "./Routes/PaymentCancel";
+import SeedingPage from "./Routes/SeedingPage";
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />}></Route>
           <Route path="/home" element={<Home />}></Route>
+          <Route path="/products" element={<ProductsRoute />}></Route>
+
           {/* <Route path="/about" element={<ForgotPassword />} /> */}
           {/* <Route path="/contactus" element={<ForgotPassword />} /> */}
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
@@ -34,8 +37,16 @@ function App() {
           <Route path="/product/:productId" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order/:orderId" element={<Order />} />
-          <Route path="/Payment" element={<Payment />} />
-          {/* <Route path="/seed" element={<SeedingPage />} /> */}
+          <Route path="/payment" element={<Payment />} />
+          <Route
+            path={`/${import.meta.env.VITE_STRIPE_SUCCESS_URL}/:sessionId`}
+            element={<PaymentSuccess />}
+          />
+          <Route
+            path={`/${import.meta.env.VITE_STRIPE_CANCEL_URL}/:sessionId`}
+            element={<PaymentCancel />}
+          />
+          <Route path="/seed" element={<SeedingPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </GoogleOAuthProvider>

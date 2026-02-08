@@ -28,7 +28,6 @@ public class ProductController {
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody ProductDTO productDTO) {
         try {
-            System.out.println("productDTO:" + productDTO);
             ApiResponse response = productService.create(productDTO);
             return new ResponseEntity(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -43,7 +42,6 @@ public class ProductController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id,asc") String sort) {
         try {
-            System.out.println("keyword:" + keyword + " page:" + page + " size:" + size + " sort:" + sort);
             ApiResponse response = productService.findByName(keyword, page, size, sort.split(","));
             return new ResponseEntity(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -62,7 +60,6 @@ public class ProductController {
             return new ResponseEntity(response, HttpStatus.OK);
 
         } catch (Exception e) {
-            System.out.println("e:" + e);
             return new ResponseEntity(
                     new ApiResponse(false, null, "Something went wrong", List.of(e.getMessage())),
                     HttpStatus.BAD_REQUEST);

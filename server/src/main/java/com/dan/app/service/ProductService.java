@@ -83,21 +83,16 @@ public class ProductService {
 
     public ApiResponse create(ProductDTO productDTO) {
         try {
-            System.out.println("Category_id:" + productDTO.getCategory_id());
-            System.out.println("subCategory_id:" + productDTO.getSubcategory_id());
             Category category = (Category) categoryService.details("id", productDTO.getCategory_id()).getData();
-            System.out.println("category:" + MapperConfig.toJson(category));
             if (category == null) {
                 return new ApiResponse<>(false, null, "Category not found");
             }
-            System.out.println("category:" + MapperConfig.toJson(category));
 
             Subcategory subcategory = (Subcategory) subCategoryService.details("id", productDTO.getSubcategory_id())
                     .getData();
             if (subcategory == null) {
                 return new ApiResponse<>(false, null, "Subcategory not found");
             }
-            System.out.println("subcategory:" + MapperConfig.toJson(subcategory));
             // convert the speification to json
             JsonNode specsNode = MapperConfig.mapper.readTree(
                     MapperConfig.getParser(productDTO.getSpecifications()));
@@ -124,5 +119,4 @@ public class ProductService {
             return new ApiResponse(false, null, "Something went wrong", List.of(e.getMessage()));
         }
     }
-
 }

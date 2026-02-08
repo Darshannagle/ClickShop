@@ -12,8 +12,7 @@ const ForgotPassword = () => {
   const [path, setPath] = useState("reset-password");
   const [registrationData, setRegistrationData] = useState({} as any);
   const handleDataChange = (field: string, value: string) => {
-    console.log("field: ", field);
-
+    console.log("field: ", field);  
     const { field: f, ...rest } = registrationData;
     setRegistrationData({ [f]: value, ...rest });
   };

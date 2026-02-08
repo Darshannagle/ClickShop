@@ -26,6 +26,7 @@ import { getAPIData } from "../helpers/apiHelper";
 import { endPoint } from "../config/siteConfig";
 import toast from "react-hot-toast";
 import { Delete } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
@@ -37,7 +38,7 @@ const Cart = () => {
     total: 0,
   });
   const { showLoader, hideLoader } = useLoader();
-
+  const navigate = useNavigate();
   const fetchCart = async () => {
     try {
       showLoader();
@@ -96,7 +97,7 @@ const Cart = () => {
       const res: any = await getAPIData(
         endPoint.cartItem.setQuantity,
         { cart_id: id, quantity },
-        "POST"
+        "POST",
       );
 
       if (res?.status) {
@@ -120,16 +121,18 @@ const Cart = () => {
       const res = await getAPIData(
         endPoint.order.create,
         { cartItems: cart },
-        "POST"
+        "POST",
       );
       if (res?.status) {
-        setCart(res?.data?.records ?? []);
-        setTotalDetails({
-          subTotal: res?.data?.subTotal ?? 0,
-          estimatedTax: res?.data?.estimatedTax ?? 0,
-          estimatedShipping: res?.data?.estimatedShipping ?? 0,
-          total: res?.data?.total ?? 0,
-        });
+        toast.success(res?.message);
+        window.location.href = res?.data?.session?.url;
+        // setCart(res?.data?.records ?? []);
+        // setTotalDetails({
+        //   subTotal: res?.data?.subTotal ?? 0,
+        //   estimatedTax: res?.data?.estimatedTax ?? 0,
+        //   estimatedShipping: res?.data?.estimatedShipping ?? 0,
+        //   total: res?.data?.total ?? 0,
+        // });
       } else {
         toast.error(res?.message || "Something went wrong");
       }
@@ -145,7 +148,7 @@ const Cart = () => {
     fetchCart();
   }, []);
   return (
-    <Box border={"1px solid green"}>
+    <Box>
       <Grid
         container
         spacing={1}
@@ -186,7 +189,7 @@ const Cart = () => {
                         />
                       }
                       title={item?.product?.name}
-                      subheader={item?.soldPrice}
+                      subheader={"$ " + item?.soldPrice}
                       action={
                         <CardActions disableSpacing sx={{ p: 0 }}>
                           <IconButton
@@ -214,7 +217,7 @@ const Cart = () => {
                         <Button
                           sx={{ height: 32, width: "1%" }}
                           onClick={(e: any) => {
-                            setQuantity(item?.id, Number(e.target.value));
+                            setQuantity(item?.id, Number(e?.target?.value));
                             //   setQuantity((prev) => {
                             // prev = prev > 1 ? --prev : 1;
                             // return prev;
@@ -236,7 +239,7 @@ const Cart = () => {
                           }}
                           InputProps={{
                             endAdornment: loading.quantity.includes(
-                              item?.id
+                              item?.id,
                             ) && (
                               <InputAdornment
                                 position="start"
@@ -381,7 +384,8 @@ const Cart = () => {
                 variant="contained"
                 disabled={!cart?.length}
                 onClick={() => {
-                  handleCheckout();
+                  // handleCheckout();
+                  navigate(`/payment`);
                 }}
               >
                 Checkout

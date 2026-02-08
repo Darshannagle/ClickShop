@@ -39,7 +39,6 @@ public class UserService {
 		user.setGender(Gender.from(userDTO.getGender()));
 		user.setLocation(userDTO.getLocation());
 		user.setPinCode(userDTO.getPinCode());
-		System.out.println("user:" + user);
 		return user;
 	}
 
@@ -52,7 +51,6 @@ public class UserService {
 			return response;
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.out.println("Exception : " + e);
 			ApiResponse<List<userListData>> response = new ApiResponse<List<userListData>>(false, null,
 					"Something went wrong", List.of(e.getLocalizedMessage()));
 			return response;
@@ -65,7 +63,6 @@ public class UserService {
 		try {
 
 			User existingUser = userRepository.findByEmail(userDTO.getEmail()).orElse(null);
-			System.out.println("existingUser:" + existingUser);
 			if (existingUser != null) {
 
 				throw new Exception("Email is already registered");
@@ -82,7 +79,6 @@ public class UserService {
 			return apiResponse;
 
 		} catch (Exception e) {
-			System.out.println("Exception : " + e);
 			return new ApiResponse<User>(false, null, e.getMessage(), List.of(e.getLocalizedMessage()));
 		}
 	}
@@ -93,7 +89,6 @@ public class UserService {
 		try {
 
 			Optional<User> existingUser = userRepository.findById(id);
-			// System.out.println("existingUser : " + existingUser);
 			if (existingUser.isEmpty()) {
 				throw new Exception("User not found");
 			}
@@ -102,12 +97,11 @@ public class UserService {
 				Map<String, Object> user = MapperConfig.toJson(existingUser.get());
 				apiResponse = new ApiResponse(true, user, "User created successfully");
 			} else {
-				apiResponse = new ApiResponse(true, existingUser.get(), "User created successfully");
+				apiResponse = new ApiResponse(true, existingUser.get(), "User fetched successfully");
 			}
 			return apiResponse;
 
 		} catch (Exception e) {
-			System.out.println("Exception : " + e);
 			return new ApiResponse(false, null, e.getMessage(), List.of(e.getLocalizedMessage()));
 		}
 	}
@@ -121,14 +115,12 @@ public class UserService {
 
 			BeanUtils.copyProperties(body, existingUser, "id", "email", "password");
 			userRepository.save(existingUser);
-			System.out.println("existingUser:" + existingUser);
 			ApiResponse<Map<String, Object>> apiResponse = new ApiResponse<Map<String, Object>>(true,
 					MapperConfig.toJson(existingUser), "User updated successfully");
 
 			return apiResponse;
 
 		} catch (Exception e) {
-			System.out.println("Exception : " + e);
 			return new ApiResponse<Map<String, Object>>(false, null, e.getMessage(), List.of(e.getLocalizedMessage()));
 		}
 	}
@@ -139,7 +131,6 @@ public class UserService {
 		try {
 
 			Optional<User> existingUser = userRepository.findById(id);
-			// System.out.println("existingUser : " + existingUser);
 			if (existingUser.isEmpty()) {
 				throw new Exception("User not found");
 			}
@@ -149,7 +140,6 @@ public class UserService {
 			return apiResponse;
 
 		} catch (Exception e) {
-			System.out.println("Exception : " + e);
 			return new ApiResponse(false, null, e.getMessage(), List.of(e.getLocalizedMessage()));
 		}
 	}

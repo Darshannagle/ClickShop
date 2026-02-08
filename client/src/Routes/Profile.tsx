@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Avatar,
   Box,
   Card,
   CardContent,
@@ -43,7 +42,13 @@ export default function MyAccount() {
   const isDesktop = useMediaQuery(useTheme().breakpoints.up("md"));
 
   const [tab, setTab] = useState(0);
-  const [profile, setProfile] = useState({} as any);
+  const [profile, setProfile] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    gender: "MALE",
+  });
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,9 +56,8 @@ export default function MyAccount() {
   const fetchProfile = async () => {
     try {
       const res = await getAPIData(endPoint.user.profile, {}, "GET");
-      console.log("res: ", res);
       if (res?.status) {
-        toast.success(res?.message);
+        // toast.success(res?.message);
         return res?.data;
       } else {
         setError(res?.message);
@@ -70,7 +74,7 @@ export default function MyAccount() {
     try {
       const res = await getAPIData(endPoint.order.list, {}, "GET");
       if (res?.status) {
-        toast.success(res?.message);
+        // toast.success(res?.message);
         return res?.data;
       } else {
         setError(res?.message);
@@ -85,13 +89,11 @@ export default function MyAccount() {
 
   const updateProfile = async () => {
     try {
-      console.log(" profile: ", profile);
       const res = await getAPIData(endPoint.user.update, profile, "PUT");
       if (res?.status) {
         showLoader();
         toast.success(res?.message);
         setProfile(res?.data);
-        console.log(" res?.data: ", res?.data);
         // return res?.data;
       } else {
         // setError(res?.message);
@@ -113,7 +115,6 @@ export default function MyAccount() {
           fetchProfile(),
           getOrders(),
         ]);
-        console.log("profileData: ", profileData);
 
         setProfile(profileData);
         setOrders(ordersData);
@@ -151,9 +152,9 @@ export default function MyAccount() {
         <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent sx={{ textAlign: "center" }}>
-              <Avatar sx={{ width: 64, height: 64, mx: "auto", mb: 1 }}>
-                {profile?.email?.toUpperCase()}
-              </Avatar>
+              {/* <Avatar sx={{ width: 64, height: 64, mx: "auto", mb: 1 }}>
+                {profile?.fullName?.toUpperCase().at(0)}
+              </Avatar> */}
               <Typography variant="h6">{profile?.email}</Typography>
               <Typography variant="body2" color="text.secondary">
                 Customer
@@ -162,8 +163,7 @@ export default function MyAccount() {
             <Divider />
             <Tabs
               value={tab}
-              indicatorColor="primary"
-              textColor="primary"
+              // textColor="primary"
               onChange={(_, v) => setTab(v)}
               orientation={isDesktop ? "vertical" : "horizontal"}
               variant={isDesktop ? "standard" : "fullWidth"}
@@ -171,6 +171,19 @@ export default function MyAccount() {
                 color: "black",
                 width: "100%",
                 height: isDesktop ? "100%" : "auto",
+                "& .MuiTabs-indicator": {
+                  // display: "none",
+                  backgroundColor: "black",
+                },
+                "& .MuiTab-root": {
+                  color: "#6e6e6e", // inactive tab color
+                },
+                "& .MuiTab-root.Mui-selected": {
+                  border: "1px solid black",
+                  // backgroundColor: "black",
+                  color: "#000", // 🔥 active tab text/icon color
+                  fontWeight: 600,
+                },
                 "& .MuiTabs-flexContainer": {
                   height: "100%",
                   justifyContent: "stretch",
@@ -245,7 +258,7 @@ export default function MyAccount() {
             size="small"
             id="fullName"
             label="Full Name"
-            value={profile.fullName || ""}
+            value={profile?.fullName || ""}
             onChange={(e) => {
               setProfile((prev: any) => ({
                 ...prev,
@@ -257,11 +270,13 @@ export default function MyAccount() {
           {/* <FormLabel>Gender</FormLabel> */}
           <RadioGroup
             row
-            value={profile?.gender || "MALE"}
+            sx={{ m: 0 }}
+            value={profile?.gender}
             onChange={(_e, value) => {
-              setProfile((prev: any) => {
-                return { ...prev, gender: value };
-              });
+              setProfile((prev: any) => ({
+                ...prev,
+                gender: value,
+              }));
             }}
           >
             <FormControlLabel value="MALE" control={<Radio />} label="Male" />
@@ -276,6 +291,7 @@ export default function MyAccount() {
               label="Others"
             />
           </RadioGroup>
+
           {/* </FormControl> */}
           {/* Email Address */}
           <TextField
@@ -283,7 +299,7 @@ export default function MyAccount() {
             size="small"
             id="Email"
             label="Email"
-            value={profile.email}
+            value={profile?.email}
             onChange={() => {}}
             disabled
           />
@@ -301,7 +317,12 @@ export default function MyAccount() {
               }));
             }}
           />
-          <OutlinedButton m={2} onClick={updateProfile}>
+          <OutlinedButton
+            flex={"1 1 20%"}
+            width={"10%"}
+            m={"20px auto"}
+            onClick={updateProfile}
+          >
             Save
           </OutlinedButton>
         </CardContent>
@@ -327,15 +348,12 @@ export default function MyAccount() {
     const fetchAddresses = async () => {
       try {
         const res = await getAPIData(endPoint.address.list, {}, "GET");
-        console.log("res: ", res);
         if (res?.status) {
-          console.log("res?.data: ", res?.data);
           setAddresses(res?.data);
         } else {
           toast.error(res?.message || "Something went wrong");
         }
       } catch (error) {
-        console.log("error: ", error);
         toast.error(error?.message || "Something went wrong");
       }
     };
@@ -539,27 +557,23 @@ export default function MyAccount() {
                 <FormLabel component="legend">Address Type</FormLabel>
                 <RadioGroup
                   row
-                  aria-label=""
-                  name=""
-                  value={selectedAddress?.addressType || "HOME"}
+                  value={selectedAddress?.addressType ?? "HOME"}
                   onChange={(e) =>
-                    setSelectedAddress((prev: any) => {
-                      return {
-                        ...prev,
-                        addressType: e?.target?.value,
-                      };
-                    })
+                    setSelectedAddress((prev: any) => ({
+                      ...prev,
+                      addressType: e?.target?.value,
+                    }))
                   }
                 >
                   <FormControlLabel
-                    value={"HOME"}
+                    value="HOME"
                     control={<Radio size="small" />}
-                    label={"Home"}
+                    label="Home"
                   />
                   <FormControlLabel
-                    value={"OFFICE"}
+                    value="OFFICE"
                     control={<Radio size="small" />}
-                    label={"Office"}
+                    label="Office"
                   />
                 </RadioGroup>
               </FormControl>
@@ -594,7 +608,7 @@ export default function MyAccount() {
             </Box>
           </Modal>
           <List>
-            {(addresses || []).map((addr) => (
+            {(Array.isArray(addresses) ? addresses : []).map((addr) => (
               <ListItem
                 key={addr.id}
                 sx={{
@@ -651,7 +665,7 @@ export default function MyAccount() {
                       sx={{ m: 0, p: 0 }}
                       onClick={() => showModal(addr, true)}
                     >
-                      <Mode color="info" />
+                      <Mode color="warning" />
                     </IconButton>
                     <IconButton
                       sx={{ m: 0, p: 0 }}
@@ -715,7 +729,7 @@ export default function MyAccount() {
                 alignItems="center"
                 sx={{ justifyContent: "center" }}
                 onClick={() => {
-                  showModal({}, false);
+                  showModal(selectedAddress, false);
                 }}
               >
                 <Typography variant="h5">+</Typography>
@@ -739,10 +753,15 @@ export default function MyAccount() {
           <Divider sx={{ my: 2 }} />
           <List>
             {orders.map((order) => (
-              <ListItem key={order.id}>
+              <ListItem
+                component={Card}
+                elevation={0.1}
+                sx={{ my: 1 }}
+                key={order.id}
+              >
                 <ListItemText
                   primary={`Order #${order.id}`}
-                  secondary={`₹${order.totalAmount} • ${order.orderStatus}`}
+                  secondary={`$${order.totalAmount} • ${order.orderStatus}`}
                 />
               </ListItem>
             ))}

@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID> {
-    List<Order> findByUser_id(UUID user_id);
+    List<Order> findByUser_idOrderByCreatedAtDesc(UUID user_id);
 
     void deleteAllByUser_id(UUID userId);
 }

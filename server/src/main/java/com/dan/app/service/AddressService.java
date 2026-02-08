@@ -37,11 +37,9 @@ public class AddressService {
     public ApiResponse create(AddressDTO addressDTO) {
         try {
 
-            User user = userRepository.findById(addressDTO.getUser_id()).orElse(null);
-            System.out.println("user:" + user);
-            if (user == null) {
-                throw new Exception("User not found");
-            }
+            User user = userRepository.findById(addressDTO.getUser_id())
+                    .orElseThrow(() -> new Exception("User not found"));
+
             Address address = new Address(user, addressDTO.getAddressLine1(), addressDTO.getAddressLine2(),
                     addressDTO.getCity(), addressDTO.getState(), addressDTO.getCountry(), addressDTO.getPinCode(),
                     AddressType.valueOf(addressDTO.getAddressType()));
@@ -55,8 +53,6 @@ public class AddressService {
     public ApiResponse list(UUID userId) {
         try {
             List<Address> addresses = addressRepository.findByUser_id(userId);
-            // System.out.println("addresses:" + addresses.size());
-            log.info("addresses:" + addresses);
             return new ApiResponse(true, addresses, "Addresses retrieved successfully");
             // } catch (DataAccessException e) {
             // For database-related issues

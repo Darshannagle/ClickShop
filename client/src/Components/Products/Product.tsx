@@ -18,7 +18,7 @@ const Product = (props) => {
       p={1}
       // border={"1px solid red"}
       height={"max-width"}
-      size={{ xs: 12, sm: 3, md: 3, lg: 2, xl: 2 }}
+      size={{ xs: 6, sm: 5, md: 4, lg: 3, xl: 2 }}
       width={"100%"}
       display={"flex"}
       flexDirection={"column"}

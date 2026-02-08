@@ -21,10 +21,9 @@ const Home = () => {
     };
     const prodRes = await getAPIData(url, queryparams, "GET");
     if (prodRes?.status) {
-      console.log("prodRes?.data: ", prodRes?.data);
       setProducts(prodRes?.data?.content);
     } else {
-      console.log(prodRes);
+      console.log("error while fetching products : ", prodRes?.errors[1]);
     }
   };
   useEffect(() => {

@@ -1,6 +1,24 @@
 package com.dan.app.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+
+import lombok.Getter;
+
+@Configuration
+@Getter
 public class Constant {
+    @Value("${app.url}")
+    public String APP_URL;
+
+    @Value("${stripe.success}")
+    public String STRIPE_SUCCESS_URL;
+
+    @Value("${stripe.cancel}")
+    public String STRIPE_CANCEL_URL;
+
+    public static Integer ESTIMATED_TAX = 50;
+    public static Integer ESTIMATED_SHIPPING = 150;
 
     public enum Gender {
         MALE("MALE", "Male"),
@@ -72,6 +90,7 @@ public class Constant {
     }
 
     public enum OrderStatus {
+        PENDING("PENDING", "Pending"),
         PLACED("PLACED", "Placed"),
         SHIPPED("SHIPPED", "Shipped"),
         DELIVERED("DELIVERED", "Delivered"),
@@ -104,6 +123,76 @@ public class Constant {
                 }
             }
             throw new IllegalArgumentException("Invalid order status: " + value);
+        }
+    }
+
+    public enum PaymentStatus {
+        PENDING("PENDING", "Pending"),
+        CREATED("CREATED", "Created"),
+        COMPLETED("COMPLETED", "Completed"),
+        FAILED("FAILED", "Failed");
+
+        private final String key;
+        private final String label;
+
+        PaymentStatus(String key, String label) {
+            this.key = key;
+            this.label = label;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        // Safe lookup by key or label
+        public static PaymentStatus from(String value) {
+            if (value == null) {
+                throw new IllegalArgumentException("Payment Status value cannot be null");
+            }
+            for (PaymentStatus p : PaymentStatus.values()) {
+                if (p.key.equalsIgnoreCase(value) || p.label.equalsIgnoreCase(value)) {
+                    return p;
+                }
+            }
+            throw new IllegalArgumentException("Invalid gender: " + value);
+        }
+    }
+
+    public enum PaymentMethod {
+        CASH("CASH", "Cash"),
+        ONLINE("ONLINE", "Online");
+
+        private final String key;
+        private final String label;
+
+        PaymentMethod(String key, String label) {
+            this.key = key;
+            this.label = label;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        // Safe lookup by key or label
+        public static PaymentMethod from(String value) {
+            if (value == null) {
+                throw new IllegalArgumentException("Payment Method value cannot be null");
+            }
+            for (PaymentMethod p : PaymentMethod.values()) {
+                if (p.key.equalsIgnoreCase(value) || p.label.equalsIgnoreCase(value)) {
+                    return p;
+                }
+            }
+            throw new IllegalArgumentException("Invalid payment method: " + value);
         }
     }
 }

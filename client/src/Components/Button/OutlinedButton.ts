@@ -30,6 +30,7 @@ const OutlinedButton = styled(Button, {
     fontSize = "12px",
     m = 0,
     visibility = "visible",
+    display = "flex",
   }) => ({
     visibility,
     backgroundColor: "transparent",
@@ -40,7 +41,7 @@ const OutlinedButton = styled(Button, {
     width,
     fontSize,
     margin: m,
-
+    display,
     color:
       colorType === "primary"
         ? "var(--primary-color)"

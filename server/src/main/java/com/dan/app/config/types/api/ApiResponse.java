@@ -2,9 +2,11 @@ package com.dan.app.config.types.api;
 
 import java.util.List;
 
+import lombok.Builder;
 import lombok.ToString;
 
 @ToString
+@Builder
 public class ApiResponse<T> {
 
 	private boolean status = true;

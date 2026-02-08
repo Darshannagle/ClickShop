@@ -13,9 +13,10 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.dan.app.config.Constant.OrderStatus;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.dan.app.config.Constant.PaymentMethod;
+import com.dan.app.config.Constant.PaymentStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -43,7 +44,7 @@ public class Order {
     public Order(BigDecimal totalAmount, List<OrderItem> orderItems, OrderStatus orderStatus) {
         super();
         this.totalAmount = totalAmount;
-        this.orderItems = orderItems;
+        // this.orderItems = orderItems;
         this.orderStatus = orderStatus;
     }
 
@@ -52,30 +53,44 @@ public class Order {
     @Column(name = "id", nullable = false)
     private UUID id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIdentityReference(alwaysAsId = true)
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    // @JsonIdentityReference(alwaysAsId = true)
+    // @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+    // property = "id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false)
-    @JsonIdentityReference(alwaysAsId = true)
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    // @JsonIdentityReference(alwaysAsId = true)
+    // @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+    // property = "id")
+    @JsonIgnore
     private Address address;
 
     private BigDecimal totalAmount;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    // @JsonIdentityReference(alwaysAsId = true)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus = OrderStatus.PLACED;
+    private OrderStatus orderStatus = OrderStatus.PENDING;
+
+    // private String stripePaymentIntentId;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
+
+    private PaymentMethod paymentMethod;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    private String stripeSessionId;
 
     @CreatedBy
     private UUID createdBy;
@@ -89,7 +104,7 @@ public class Order {
 
     public int addOrderItem(OrderItem orderItem) {
         orderItem.setOrder(this);
-        orderItems.add(orderItem);
+        this.orderItems.add(orderItem);
         return orderItems.size();
     }
 

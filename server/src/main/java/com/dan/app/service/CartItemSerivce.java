@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.stereotype.Service;
 
 import com.dan.app.DTO.CartItemDTO;
+import com.dan.app.config.Constant;
 import com.dan.app.config.MapperConfig;
 import com.dan.app.config.types.api.ApiResponse;
 import com.dan.app.model.CartItem;
@@ -58,7 +60,8 @@ public class CartItemSerivce {
                 cartItem.setQuantity(cartItemDTO.getQuantity());
                 cartItem.setSoldPrice(cartItemDTO.getSoldPrice());
                 cartItem = cartItemRepository.save(cartItem);
-                return new ApiResponse(true, cartItem, "Cart item created");
+                // cartItem = entityManager.getReference(CartItem.class, cartItem.getId());
+                return new ApiResponse(true, null, "Cart item created");
             }
 
         } catch (Exception e) {
@@ -72,8 +75,8 @@ public class CartItemSerivce {
             double subTotal = cartItems.stream()
                     .reduce(0.0, (a, b) -> a + b.getQuantity() * b.getSoldPrice().doubleValue(), Double::sum);
             Map<String, Object> data = new HashMap<>();
-            Integer estimatedTax = 50;
-            Integer estimatedShipping = 150;
+            Integer estimatedTax = Constant.ESTIMATED_TAX;
+            Integer estimatedShipping = Constant.ESTIMATED_SHIPPING;
             data.put("records", cartItems);
             data.put("estimatedTax", estimatedTax);
             data.put("estimatedShipping", estimatedShipping);

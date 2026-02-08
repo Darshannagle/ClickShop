@@ -30,7 +30,6 @@ const Login = () => {
   const { showLoader, hideLoader } = useLoader();
 
   const { token, authState } = useAppSelector((state) => state.auth);
-  console.log("token: authState ", token, authState);
 
   const {
     handleSubmit,

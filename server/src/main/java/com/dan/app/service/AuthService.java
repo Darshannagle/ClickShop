@@ -54,15 +54,11 @@ public class AuthService {
             logger.info("user: " + user.toString());
 
             user = userRepository.save(user);
-            System.out.println("user :" + MapperConfig.toJson(user));
             return new ApiResponse(true, user, "User registered successfully");
 
         } catch (Exception e) {
             e.printStackTrace(); // ← Add this
             logger.error("Signup failed", e); // Full stack trace in logs
-            System.out.println("Full error: " + e.getClass().getName());
-            System.out.println("Message: " + e.getMessage());
-
             // Print ROOT CAUSE (the real DB error)
             Throwable rootCause = e.getCause();
             while (rootCause != null && rootCause.getCause() != null) {

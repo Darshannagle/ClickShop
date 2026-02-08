@@ -104,9 +104,7 @@ const Register = () => {
         location: registrationData?.location,
         pinCode: registrationData?.pinCode,
       };
-      console.log("body: ", body);
       const res = await getAPIData(endPoint.signUp, body, "POST");
-      console.log("res: ", res);
 
       if (res?.status) {
         toast.success(res?.message);
@@ -115,7 +113,7 @@ const Register = () => {
         toast.error(res?.message || "Something went wrong");
       }
     } catch (err) {
-      console.error(err);
+      console.log("error while fetching users : ", err);
       toast.error("Something went wrong");
     } finally {
       hideLoader();
@@ -126,7 +124,7 @@ const Register = () => {
     try {
       if (authResult["code"]) {
         const response = await fetch(
-          `/api/auth/google?code=${authResult["code"]}`
+          `/api/auth/google?code=${authResult["code"]}`,
         );
         const data = await response.json();
         console.log(data);

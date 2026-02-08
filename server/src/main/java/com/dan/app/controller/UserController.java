@@ -60,7 +60,6 @@ public class UserController {
 	@PostMapping("/create")
 	public ResponseEntity<ApiResponse<User>> create(@RequestBody UserDTO userDTO) {
 		try {
-			System.out.println("userDTO:" + MapperConfig.toJson(userDTO));
 			ApiResponse<User> response = doctorService.create(userDTO);
 			if (!response.isStatus()) {
 				return new ResponseEntity<ApiResponse<User>>(response, HttpStatus.BAD_REQUEST);
@@ -81,7 +80,6 @@ public class UserController {
 	public ResponseEntity<ApiResponse> details(@AuthenticationPrincipal UserDetails userDetails,
 			@RequestParam UUID id) {
 		try {
-			System.out.println("UserDetails:" + MapperConfig.toJson(userDetails));
 			ApiResponse response = doctorService.details(id, true);
 			if (!response.isStatus()) {
 				return new ResponseEntity<ApiResponse>(response, HttpStatus.BAD_REQUEST);
@@ -102,7 +100,6 @@ public class UserController {
 	@PutMapping("/update")
 	public ResponseEntity<ApiResponse> update(@RequestBody User data) {
 		try {
-			System.out.println("data:" + MapperConfig.toJson(data));
 			if (data.getId() == null) {
 				throw new Exception("User Id is required");
 			}
@@ -125,7 +122,6 @@ public class UserController {
 	@GetMapping("/get-profile")
 	public ResponseEntity<ApiResponse> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
 		try {
-			System.out.println("UserDetails:" + MapperConfig.toJson(userDetails));
 			ApiResponse response = doctorService.details(userDetails.getId(), true);
 			if (!response.isStatus()) {
 				return new ResponseEntity<ApiResponse>(response, HttpStatus.BAD_REQUEST);

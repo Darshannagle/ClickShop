@@ -92,8 +92,11 @@ const Categories = () => {
           <Box
             key={i}
             sx={{
-              minWidth: 120,
-              height: 110,
+              width: 125,
+              border: "none",
+              bordeRadius: 20,
+              // width: "max-content",
+              height: 125,
               bgcolor: "primary.main",
               color: "#fff",
               borderRadius: 2,

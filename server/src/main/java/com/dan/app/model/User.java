@@ -1,12 +1,15 @@
 package com.dan.app.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import com.dan.app.config.Constant.Gender;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,6 +21,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -58,12 +62,12 @@ public class User {
 	private Long pinCode;
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles = new HashSet<>(); // ← Change List → Set + initialize // @OneToMany(mappedBy = "user",
-												// cascade = CascadeType.ALL, orphanRemoval =
-	// true)
+	private Set<Role> roles = new HashSet<>(); // ← Change List → Set + initialize //
+	// @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade =
+	// CascadeType.ALL, orphanRemoval = true)
 	// private List<Address> addresses = new ArrayList<>();
 
-	// @CreationTimestamp
 	// private LocalDateTime createdAt;
 	// @UpdateTimestamp
 	// private LocalDateTime updatedAt;

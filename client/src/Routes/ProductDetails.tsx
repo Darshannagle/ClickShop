@@ -49,7 +49,6 @@ const ProductDetails = ({ isCart = false }: any) => {
       );
 
       if (res?.status) {
-        console.log("res.data: ", res.data);
         setProduct(
           // {...
           res.data,
@@ -203,8 +202,8 @@ const ProductDetails = ({ isCart = false }: any) => {
           ) : (
             <OutlinedButton
               width={"80%"}
-              m={5}
-              fontSize={"25px"}
+              m={"5px auto"}
+              fontSize={"15px"}
               onClick={addToCart}
               visibility={isCart ? "hidden" : "visible"}
             >

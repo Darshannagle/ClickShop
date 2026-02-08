@@ -41,7 +41,6 @@ public class AddressController {
         try {
             addressDTO.setUser_id(userDetails.getId());
             ApiResponse apiResponse = addressService.create(addressDTO);
-            System.out.println("apiResponse:" + apiResponse.toString());
             return new ResponseEntity(apiResponse, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new ApiResponse(false, null, "Something went wrong", List.of(e.getMessage())),
@@ -53,7 +52,6 @@ public class AddressController {
     public ResponseEntity list(@AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
             ApiResponse apiResponse = addressService.list(userDetails.getId());
-            System.out.println("apiResponse:" + apiResponse);
             return new ResponseEntity(apiResponse, HttpStatus.OK);
             // return new ResponseEntity(apiResponse, HttpStatus.OK);
         } catch (Exception e) {
