@@ -318,9 +318,9 @@ export default function MyAccount() {
             }}
           />
           <OutlinedButton
-            flex={"1 1 20%"}
-            width={"10%"}
-            m={"20px auto"}
+            // flex={"1 1 20%"}
+            // width={"10%"}
+            // m={"20px auto"}
             onClick={updateProfile}
           >
             Save

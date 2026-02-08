@@ -646,7 +646,7 @@ const Payment = () => {
                 <OutlinedButton
                   variant="outlined"
                   onClick={handleBack}
-                  visiblity={activeStep == 0 ? "hidden" : "visible"}
+                  // visiblity={activeStep == 0 ? "hidden" : "visible"}
                 >
                   Back
                 </OutlinedButton>
