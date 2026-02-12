@@ -7,17 +7,11 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    hibernate:
-      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
   application:
     name: ClickShop
-
-  # spring:
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE:prod}
 
 # App
 app:
