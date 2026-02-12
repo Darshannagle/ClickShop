@@ -8,15 +8,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "permissions")
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private Long id;
+    private String id;
     @Column(unique = true)
     private String name;
 }
