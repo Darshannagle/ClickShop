@@ -5,8 +5,6 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -53,6 +51,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized or Invalid Token");
+                return;
             }
 
             String token = authHeader.substring(7);
