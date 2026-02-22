@@ -1,6 +1,6 @@
 // pages/SuccessPage.jsx
 import { useEffect } from "react";
-import { Typography, CircularProgress } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { endPoint } from "@/config/siteConfig";
 import { getAPIData } from "@/helpers/apiHelper";
@@ -47,7 +47,6 @@ export default function SuccessPage() {
       <Typography variant="h4" color="success.main">
         🎉 Payment Successful!
       </Typography>
-      <CircularProgress />
     </div>
   );
 }

@@ -25,7 +25,7 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
             response.setCharacterEncoding("UTF-8");
 
             PrintWriter writer = response.getWriter();
-            writer.write("{\"success\":false,\"message\":\"Unauthorized or Invalid Token\"}");
+            writer.write("{\"success\":false,\"message\":\"Unauthorized or Invalid Token:\"}");
             writer.flush();
 
         } catch (Exception e) {

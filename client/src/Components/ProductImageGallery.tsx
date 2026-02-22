@@ -11,6 +11,7 @@ const ProductImageGallery = ({ images = [] }) => {
       display="flex"
       gap={2}
       flexDirection={{ xs: "column-reverse", sm: "row" }}
+      alignItems={{xs: "center", sm: "flex-start"}}
     >
       {/* Thumbnails */}
       <Box display="flex" flexDirection={{ xs: "row", sm: "column" }} gap={1}>

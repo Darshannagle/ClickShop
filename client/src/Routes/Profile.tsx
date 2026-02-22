@@ -12,7 +12,6 @@ import {
   Alert,
   List,
   ListItem,
-  ListItemText,
   TextField,
   RadioGroup,
   Radio,
@@ -26,6 +25,9 @@ import {
   Checkbox,
   useMediaQuery,
   useTheme,
+  Chip,
+  Stack,
+  InputAdornment,
 } from "@mui/material";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -33,14 +35,24 @@ import PersonIcon from "@mui/icons-material/Person";
 import { getAPIData } from "../helpers/apiHelper";
 import { endPoint } from "../config/siteConfig";
 import toast from "react-hot-toast";
-import OutlinedButton from "../Components/Button/OutlinedButton";
 import { useLoader } from "../context/LoaderContext";
-import { Delete, Mode } from "@mui/icons-material";
+import {
+  AccessTime,
+  AccountCircle,
+  BadgeOutlined,
+  ChevronRight,
+  Delete,
+  Email,
+  Mode,
+  Phone,
+  ReceiptLongOutlined,
+  SaveOutlined,
+  ShoppingBagOutlined,
+} from "@mui/icons-material";
 
 export default function MyAccount() {
   // check whether it is desktop :
   const isDesktop = useMediaQuery(useTheme().breakpoints.up("md"));
-
   const [tab, setTab] = useState(0);
   const [profile, setProfile] = useState({
     fullName: "",
@@ -49,8 +61,14 @@ export default function MyAccount() {
     gender: "MALE",
   });
 
+  // const { tabId } = useParams();
+  // setTab(parseInt(tabId) || 0);
+
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState({
+    profile: false,
+    address: false,
+  });
   const [error, setError] = useState(null);
   const { showLoader, hideLoader } = useLoader();
   const fetchProfile = async () => {
@@ -109,7 +127,7 @@ export default function MyAccount() {
   useEffect(() => {
     const loadAccountData = async () => {
       try {
-        setLoading(true);
+        setLoading((prev) => ({ ...prev, profile: true }));
 
         const [profileData, ordersData] = await Promise.all([
           fetchProfile(),
@@ -122,14 +140,14 @@ export default function MyAccount() {
         setError(error.message);
         toast.error(error.message || "Please login to view your account");
       } finally {
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, profile: false }));
       }
     };
 
     loadAccountData();
   }, []);
 
-  if (loading) {
+  if (loading?.profile) {
     return (
       <Box display="flex" justifyContent="center" mt={8}>
         <CircularProgress />
@@ -237,104 +255,258 @@ export default function MyAccount() {
   /* ---------------- TAB COMPONENTS ---------------- */
 
   function ProfileTab({ profile }) {
+    // Helper for consistent input styling
+    const inputSx = {
+      backgroundColor: "#fff",
+      "& .MuiOutlinedInput-root": {
+        borderRadius: 2,
+      },
+    };
+
     return (
-      <Card sx={{ m: 1 }}>
-        <CardContent
+      <Card
+        sx={{
+          overflow: "visible",
+          borderRadius: 3,
+          boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
+          border: "1px solid",
+          borderColor: "divider",
+        }}
+      >
+        {/* Header Section */}
+        <Box
           sx={{
-            m: 1,
-            p: 1,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            alignItems: { xs: "stretch" },
-            // border: "1px solid red",
+            p: 3,
+            background: "var(--secondary-color)",
+            // `linear-gradient(to right, ${theme.palette.grey[700]}, ${theme.palette.common.black})`,
+            color: "white",
+            borderTopLeftRadius: 12,
+            borderTopRightRadius: 12,
           }}
         >
-          <Typography variant="h6">Account Details</Typography>
-          <Divider sx={{ my: 2 }} />
-          {/* Full Name{" "} */}
-          <TextField
-            margin="normal"
-            size="small"
-            id="fullName"
-            label="Full Name"
-            value={profile?.fullName || ""}
-            onChange={(e) => {
-              setProfile((prev: any) => ({
-                ...prev,
-                fullName: e?.target?.value,
-              }));
-            }}
-          />
-          {/* <FormControl> */}
-          {/* <FormLabel>Gender</FormLabel> */}
-          <RadioGroup
-            row
-            sx={{ m: 0 }}
-            value={profile?.gender}
-            onChange={(_e, value) => {
-              setProfile((prev: any) => ({
-                ...prev,
-                gender: value,
-              }));
-            }}
-          >
-            <FormControlLabel value="MALE" control={<Radio />} label="Male" />
-            <FormControlLabel
-              value="FEMALE"
-              control={<Radio />}
-              label="Female"
-            />
-            <FormControlLabel
-              value="OTHERS"
-              control={<Radio />}
-              label="Others"
-            />
-          </RadioGroup>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            <BadgeOutlined sx={{ fontSize: 28 }} />
+            <Box>
+              <Typography variant="h6" fontWeight={700}>
+                Account Details
+              </Typography>
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                Manage your personal information
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
 
-          {/* </FormControl> */}
-          {/* Email Address */}
-          <TextField
-            margin="normal"
-            size="small"
-            id="Email"
-            label="Email"
-            value={profile?.email}
-            onChange={() => {}}
-            disabled
-          />
-          {/* Mobile Number */}
-          <TextField
-            margin="normal"
-            size="small"
-            id="phone"
-            label="Mobile Number"
-            value={profile.phone || ""}
-            onChange={(e) => {
-              setProfile((prev: any) => ({
-                ...prev,
-                phone: e.target.value,
-              }));
-            }}
-          />
-          <OutlinedButton
-            // flex={"1 1 20%"}
-            // width={"10%"}
-            // m={"20px auto"}
-            onClick={updateProfile}
-          >
-            Save
-          </OutlinedButton>
+        <Divider />
+
+        <CardContent sx={{ p: { xs: 2, sm: 4 } }}>
+          <Grid container spacing={3}>
+            {/* Full Name */}
+            <Grid size={{ xs: 12, md: 6 }}>
+              <TextField
+                fullWidth
+                size="small"
+                label="Full Name"
+                value={profile?.fullName || ""}
+                onChange={(e) => {
+                  setProfile((prev) => ({
+                    ...prev,
+                    fullName: e.target.value,
+                  }));
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircle
+                        htmlColor="var(--secondary-color)"
+                        fontSize="small"
+                      />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={inputSx}
+              />
+            </Grid>
+
+            {/* Gender Selection */}
+            <Grid size={{ xs: 12, md: 6 }}>
+              <FormControl
+                component="fieldset"
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <FormLabel
+                  component="legend"
+                  sx={{ mb: 1, fontSize: "0.8rem", color: "text.secondary" }}
+                >
+                  Gender
+                </FormLabel>
+                <RadioGroup
+                  row
+                  value={profile?.gender || ""}
+                  onChange={(_e, value) => {
+                    setProfile((prev) => ({
+                      ...prev,
+                      gender: value,
+                    }));
+                  }}
+                >
+                  <FormControlLabel
+                    value="MALE"
+                    control={
+                      <Radio
+                        size="small"
+                        sx={{
+                          color: "var(--secondary-color)", // unchecked
+                          "&.Mui-checked": {
+                            color: "black", // checked
+                          },
+                        }}
+                      />
+                    }
+                    label="Male"
+                    sx={{ mr: 2 }}
+                  />
+                  <FormControlLabel
+                    value="FEMALE"
+                    control={
+                      <Radio
+                        size="small"
+                        sx={{
+                          color: "var(--secondary-color)", // unchecked
+                          "&.Mui-checked": {
+                            color: "black", // checked
+                          },
+                        }}
+                      />
+                    }
+                    label="Female"
+                    sx={{ mr: 2 }}
+                  />
+                  <FormControlLabel
+                    value="OTHERS"
+                    control={
+                      <Radio
+                        size="small"
+                        sx={{
+                          color: "var(--secondary-color)", // unchecked
+                          "&.Mui-checked": {
+                            color: "black", // checked
+                          },
+                        }}
+                      />
+                    }
+                    label="Others"
+                    sx={{
+                      color: "var(--secondary-color)", // unchecked
+                      "&.Mui-checked": {
+                        color: "black", // checked
+                      },
+                    }}
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+
+            {/* Email Address (Read Only) */}
+            <Grid size={{ xs: 12, md: 6 }}>
+              <TextField
+                fullWidth
+                size="small"
+                label="Email Address"
+                value={profile?.email || ""}
+                disabled
+                helperText="Email cannot be changed"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Email
+                        htmlColor="var(--secondary-color)"
+                        fontSize="small"
+                      />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  ...inputSx,
+                  // Styling for disabled state to look cleaner
+                  "& .MuiOutlinedInput-root.Mui-disabled": {
+                    backgroundColor: "action.hover",
+                  },
+                }}
+              />
+            </Grid>
+
+            {/* Mobile Number */}
+            <Grid size={{ xs: 12, md: 6 }}>
+              <TextField
+                fullWidth
+                size="small"
+                label="Mobile Number"
+                value={profile?.phone || ""}
+                onChange={(e) => {
+                  setProfile((prev) => ({
+                    ...prev,
+                    phone: e.target.value,
+                  }));
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Phone
+                        htmlColor="var(--secondary-color)"
+                        fontSize="small"
+                      />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={inputSx}
+              />
+            </Grid>
+          </Grid>
+
+          {/* Action Button Area */}
+          <Box sx={{ mt: 4, textAlign: "right" }}>
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<SaveOutlined />}
+              onClick={updateProfile}
+              sx={{
+                backgroundColor: "var(--secondary-color)",
+                px: 2,
+                borderRadius: 2,
+                textTransform: "none",
+                fontWeight: 600,
+                boxShadow: "0 4px 12px rgba(25, 118, 210, 0.3)",
+              }}
+            >
+              Save  
+            </Button>
+          </Box>
         </CardContent>
       </Card>
     );
   }
 
+  interface Address {
+    id: string;
+    addressLine1: string;
+    addressLine2: string;
+    city: string;
+    state: string;
+    country: string;
+    pinCode: string;
+    addressType: "HOME" | "OFFICE";
+    default: boolean;
+  }
+
   function AddressTab() {
-    const [addresses, setAddresses] = useState([]);
-    const [isOpen, setIsOpen] = useState(false);
-    const [isUpdate, setIsUpdate] = useState(false);
-    const [selectedAddress, setSelectedAddress] = useState({
+    const initialAddress: Address = {
       id: "",
       addressLine1: "",
       addressLine2: "",
@@ -344,87 +516,126 @@ export default function MyAccount() {
       pinCode: "",
       addressType: "HOME",
       default: false,
+    };
+
+    const [addresses, setAddresses] = useState<Address[]>([]);
+    const [isOpen, setIsOpen] = useState(false);
+    const [isUpdate, setIsUpdate] = useState(false);
+    const [selectedAddress, setSelectedAddress] =
+      useState<Address>(initialAddress);
+    const [loading, setLoading] = useState({
+      address: false,
     });
+
+    /* ----------------------------- API CALLS ----------------------------- */
+
     const fetchAddresses = async () => {
+      setLoading((prev) => ({ ...prev, address: true }));
       try {
         const res = await getAPIData(endPoint.address.list, {}, "GET");
         if (res?.status) {
-          setAddresses(res?.data);
+          setAddresses(res?.data ?? []);
         } else {
-          toast.error(res?.message || "Something went wrong");
+          toast.error(res?.message || "Failed to fetch addresses");
         }
-      } catch (error) {
-        toast.error(error?.message || "Something went wrong");
+      } catch (error: any) {
+        toast.error(error?.message || "Failed to fetch addresses");
+      } finally {
+        setLoading((prev) => ({ ...prev, address: false }));
       }
     };
 
-    const deleteAddress = async (addressId) => {
+    const deleteAddress = async (addressId: string) => {
       try {
         const res = await getAPIData(
-          endPoint.address.delete + "?id=" + addressId,
+          `${endPoint.address.delete}?id=${addressId}`,
           {},
           "DELETE",
         );
+
         if (res?.status) {
           toast.success(res?.message);
           fetchAddresses();
         } else {
           toast.error(res?.message || "Something went wrong");
         }
-      } catch (error) {
-        toast.error(error?.message || "Something went wrong");
-      }
-    };
-    const updateAddress = async () => {
-      try {
-        setIsOpen(false);
-        const res = await getAPIData(
-          endPoint.address.update,
-          selectedAddress,
-          "PUT",
-        );
-        if (res?.status) {
-          fetchAddresses();
-        } else {
-          toast.error(res?.message || "Something went wrong");
-        }
-      } catch (error) {
+      } catch (error: any) {
         toast.error(error?.message || "Something went wrong");
       }
     };
 
     const addAddress = async () => {
       try {
-        setIsOpen(false);
         const res = await getAPIData(
           endPoint.address.create,
           selectedAddress,
           "POST",
         );
+
         if (res?.status) {
-          setAddresses(res?.data);
           fetchAddresses();
+          closeModal();
         } else {
           toast.error(res?.message || "Something went wrong");
         }
-      } catch (error) {
+      } catch (error: any) {
         toast.error(error?.message || "Something went wrong");
       }
     };
+
+    const updateAddress = async () => {
+      try {
+        const res = await getAPIData(
+          endPoint.address.update,
+          selectedAddress,
+          "PUT",
+        );
+
+        if (res?.status) {
+          fetchAddresses();
+          closeModal();
+        } else {
+          toast.error(res?.message || "Something went wrong");
+        }
+      } catch (error: any) {
+        toast.error(error?.message || "Something went wrong");
+      }
+    };
+
+    /* --------------------------- HELPER METHODS --------------------------- */
+
+    const handleChange = (field: keyof Address, value: any) => {
+      setSelectedAddress((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    };
+
+    const showModal = (address: Address = initialAddress, update = false) => {
+      setSelectedAddress({ ...address }); // clone
+      setIsUpdate(update);
+      setIsOpen(true);
+    };
+
+    const closeModal = () => {
+      setSelectedAddress(initialAddress);
+      setIsOpen(false);
+      setIsUpdate(false);
+    };
+
+    /* ------------------------------- EFFECT ------------------------------- */
 
     useEffect(() => {
       fetchAddresses();
     }, []);
 
-    const showModal = (address: any, isUpdate = false) => {
-      setSelectedAddress(address);
-      setIsUpdate(isUpdate);
-      setIsOpen(true);
-    };
-
-    // if (!addresses?.length) {
-    //   return <Alert severity="info">No saved addresses</Alert>;
-    // }
+    if (loading.address) {
+      return (
+        <Box display="flex" justifyContent="center" mt={8}>
+          <CircularProgress />
+        </Box>
+      );
+    }
 
     return (
       <Card>
@@ -432,14 +643,9 @@ export default function MyAccount() {
           <Typography variant="h6">Saved Addresses</Typography>
           <Divider sx={{ my: 2 }} />
 
-          <Modal
-            title={isUpdate ? "Update Address" : "Add Address"}
-            open={isOpen}
-            onClose={() => {
-              setSelectedAddress({} as any);
-              setIsOpen(false);
-            }}
-          >
+          {/* ------------------------------ MODAL ----------------------------- */}
+
+          <Modal open={isOpen} onClose={closeModal}>
             <Box
               sx={{
                 position: "absolute",
@@ -449,14 +655,11 @@ export default function MyAccount() {
                   sm: "1fr 1fr",
                   lg: "1fr 1fr 1fr",
                 },
-                gap: 1,
-                // flexDirection: "column",
-                // alignItems: "center",
-                // justifyContent: "normal",
+                gap: 2,
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
-                width: { xs: "80%", md: "75%" },
+                width: { xs: "90%", md: "70%" },
                 bgcolor: "background.paper",
                 borderRadius: 2,
                 boxShadow: 24,
@@ -464,106 +667,53 @@ export default function MyAccount() {
               }}
             >
               <TextField
-                id=""
-                margin="dense"
                 size="small"
                 label="Address Line 1"
-                value={selectedAddress?.addressLine1}
-                onChange={(e) =>
-                  setSelectedAddress((prev: any) => {
-                    return {
-                      ...prev,
-                      addressLine1: e?.target?.value,
-                    };
-                  })
-                }
+                value={selectedAddress.addressLine1}
+                onChange={(e) => handleChange("addressLine1", e.target.value)}
               />
+
               <TextField
-                id=""
-                margin="dense"
                 size="small"
                 label="Address Line 2"
-                value={selectedAddress?.addressLine2}
-                onChange={(e) =>
-                  setSelectedAddress((prev: any) => {
-                    return {
-                      ...prev,
-                      addressLine2: e?.target?.value,
-                    };
-                  })
-                }
+                value={selectedAddress.addressLine2}
+                onChange={(e) => handleChange("addressLine2", e.target.value)}
               />
+
               <TextField
-                id=""
-                margin="dense"
                 size="small"
                 label="City"
-                value={selectedAddress?.city}
-                onChange={(e) =>
-                  setSelectedAddress((prev: any) => {
-                    return {
-                      ...prev,
-                      city: e?.target?.value,
-                    };
-                  })
-                }
+                value={selectedAddress.city}
+                onChange={(e) => handleChange("city", e.target.value)}
               />
+
               <TextField
-                id=""
-                margin="dense"
                 size="small"
-                label="state"
-                value={selectedAddress?.state}
-                onChange={(e) =>
-                  setSelectedAddress((prev: any) => {
-                    return {
-                      ...prev,
-                      state: e?.target?.value,
-                    };
-                  })
-                }
+                label="State"
+                value={selectedAddress.state}
+                onChange={(e) => handleChange("state", e.target.value)}
               />
+
               <TextField
-                id=""
-                margin="dense"
                 size="small"
                 label="Country"
-                value={selectedAddress?.country}
-                onChange={(e) =>
-                  setSelectedAddress((prev: any) => {
-                    return {
-                      ...prev,
-                      country: e?.target?.value,
-                    };
-                  })
-                }
+                value={selectedAddress.country}
+                onChange={(e) => handleChange("country", e.target.value)}
               />
+
               <TextField
-                id=""
-                margin="dense"
                 size="small"
                 label="PIN Code"
-                value={selectedAddress?.pinCode}
-                onChange={(e) =>
-                  setSelectedAddress((prev: any) => {
-                    return {
-                      ...prev,
-                      pinCode: e?.target?.value,
-                    };
-                  })
-                }
+                value={selectedAddress.pinCode}
+                onChange={(e) => handleChange("pinCode", e.target.value)}
               />
+
               <FormControl>
-                <FormLabel component="legend">Address Type</FormLabel>
+                <FormLabel>Address Type</FormLabel>
                 <RadioGroup
                   row
-                  value={selectedAddress?.addressType ?? "HOME"}
-                  onChange={(e) =>
-                    setSelectedAddress((prev: any) => ({
-                      ...prev,
-                      addressType: e?.target?.value,
-                    }))
-                  }
+                  value={selectedAddress.addressType}
+                  onChange={(e) => handleChange("addressType", e.target.value)}
                 >
                   <FormControlLabel
                     value="HOME"
@@ -577,160 +727,104 @@ export default function MyAccount() {
                   />
                 </RadioGroup>
               </FormControl>
+
               <FormControlLabel
                 label="Set as Default"
                 control={
                   <Checkbox
                     size="small"
-                    onChange={(e) =>
-                      setSelectedAddress((prev: any) => {
-                        return {
-                          ...prev,
-                          default: e?.target.checked,
-                        };
-                      })
-                    }
-                    title="Set as Default"
-                    aria-label="Set as Default"
-                    checked={Boolean(selectedAddress?.default)}
-                  ></Checkbox>
+                    checked={selectedAddress.default}
+                    onChange={(e) => handleChange("default", e.target.checked)}
+                  />
                 }
               />
 
               <Button
                 variant="contained"
-                color="inherit"
-                sx={{ textTransform: "none" }}
                 onClick={isUpdate ? updateAddress : addAddress}
+                sx={{ gridColumn: "1 / -1", textTransform: "none" }}
               >
-                {isUpdate ? "Update" : "Add"}
+                {isUpdate ? "Update Address" : "Add Address"}
               </Button>
             </Box>
           </Modal>
+
+          {/* ---------------------------- ADDRESS LIST ---------------------------- */}
+
           <List>
-            {(Array.isArray(addresses) ? addresses : []).map((addr) => (
+            {addresses.map((addr) => (
               <ListItem
                 key={addr.id}
                 sx={{
-                  height: "max-content",
-                  border:
-                    // addr?.default ?
-                    // "1px solid black",
-                    "1px solid #ddd",
+                  border: "1px solid #ddd",
                   borderRadius: 2,
                   my: 1,
-                  // px: 2,
                   display: "flex",
-                  alignItems: "flex-start",
-                  gap: 2,
-                  flexWrap: "wrap",
+                  flexDirection: { xs: "column", sm: "row" },
+                  alignItems: { xs: "flex-start", sm: "center" },
+                  gap: 1,
                 }}
-                secondaryAction={
-                  <Box sx={{ display: "flex", gap: 1 }}>
-                    {addr?.default ? (
-                      <Typography
-                        sx={{
-                          borderRadius: "5px",
-                          // backgroundColor: "black",
-                          // color: "whitesmoke",
-                          verticalAlign: "middle",
-                          p: 1,
-                        }}
-                        color="textPrimary"
-                        textAlign={"center"}
-                        variant="body2"
-                        fontSize={"10px"}
-                      >
-                        Default{" "}
-                      </Typography>
-                    ) : (
-                      <></>
-                    )}
-                    <Typography
-                      sx={{
-                        borderRadius: "5px",
-                        backgroundColor: "black",
-                        color: "whitesmoke",
-                        verticalAlign: "middle",
-                        p: 1,
-                      }}
-                      color="textPrimary"
-                      textAlign={"center"}
-                      variant="body2"
-                      fontSize={"10px"}
-                    >
-                      {addr?.addressType}
-                    </Typography>
-                    <IconButton
-                      sx={{ m: 0, p: 0 }}
-                      onClick={() => showModal(addr, true)}
-                    >
-                      <Mode color="warning" />
-                    </IconButton>
-                    <IconButton
-                      sx={{ m: 0, p: 0 }}
-                      onClick={() => {
-                        deleteAddress(addr.id);
-                      }}
-                    >
-                      <Delete color="error" />
-                    </IconButton>
-                  </Box>
-                }
               >
-                {/* Address Content */}
-                <ListItemText
+                {/* Address Text */}
+                <Box sx={{ flex: 1, width: "100%" }}>
+                  <Typography fontWeight={500}>
+                    {addr.addressLine1}, {addr.addressLine2}
+                  </Typography>
+
+                  <Typography variant="body2" color="text.secondary">
+                    {addr.city}, {addr.state} - {addr.pinCode}
+                  </Typography>
+                </Box>
+
+                {/* Actions */}
+                <Box
                   sx={{
-                    flex: "1 1 100%",
-                    wordBreak: "break-word",
+                    display: "flex",
+                    gap: 1,
+                    flexWrap: "wrap",
+                    justifyContent: { xs: "flex-start", sm: "flex-end" },
+                    width: { xs: "100%", sm: "auto" },
                   }}
-                  primary={
-                    <Typography fontWeight={500}>
-                      {addr.addressLine1}, {addr.addressLine2}
-                    </Typography>
-                  }
-                  secondary={
-                    <Typography variant="body2" color="text.secondary">
-                      {addr.city}, {addr.state} - {addr.pinCode}
-                    </Typography>
-                  }
-                />
-                {/* {addr.default && (
+                >
+                  {addr.default && (
+                    <Typography fontSize="10px">Default</Typography>
+                  )}
+
                   <Typography
-                    variant="caption"
+                    fontSize="10px"
                     sx={{
-                      ml: 1,
-                      px: 1,
-                      py: 0.25,
+                      height: "max-content",
+                      backgroundColor: "black",
+                      color: "white",
+                      p: 1,
                       borderRadius: 1,
-                      bgcolor: "success.light",
-                      color: "success.dark",
-                      fontWeight: 500,
                     }}
                   >
-                    Default
+                    {addr.addressType}
                   </Typography>
-                )} */}
+
+                  <IconButton onClick={() => showModal(addr, true)}>
+                    <Mode color="warning" />
+                  </IconButton>
+
+                  <IconButton onClick={() => deleteAddress(addr.id)}>
+                    <Delete color="error" />
+                  </IconButton>
+                </Box>
               </ListItem>
             ))}
+
+            {/* Add New */}
             <ListItem
-              key={addresses?.length}
               sx={{
                 border: "1px solid black",
                 borderRadius: 2,
                 my: 1.5,
-                px: 2,
-                // display: "flex",
-                // alignItems: "flex-start",
-                gap: 2,
               }}
             >
               <ListItemButton
-                alignItems="center"
                 sx={{ justifyContent: "center" }}
-                onClick={() => {
-                  showModal(selectedAddress, false);
-                }}
+                onClick={() => showModal()}
               >
                 <Typography variant="h5">+</Typography>
               </ListItemButton>
@@ -742,30 +836,163 @@ export default function MyAccount() {
   }
 
   function OrdersTab({ orders }) {
+    const getStatusProps = (status) => {
+      switch (status?.toLowerCase()) {
+        case "delivered":
+        case "completed":
+          return { color: "success", label: "Delivered" };
+        case "processing":
+        case "preparing":
+          return { color: "primary", label: "Processing" };
+        case "shipped":
+          return { color: "info", label: "Shipped" };
+        case "cancelled":
+          return { color: "error", label: "Cancelled" };
+        case "pending":
+          return { color: "warning", label: "Pending" };
+        default:
+          return { color: "default", label: status };
+      }
+    };
+
     if (!orders?.length) {
-      return <Alert severity="info">No orders yet</Alert>;
+      return (
+        <Card
+          sx={{
+            textAlign: "center",
+            py: 8,
+            px: 4,
+            border: "1px dashed",
+            borderColor: "divider",
+            backgroundColor: "grey.50",
+          }}
+        >
+          <ShoppingBagOutlined
+            sx={{ fontSize: 64, color: "text.disabled", mb: 2 }}
+          />
+          <Typography variant="h6" gutterBottom>
+            No Orders Yet
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Your order history is empty. Start shopping to see your orders here!
+          </Typography>
+        </Card>
+      );
     }
 
     return (
-      <Card>
+      <Card sx={{ borderRadius: 3, boxShadow: "0 4px 20px rgba(0,0,0,0.05)" }}>
         <CardContent>
-          <Typography variant="h6">My Orders</Typography>
-          <Divider sx={{ my: 2 }} />
-          <List>
-            {orders.map((order) => (
-              <ListItem
-                component={Card}
-                elevation={0.1}
-                sx={{ my: 1 }}
-                key={order.id}
-              >
-                <ListItemText
-                  primary={`Order #${order.id}`}
-                  secondary={`$${order.totalAmount} • ${order.orderStatus}`}
-                />
-              </ListItem>
-            ))}
-          </List>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{ mb: 2 }}
+          >
+            <Typography variant="h6" fontWeight="bold">
+              My Orders
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {orders.length} orders found
+            </Typography>
+          </Stack>
+
+          <Divider sx={{ mb: 3 }} />
+
+          <Stack spacing={2}>
+            {orders.map((order) => {
+              const statusProps = getStatusProps(order.orderStatus);
+
+              return (
+                <Box
+                  key={order.id}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    p: 2,
+                    borderRadius: 2,
+                    border: "1px solid",
+                    borderColor: "divider",
+                    backgroundColor: "#fff",
+                    transition: "all 0.2s ease-in-out",
+                    cursor: "pointer",
+                    "&:hover": {
+                      borderColor: "primary.main",
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+                      transform: "translateY(-2px)",
+                    },
+                  }}
+                >
+                  {/* Left Side: Icon & Details */}
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    <Box
+                      sx={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: "50%",
+                        backgroundColor: "grey.100",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <ReceiptLongOutlined color="action" />
+                    </Box>
+
+                    <Box>
+                      <Typography
+                        variant="subtitle1"
+                        fontWeight="600"
+                        color="text.primary"
+                      >
+                        Order #{order.id}
+                      </Typography>
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={0.5}
+                        mt={0.5}
+                      >
+                        <AccessTime
+                          sx={{ fontSize: 14, color: "text.secondary" }}
+                        />
+                        <Typography variant="body2" color="text.secondary">
+                          {order.date || "Recently placed"}
+                        </Typography>
+                      </Stack>
+                    </Box>
+                  </Box>
+
+                  {/* Right Side: Price, Status & Action */}
+                  <Box
+                    sx={{
+                      textAlign: "right",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 2,
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="subtitle1" fontWeight="bold">
+                        ${order.totalAmount}
+                      </Typography>
+                      <Chip
+                        label={statusProps.label}
+                        size="small"
+                        // color={statusProps.color}
+                        sx={{ mt: 0.5, fontWeight: 500 }}
+                      />
+                    </Box>
+
+                    <IconButton size="small" sx={{ ml: 1 }}>
+                      <ChevronRight fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </Box>
+              );
+            })}
+          </Stack>
         </CardContent>
       </Card>
     );
