@@ -1,11 +1,10 @@
 package com.dan.app.utils;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,9 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
         try {
-
             String requestPath = request.getServletPath();
-
             if (isPermitAll(requestPath)) {
                 OptionalTokenHandling(request, response);
                 filterChain.doFilter(request, response);
@@ -52,46 +49,43 @@ public class JwtFilter extends OncePerRequestFilter {
 
             String authHeader = request.getHeader("Authorization");
 
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized or Invalid Token");
+                return;
+            }
 
-                String token = authHeader.substring(7);
-                System.out.println("token : " + token);
+            String token = authHeader.substring(7);
 
-                String username = jwtUtil.extractUsername(token);
+            String username = jwtUtil.extractUsername(token);
 
-                // System.out.println("JwtFilter.doFilterInternal()");
-                System.out.println("username: " + username);
-                if (username != null &&
-                        SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (username != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                    CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
-                    System.out.println("userDetails:" + userDetails);
-                    if (jwtUtil.validateToken(token, userDetails)) {
-                        System.out.println(
-                                "jwtUtil.validateToken(token, userDetails): "
-                                        + jwtUtil.validateToken(token, userDetails));
+                CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
 
-                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities());
+                if (jwtUtil.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities());
 
-                        authToken.setDetails(
-                                new WebAuthenticationDetailsSource()
-                                        .buildDetails(request));
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request));
 
-                        SecurityContextHolder
-                                .getContext()
-                                .setAuthentication(authToken);
-                    } else {
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(authToken);
+                } else {
 
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.setContentType("application/json");
-                        response.getWriter().write("{\"message\":\"Invalid token\"}");
-                        return;
-                    }
+                    // response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    // response.setContentType("application/json");
+                    // response.getWriter().write("{\"message\":\"Invalid token\"}");
 
+                    writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "INVALID_TOKEN");
+                    return;
                 }
+
             }
             filterChain.doFilter(request, response);
 
@@ -101,16 +95,24 @@ public class JwtFilter extends OncePerRequestFilter {
             // SecurityContextHolder.clearContext();
             // throw new InsufficientAuthenticationException("Your session is expired please
             // login", e);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter()
-                    .write("{\"status\":false,\"data\":null, \"message\":\"Your session is expired, please login\"}");
 
+            // response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            // response.setContentType("application/json");
+            // response.getWriter()
+            // .write("{\"status\":false,\"data\":null, \"message\":\"Your session is
+            // expired, please login\"}");
+
+            writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Your session is expired, please login");
+            return;
         } catch (Exception e) {
+            logger.error("Exception : " + e);
 
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"message\":\"Invalid token\"}");
+            // response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            // response.setContentType("application/json");
+            // response.getWriter().write("{\"message\":\"Invalid token\"}");
+
+            writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            return;
         }
     }
 
@@ -147,5 +149,18 @@ public class JwtFilter extends OncePerRequestFilter {
      */
     private boolean isPermitAll(String path) {
         return Arrays.stream(PublicRoutes.PUBLIC_URLS).anyMatch(pattern -> pathMatcher.match(pattern, path));
+    }
+
+    public void writeErrorResponse(HttpServletResponse response, int status, String message) throws IOException {
+        if (response.isCommitted()) {
+            return;
+        }
+        response.reset();
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter writer = response.getWriter();
+        writer.write("{\"status\":false,\"message\":\"" + message + "\"}");
+        writer.flush();
     }
 }

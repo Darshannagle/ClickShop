@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.dan.app.DTO.AuthRequestDTO;
 import com.dan.app.DTO.UserDTO;
-import com.dan.app.config.MapperConfig;
 import com.dan.app.config.types.api.ApiResponse;
 import com.dan.app.service.AuthService;
 import com.dan.app.utils.JwtUtil;
@@ -41,13 +40,11 @@ public class AuthController {
             @RequestBody AuthRequestDTO request) {
         ApiResponse response;
         try {
-            System.out.println("request:" + request);
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getEmail(),
                             request.getPassword()));
 
-            System.out.println("authentication" + authentication);
             String token = jwtUtil.generateToken(authentication);
             response = new ApiResponse(true, token, "Login successfull");
             return new ResponseEntity(response, HttpStatus.OK);
@@ -63,13 +60,10 @@ public class AuthController {
             @RequestBody UserDTO request) {
         ApiResponse response;
         try {
-            System.out.println("request" + request);
 
             response = authService.signup(request);
-            System.out.println("response :" + MapperConfig.toJson(response));
             return new ResponseEntity<ApiResponse>(response, HttpStatus.OK);
         } catch (Exception e) {
-            System.out.println("e:" + e);
             response = new ApiResponse(false, null, "Something went wrong", List.of(e.getLocalizedMessage()));
             return new ResponseEntity<ApiResponse>(response, HttpStatus.BAD_REQUEST);
         }

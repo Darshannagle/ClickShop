@@ -1,0 +1,30 @@
+server:
+  port: ${PORT:8080}
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        ddl-auto: update
+  application:
+    name: ClickShop
+
+# App
+app:
+  name: ClickShop
+  url: ${APP_URL}
+
+jwt:
+  secret: ${JWT_SECRET}
+
+# Stripe
+stripe:
+  success: ${STRIPE_SUCCESS}
+  cancel: ${STRIPE_CANCEL}
+  public-key: ${STRIPE_PUBLIC_KEY}
+  secret-key: ${STRIPE_SECRET_KEY}

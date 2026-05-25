@@ -1,11 +1,10 @@
 package com.dan.app.model;
 
 import java.math.BigDecimal;
-import java.sql.Array;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -13,7 +12,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -42,7 +41,7 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	@Column(name = "id", nullable = false)
-	private String id;
+	private UUID id;
 
 	@Column(nullable = false, unique = true)
 	private String name;
@@ -71,8 +70,12 @@ public class Product {
 	private Subcategory subCategory;
 
 	@JdbcTypeCode(SqlTypes.ARRAY)
-	// @Column(columnDefinition = "ARRAY")
+	@Column(columnDefinition = "LONGBLOB")
 	private List<String> images = new ArrayList<>();
+
+	@JdbcTypeCode(SqlTypes.JSON)
+	@Column(columnDefinition = "json")
+	private JsonNode specifications;
 
 	@CreatedDate
 	private LocalDateTime createdAt;
@@ -81,18 +84,34 @@ public class Product {
 	private LocalDateTime updatedAt;
 
 	@CreatedBy
-	private String createdBy;
+	private UUID createdBy;
 
 	@LastModifiedBy
-	private String updatedBy;
+	private UUID updatedBy;
 
 	public Product() {
 		super();
 	}
 
+	// public Product(String name, String brand, String description, BigDecimal
+	// basePrice, BigDecimal salePrice,
+	// Integer stock,
+	// Category category, Subcategory subCategory, List<String> images) {
+	// super();
+	// this.name = name;
+	// this.brand = brand;
+	// this.description = description;
+	// this.basePrice = basePrice;
+	// this.salePrice = salePrice;
+	// this.stock = stock;
+	// this.category = category;
+	// this.subCategory = subCategory;
+	// this.images = images;
+	// }
+
 	public Product(String name, String brand, String description, BigDecimal basePrice, BigDecimal salePrice,
 			Integer stock,
-			Category category, Subcategory subCategory, List<String> images) {
+			Category category, Subcategory subCategory, List<String> images, JsonNode specifications) {
 		super();
 		this.name = name;
 		this.brand = brand;
@@ -103,11 +122,12 @@ public class Product {
 		this.category = category;
 		this.subCategory = subCategory;
 		this.images = images;
+		this.specifications = specifications;
 	}
 
 	public Product(String name, String brand, String description, BigDecimal basePrice, BigDecimal salePrice,
 			Category category, Subcategory subCategory, List<String> images, LocalDateTime createdAt,
-			LocalDateTime updatedAt, String createdBy, String updatedBy) {
+			LocalDateTime updatedAt, UUID createdBy, UUID updatedBy) {
 		super();
 		this.name = name;
 		this.brand = brand;

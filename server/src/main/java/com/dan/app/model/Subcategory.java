@@ -2,6 +2,7 @@ package com.dan.app.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,7 +31,7 @@ import lombok.ToString;
 public class Subcategory {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
     @Column
     private String name;
     @JsonIgnore
@@ -46,7 +47,7 @@ public class Subcategory {
         this.name = name;
     }
 
-    public Subcategory(String id, String name) {
+    public Subcategory(UUID id, String name) {
         this.id = id;
         this.name = name;
     }

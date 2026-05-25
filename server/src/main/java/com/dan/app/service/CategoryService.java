@@ -1,6 +1,7 @@
 package com.dan.app.service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import org.springframework.stereotype.Service;
@@ -46,14 +47,14 @@ public class CategoryService {
         }
     }
 
-    public ApiResponse details(String field, String value) {
+    public ApiResponse details(String field, Object value) {
         try {
             Category category;
             if (field == "id") {
-                category = categoryRepository.findById(value)
+                category = categoryRepository.findById((UUID) value)
                         .orElseThrow(() -> new Exception("Category not found"));
             } else {
-                category = categoryRepository.findByName(value);
+                category = categoryRepository.findByName((String) value);
             }
 
             return new ApiResponse(true, category, "Category fetched");

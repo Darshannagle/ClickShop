@@ -8,6 +8,12 @@ import {
   InputAdornment,
   Box,
   Divider,
+  FormControl,
+  FormLabel,
+  FormHelperText,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple, FaFacebook } from "react-icons/fa";
@@ -99,16 +105,15 @@ const Register = () => {
         pinCode: registrationData?.pinCode,
       };
       const res = await getAPIData(endPoint.signUp, body, "POST");
-      console.log("res: ", res);
 
       if (res?.status) {
-        toast.success("Registration Successful");
+        toast.success(res?.message);
         navigate("/login");
       } else {
         toast.error(res?.message || "Something went wrong");
       }
     } catch (err) {
-      console.error(err);
+      console.log("error while fetching users : ", err);
       toast.error("Something went wrong");
     } finally {
       hideLoader();
@@ -119,7 +124,7 @@ const Register = () => {
     try {
       if (authResult["code"]) {
         const response = await fetch(
-          `/api/auth/google?code=${authResult["code"]}`
+          `/api/auth/google?code=${authResult["code"]}`,
         );
         const data = await response.json();
         console.log(data);
@@ -174,6 +179,20 @@ const Register = () => {
             helperText={errors.fullName}
           />
 
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Gender</InputLabel>
+            <FormLabel></FormLabel>
+            <Select
+              size="small"
+              value={registrationData?.gender}
+              onChange={(e) => handleDataChange("gender", e.target.value)}
+            >
+              <MenuItem value="MALE">Male</MenuItem>
+              <MenuItem value="FEMALE">Female</MenuItem>
+              <MenuItem value="OTHERS">Others</MenuItem>
+            </Select>
+            <FormHelperText></FormHelperText>
+          </FormControl>
           <TextField
             name="email"
             label="Email Address"

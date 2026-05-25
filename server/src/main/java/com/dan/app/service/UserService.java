@@ -3,17 +3,16 @@ package com.dan.app.service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
-import com.dan.app.config.types.User.UserType.userDetailsData;
 import com.dan.app.config.types.User.UserType.userListData;
 import com.dan.app.config.MapperConfig;
-import com.dan.app.config.types.User.UserType;
-
+import com.dan.app.config.Constant.Gender;
 import com.dan.app.config.types.api.ApiResponse;
 import com.dan.app.model.User;
 import com.dan.app.DTO.UserDTO;
@@ -37,10 +36,9 @@ public class UserService {
 		user.setEmail(userDTO.getEmail());
 		user.setPassword(userDTO.getPassword());
 		user.setPhone(userDTO.getPhone());
-		user.setGender(userDTO.getGender());
+		user.setGender(Gender.from(userDTO.getGender()));
 		user.setLocation(userDTO.getLocation());
 		user.setPinCode(userDTO.getPinCode());
-
 		return user;
 	}
 
@@ -53,7 +51,6 @@ public class UserService {
 			return response;
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.out.println("Exception : " + e);
 			ApiResponse<List<userListData>> response = new ApiResponse<List<userListData>>(false, null,
 					"Something went wrong", List.of(e.getLocalizedMessage()));
 			return response;
@@ -66,7 +63,6 @@ public class UserService {
 		try {
 
 			User existingUser = userRepository.findByEmail(userDTO.getEmail()).orElse(null);
-			System.out.println("existingUser:" + existingUser);
 			if (existingUser != null) {
 
 				throw new Exception("Email is already registered");
@@ -83,60 +79,58 @@ public class UserService {
 			return apiResponse;
 
 		} catch (Exception e) {
-			System.out.println("Exception : " + e);
 			return new ApiResponse<User>(false, null, e.getMessage(), List.of(e.getLocalizedMessage()));
 		}
 	}
 	// ] create
 
 	// details : [
-	public ApiResponse details(@NonNull String id) {
+	public ApiResponse details(@NonNull UUID id, boolean asJson) {
 		try {
 
 			Optional<User> existingUser = userRepository.findById(id);
-			// System.out.println("existingUser : " + existingUser);
 			if (existingUser.isEmpty()) {
 				throw new Exception("User not found");
 			}
-
-			Map<String, Object> user = MapperConfig.toJson(existingUser.get());
-			ApiResponse<User> apiResponse = new ApiResponse(true, user, "User created successfully");
+			ApiResponse<User> apiResponse;
+			if (asJson) {
+				Map<String, Object> user = MapperConfig.toJson(existingUser.get());
+				apiResponse = new ApiResponse(true, user, "User created successfully");
+			} else {
+				apiResponse = new ApiResponse(true, existingUser.get(), "User fetched successfully");
+			}
 			return apiResponse;
 
 		} catch (Exception e) {
-			System.out.println("Exception : " + e);
 			return new ApiResponse(false, null, e.getMessage(), List.of(e.getLocalizedMessage()));
 		}
 	}
 	// ] details
 
 	// update : [
-	public ApiResponse<Map<String, Object>> update(@NotNull String id, @NotNull User body) {
+	public ApiResponse<Map<String, Object>> update(@NotNull UUID id, @NotNull User body) {
 		try {
 
 			User existingUser = userRepository.findById(id).orElseThrow(() -> new Exception("User not found"));
 
-			BeanUtils.copyProperties(body, existingUser, "id", "email");
+			BeanUtils.copyProperties(body, existingUser, "id", "email", "password");
 			userRepository.save(existingUser);
-
 			ApiResponse<Map<String, Object>> apiResponse = new ApiResponse<Map<String, Object>>(true,
 					MapperConfig.toJson(existingUser), "User updated successfully");
 
 			return apiResponse;
 
 		} catch (Exception e) {
-			System.out.println("Exception : " + e);
 			return new ApiResponse<Map<String, Object>>(false, null, e.getMessage(), List.of(e.getLocalizedMessage()));
 		}
 	}
 	// ] update
 
 	// details : [
-	public ApiResponse getProfile(@NonNull String id) {
+	public ApiResponse getProfile(@NonNull UUID id) {
 		try {
 
 			Optional<User> existingUser = userRepository.findById(id);
-			// System.out.println("existingUser : " + existingUser);
 			if (existingUser.isEmpty()) {
 				throw new Exception("User not found");
 			}
@@ -146,7 +140,6 @@ public class UserService {
 			return apiResponse;
 
 		} catch (Exception e) {
-			System.out.println("Exception : " + e);
 			return new ApiResponse(false, null, e.getMessage(), List.of(e.getLocalizedMessage()));
 		}
 	}

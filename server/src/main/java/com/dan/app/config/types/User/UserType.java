@@ -9,9 +9,7 @@ public class UserType {
     public interface userListData {
         String getId();
 
-        String getFname();
-
-        String getLname();
+        String getFullName();
 
         String getEmail();
 
@@ -29,7 +27,7 @@ public class UserType {
     public interface userDetailsData {
         String getId();
 
-        String getFname();
+        String getFullName();
 
         String getLname();
 

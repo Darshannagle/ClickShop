@@ -1,30 +1,28 @@
 import { siteConfig } from "../config/siteConfig";
-import axios from "axios";
+// import axios from "axios";
 // Axios Instance [
-const axiosInstance = axios.create({
-  baseURL: import.meta.env.BASE_URL,
-  timeout: 10000,
-});
+// const axiosInstance = axios.create({
+//   baseURL: import.meta.env.BASE_URL,
+//   timeout: 10000,
+// });
 
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    console.log("🚀 ~ token:", token);
+// axiosInstance.interceptors.request.use(
+//   (config) => {
+//     const token = localStorage.getItem("token");
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`;
+//     }
 
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
 
 // ] Axios Instance
 
 // Helper function to construct URL query
 const buildQueryString = (data: { [x: string]: any } = {}): string => {
-  console.log("🚀 ~ buildQueryString ~ data:", data);
   let query: string = "";
   const dataLength = Object.keys(data).length;
 
@@ -32,7 +30,7 @@ const buildQueryString = (data: { [x: string]: any } = {}): string => {
     Object.keys(data).forEach((key, index) => {
       const saperator = index === dataLength - 1 ? "" : "&";
       query += `${encodeURIComponent(key)}=${encodeURIComponent(
-        String(data[key])
+        String(data[key]),
       )}${saperator}`;
     });
   }
@@ -44,14 +42,13 @@ async function getAPIData(
   method = "GET",
   customURL = false,
   headers = {},
-  formData = false
+  formData = false,
 ) {
   const defaultHeaders: Record<string, string> = {
     Accept: "application/json",
   };
 
   const token = localStorage.getItem("token");
-  console.log("🚀 ~ getAPIData ~ token:", token);
   if (token) {
     defaultHeaders.Authorization = `Bearer ${token}`;
   }
@@ -79,8 +76,6 @@ async function getAPIData(
       ? url
       : `${siteConfig.apiURL}${url}${queryString}`;
 
-    console.log("url:", finalUrl);
-
     const options: RequestInit = {
       method: methodParam,
       headers: mergedHeaders,
@@ -101,8 +96,12 @@ async function getAPIData(
       const err = await response.json();
       throw new Error(err?.message || err);
     }
-
-    return await response.json();
+    const resData = await response.json();
+    if (resData?.message == "INVALID_TOKEN") {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+    return resData;
   } catch (error) {
     console.error("API Request Error:", error);
     // throw error;
@@ -121,7 +120,7 @@ function getAPIProgressData(
   data: { [x: string]: any },
   onProgress = (progress: number) => {
     console.log(progress);
-  }
+  },
 ) {
   const isOnline = window.navigator.onLine;
   if (!isOnline) {

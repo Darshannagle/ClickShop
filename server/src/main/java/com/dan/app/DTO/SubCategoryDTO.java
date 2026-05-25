@@ -1,5 +1,7 @@
 package com.dan.app.DTO;
 
+import java.util.UUID;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -7,5 +9,5 @@ import lombok.Data;
 @Builder
 public class SubCategoryDTO {
     private String name;
-    private String categoryId;
+    private UUID categoryId;
 }

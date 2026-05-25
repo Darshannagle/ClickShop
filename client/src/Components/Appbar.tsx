@@ -4,7 +4,7 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
+// import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -14,7 +14,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -30,6 +30,7 @@ import logo from "../assets/react.svg";
 import { Close, Favorite, Search, ShoppingCart } from "@mui/icons-material";
 import { isLoggedIn } from "../config/loginConfig";
 import { pages } from "../Routes";
+import Logo from "../assets/ClickShop.png";
 const navLinkStyles: unknown = ({ isActive }: { isActive: boolean }) => ({
   width: "100%",
   margin: 0,
@@ -46,98 +47,52 @@ const navLinkStyles: unknown = ({ isActive }: { isActive: boolean }) => ({
 const deskNavLinkStyle = ({ isActive }: { isActive: boolean }) => ({
   // width: "100%",
   margin: 20,
-  backgroundColor: isActive
-    ? "var(--secondary-color)"
-    : "var(--background-color)",
-  color: isActive ? "var(--background-color)" : "var(--secondary-color)",
+  // backgroundColor: isActive
+  //   ? "var(--secondary-color)"
+  //   : "var(--background-color)",
+  // color: isActive ? "var(--background-color)" : "var(--secondary-color)",
   // color: "#000000",
   fontSize: "15px",
   textDecoration: "none",
   borderRadius: "5px",
 
-  border: isActive ? "1px solid black" : "none",
-  fontWeight: 100,
+  // border: isActive ? "1px solid black" : "none",
+  fontWeight: isActive ? 500 : 100,
   // fontFamily: "Poppins",
   padding: "5px 10px",
 });
-// const pages = ["Home", "products", "login/forgot-password"];
-// const pages = [
-//   {
-//     label: "Home",
-//     path: "home",
-//   },
-//   {
-//     label: "About",
-//     path: "about",
-//   },
-//   {
-//     label: "Contact Us",
-//     path: "contactus",
-//   },
-// ];
-const settings = localStorage?.getItem("token")
-  ? [
-      {
-        label: "Profile",
-        path: "Profile",
-        handler: (e: Event) => {
-          console.log(e.type);
-        },
-      },
-      {
-        label: "Account",
-        path: "Account",
-        handler: (e: Event) => {
-          console.log(e.type);
-        },
-      },
-      {
-        label: "Forgot Password",
-        path: "login/forgot-password",
-        handler: (e: Event) => {
-          console.log(e.type);
-        },
-      },
-      {
-        label: "Logout",
-        path: "login",
-        handler: (e: Event) => {
-          console.log(e.type);
-          console.log("Logout");
-          localStorage.removeItem("token");
-          window.location.reload();
-        },
-      },
-    ]
-  : [
-      {
-        label: "Log in",
-        path: "Login",
-        handler: () => {
-          // Navigate({ to: "/login" });
-        },
-      },
-      {
-        label: "Sign up",
-        path: "Signup",
-        handler: () => {
-          // Navigate({ to: "/login" });
-        },
-      },
 
-      {
-        label: "Forgot Password",
-        path: "forgot-password",
-        handler: () => {
-          // Navigate({ to: "/login" });
-        },
+const settings =
+  //  localStorage?.getItem("token")?
+  [
+    {
+      label: "Profile",
+      path: "Profile",
+    },
+    {
+      label: "Account",
+      path: "Account",
+    },
+    {
+      label: "Forgot Password",
+      path: "login/forgot-password",
+    },
+    {
+      label: "Logout",
+      path: "login",
+      handler: () => {
+        localStorage.removeItem("token");
+        window.location.reload();
       },
-    ];
+    },
+  ];
+
 const notifications = [
   { logo, title: "notification1", description: "this is description" },
   { logo, title: "notification2", description: "this is description" },
 ];
 function Appbar() {
+  const navigate = useNavigate();
   // Add this with your other useStates
   const [anchorElNotification, setAnchorElNotification] =
     React.useState<null | HTMLElement>(null);
@@ -151,13 +106,13 @@ function Appbar() {
   };
 
   const [notificationCount, setNotificationCount] = React.useState(
-    notifications.length
+    notifications.length,
   );
   const [loading, setLoading] = React.useState(false);
   // const [openNotification, setOpenNotification] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
+    null,
   );
 
   const handleDrawerToggle = () => {
@@ -204,9 +159,22 @@ function Appbar() {
               <MenuIcon />
             </IconButton>
             {/* Logo */}
-
+            <Container
+              disableGutters
+              maxWidth={false}
+              component={"img"}
+              src={Logo}
+              onClick={() => navigate("/home")}
+              sx={{
+                cursor: "pointer",
+                width: "80px",
+                height: "auto",
+                m: 0,
+                p: -30,
+              }}
+            ></Container>
             {/* Title */}
-            <Typography
+            {/* <Typography
               variant="h6"
               component="a"
               href="/"
@@ -223,7 +191,7 @@ function Appbar() {
               }}
             >
               ClickShop
-            </Typography>
+            </Typography> */}
 
             <Box sx={{ flexGrow: 1 }}>
               <TextField
@@ -304,6 +272,7 @@ function Appbar() {
                       backgroundColor: "transparent",
                       // boxShadow: "0px 0px 1px 0.1px var(--secondary-color)",
                     }}
+                    onClick={() => navigate("/cart")}
                   >
                     {/* the border shold be thin  */}
                     <ShoppingCart
@@ -363,22 +332,24 @@ function Appbar() {
                       }: {
                         label: string;
                         path: string;
-                        handler;
+                        handler: any;
                       }) => (
                         <MenuItem
                           key={label}
-                          onClick={handler}
+                          onClick={(e) => {
+                            handleCloseUserMenu();
+                            handler?.(e);
+                          }}
                           sx={{ width: "100%", m: 0 }}
                         >
                           <NavLink
-                            to={`/${String(path).toLowerCase()}`}
+                            to={`/${String(path)?.toLowerCase()}`}
                             style={navLinkStyles}
                           >
                             {label}
                           </NavLink>
-                          {/* <Typography textAlign="center">{path}</Typography> */}
                         </MenuItem>
-                      )
+                      ),
                     )}
                   </Menu>
                 </Container>
@@ -401,7 +372,7 @@ function Appbar() {
                       // window.location.reload();
                     }}
                   >
-                    Log in
+                    Login
                   </NavLink>
                 </Box>
               )}
@@ -420,7 +391,7 @@ function Appbar() {
                   notifications.map(
                     (
                       v: { logo: string; title: string; description: string },
-                      index
+                      index,
                     ) => (
                       <MenuItem
                         style={{ margin: "0px", padding: "2px" }}
@@ -435,10 +406,8 @@ function Appbar() {
                               <IconButton
                                 type="button"
                                 aria-label=""
-                                onClick={(e) => {
-                                  console.log(e.currentTarget);
+                                onClick={() => {
                                   notifications.splice(index, 1);
-                                  console.log(notifications);
                                   setNotificationCount(notifications.length);
                                 }}
                               >
@@ -457,7 +426,7 @@ function Appbar() {
                           />
                         </Card>
                       </MenuItem>
-                    )
+                    ),
                   )
                 )}
               </Menu>
@@ -483,7 +452,14 @@ function Appbar() {
                 <NavLink style={navLinkStyles} to={`/${path}`} key={path}>
                   <ListItemButton onClick={handleDrawerToggle}>
                     <ListItemText
-                      sx={{ textAlign: "center", fontWeight: 100 }}
+                      sx={{
+                        textAlign: "center",
+                        fontWeight: 100,
+                        ":hover": {
+                          scale: "110%",
+                          color: "black",
+                        },
+                      }}
                       primary={label}
                     />
                   </ListItemButton>

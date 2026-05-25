@@ -1,6 +1,7 @@
 package com.dan.app.utils;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,7 +13,7 @@ import lombok.Data;
 
 @Data
 public class CustomUserDetails implements UserDetails {
-    private String id;
+    private UUID id;
     private String email;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;

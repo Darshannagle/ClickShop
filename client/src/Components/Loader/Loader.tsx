@@ -1,6 +1,6 @@
 // src/components/GlobalLoader.tsx
 import { Box } from "@mui/material";
-import Lottie from "lottie-react";
+import LottiePlayerLight from "react-lottie-player"; // Light version = no eval
 import loaderAnimation from "../../assets/Animation - 1721705624958.json";
 
 const GlobalLoader = () => {
@@ -20,7 +20,11 @@ const GlobalLoader = () => {
       }}
     >
       <Box sx={{ width: 160, height: 160 }}>
-        <Lottie animationData={loaderAnimation} loop autoplay />
+        <LottiePlayerLight
+          animationData={loaderAnimation}
+          loop
+          style={{ width: "100%", height: "100%" }}
+        />
       </Box>
     </Box>
   );

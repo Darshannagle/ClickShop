@@ -5,29 +5,38 @@ import {
   Grid,
   Typography,
   CardMedia,
-  Button,
   CardActions,
 } from "@mui/material";
-import React from "react";
 import OutlinedButton from "../Button/OutlinedButton";
 
 const Product = (props) => {
   const { product } = props;
-  console.log("product: ", product);
-
   return (
     <Grid
       // border={"1px solid red"}
       key={product?.id}
       p={1}
-      size={{ xs: 12, sm: 3, md: 3, lg: 2, xl: 2 }}
+      // border={"1px solid red"}
+      height={"max-width"}
+      size={{ xs: 6, sm: 5, md: 4, lg: 3, xl: 2 }}
       width={"100%"}
       display={"flex"}
       flexDirection={"column"}
       alignItems={"center"}
       justifyContent={"space-around"}
     >
-      <Card sx={{ width: "100%", p: 1 }} elevation={3}>
+      <Card
+        sx={{
+          width: "100%",
+          height: "100%",
+          p: 1,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-around",
+        }}
+        elevation={3}
+      >
         <CardMedia
           title={product?.name}
           image={product?.images && product?.images[0]}
@@ -45,7 +54,9 @@ const Product = (props) => {
         </Typography>
         {/* <s>${product?.basePrice}</s> */}
         <CardActions>
-          <OutlinedButton fullWidth>Buy Now</OutlinedButton>
+          <OutlinedButton href={`/product/${product?.id}`} fullWidth>
+            Buy Now
+          </OutlinedButton>
         </CardActions>
       </Card>
     </Grid>

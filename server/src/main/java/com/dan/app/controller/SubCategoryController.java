@@ -14,8 +14,6 @@ import com.dan.app.config.MapperConfig;
 import com.dan.app.config.types.api.ApiResponse;
 import com.dan.app.service.SubCategoryService;
 
-import jakarta.validation.Valid;
-
 @RestController
 @RequestMapping("/api/subcategory")
 public class SubCategoryController {
@@ -28,10 +26,9 @@ public class SubCategoryController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity create(@Valid @RequestBody SubCategoryDTO subCategoryDTO) {
+    public ResponseEntity create(@RequestBody SubCategoryDTO subCategoryDTO) {
         try {
-
-            ApiResponse response = subCategoryService.create(MapperConfig.toJson(subCategoryDTO));
+            ApiResponse response = subCategoryService.create(subCategoryDTO);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
@@ -49,10 +46,8 @@ public class SubCategoryController {
     }
 
     @GetMapping("/list-by-category")
-    public ResponseEntity list(@RequestParam String field, @RequestParam String category) {
+    public ResponseEntity list(@RequestParam String field, @RequestParam Object category) {
         try {
-            System.out.println("field:" + field);
-            System.out.println("category:" + category);
 
             ApiResponse response = subCategoryService.findByCategory(category, field);
             return new ResponseEntity<>(response, HttpStatus.OK);

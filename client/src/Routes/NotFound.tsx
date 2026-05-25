@@ -6,7 +6,7 @@ const NotFound = () => {
   return (
     <div>
       <h2>Not Found</h2>
-      <Button variant="contained" color="primary" onClick={() => {navigate("/login")}}>Login
+      <Button variant="contained" color="primary" sx={{textTransform:"none"}} onClick={() => {navigate("/home")}}>Back to Home
         
       </Button>
     </div>

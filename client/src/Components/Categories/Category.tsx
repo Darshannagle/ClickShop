@@ -26,7 +26,9 @@ const Category = ({
       sx={{ width: "100%", height: "100%" }}
     >
       {icon}
-      <Typography variant="body1">{title}</Typography>
+      <Typography variant="body1" textAlign={"center"}>
+        {title}
+      </Typography>
     </Card>
     // </Grid>
   );

@@ -2,13 +2,18 @@ package com.dan.app.config.types.api;
 
 import java.util.List;
 
+import lombok.Builder;
+import lombok.ToString;
+
+@ToString
+@Builder
 public class ApiResponse<T> {
 
 	private boolean status = true;
 
 	private T data = null;
 	private String message = "";
-	private List<String> errors=List.of();
+	private List<String> errors = List.of();
 
 	public ApiResponse(boolean status, T data, String message, List<String> errors) {
 		super();
@@ -17,8 +22,6 @@ public class ApiResponse<T> {
 		this.message = message;
 		this.errors = errors;
 	}
-
-
 
 	public ApiResponse(boolean status, T data, String message) {
 		super();

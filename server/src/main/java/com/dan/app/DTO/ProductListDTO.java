@@ -1,6 +1,7 @@
 package com.dan.app.DTO;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import com.dan.app.model.Category;
 import com.dan.app.model.Product;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductListDTO {
-    private String id;
+    private UUID id;
     private String name;
     private String brand;
     private BigDecimal basePrice;

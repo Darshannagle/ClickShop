@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.dan.app.DTO.UserDTO;
 import com.dan.app.config.MapperConfig;
+import com.dan.app.config.Constant.Gender;
 import com.dan.app.config.types.api.ApiResponse;
 import com.dan.app.model.Role;
 import com.dan.app.model.User;
@@ -49,19 +50,15 @@ public class AuthService {
             String encodedPassword = (passwordEncoder.encode(request.getPassword()));
             logger.info("encodedPassword:" + encodedPassword);
             User user = new User(request.getFullName(), request.getEmail(), encodedPassword, request.getPhone(),
-                    request.getGender(), request.getLocation(), request.getPinCode(), Set.of(userRole));
+                    Gender.valueOf(request.getGender()), request.getLocation(), request.getPinCode(), Set.of(userRole));
             logger.info("user: " + user.toString());
 
             user = userRepository.save(user);
-            System.out.println("user :" + MapperConfig.toJson(user));
             return new ApiResponse(true, user, "User registered successfully");
 
         } catch (Exception e) {
             e.printStackTrace(); // ← Add this
             logger.error("Signup failed", e); // Full stack trace in logs
-            System.out.println("Full error: " + e.getClass().getName());
-            System.out.println("Message: " + e.getMessage());
-
             // Print ROOT CAUSE (the real DB error)
             Throwable rootCause = e.getCause();
             while (rootCause != null && rootCause.getCause() != null) {

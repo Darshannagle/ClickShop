@@ -1,8 +1,7 @@
 package com.dan.app.controller;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dan.app.DTO.ProductDTO;
-import com.dan.app.config.MapperConfig;
 import com.dan.app.config.types.api.ApiResponse;
-import com.dan.app.model.Product;
 import com.dan.app.service.ProductService;
 
 @RestController
@@ -31,7 +28,6 @@ public class ProductController {
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody ProductDTO productDTO) {
         try {
-            System.out.println("productDTO:" + productDTO);
             ApiResponse response = productService.create(productDTO);
             return new ResponseEntity(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -46,7 +42,6 @@ public class ProductController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id,asc") String sort) {
         try {
-            System.out.println("keyword:" + keyword + " page:" + page + " size:" + size + " sort:" + sort);
             ApiResponse response = productService.findByName(keyword, page, size, sort.split(","));
             return new ResponseEntity(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -65,10 +60,19 @@ public class ProductController {
             return new ResponseEntity(response, HttpStatus.OK);
 
         } catch (Exception e) {
-            System.out.println("e:" + e);
             return new ResponseEntity(
                     new ApiResponse(false, null, "Something went wrong", List.of(e.getMessage())),
                     HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity details(@RequestParam UUID id) {
+        try {
+            ApiResponse response = productService.details(id);
+            return new ResponseEntity(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
         }
     }
 }
