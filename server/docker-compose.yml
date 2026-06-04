@@ -1,36 +1,36 @@
 version: "3.9"
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: clickshop-mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: dan123
-      MYSQL_DATABASE: cs
-    # ports:
-    # - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - clickshop-net
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: clickshop-mysql
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: dan123
+  #     MYSQL_DATABASE: cs
+  #   # ports:
+  #   # - "3306:3306"
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   networks:
+  #     - clickshop-net
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
 
   backend:
     build: .
     container_name: clickshop-backend
     restart: always
-    depends_on:
-      mysql:
-        condition: service_healthy
+    # depends_on:
+    #   mysql:
+    #     condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/cs?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: dan123
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5000:5000"
     networks:
