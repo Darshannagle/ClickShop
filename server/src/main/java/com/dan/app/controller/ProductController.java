@@ -35,6 +35,16 @@ public class ProductController {
         }
     }
 
+    @PostMapping("/create-all")
+    public ResponseEntity createAll(@RequestBody ProductDTO[] productDTOs) {
+        try {
+            ApiResponse response = productService.createAll(productDTOs);
+            return new ResponseEntity(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/find-by-name")
     public ResponseEntity findProductsByName(
             @RequestParam(required = false) String keyword,
