@@ -119,4 +119,35 @@ public class ProductService {
             return new ApiResponse(false, null, "Something went wrong", List.of(e.getMessage()));
         }
     }
+
+    public ApiResponse createAll(ProductDTO[] productDTOs) {
+        try {
+            for (ProductDTO productDTO : productDTOs) {
+                Category category = (Category) categoryService.details("id", productDTO.getCategory_id()).getData();
+                if (category == null) {
+                    return new ApiResponse<>(false, null, "Category not found");
+                }
+
+                Subcategory subcategory = (Subcategory) subCategoryService.details("id", productDTO.getSubcategory_id())
+                        .getData();
+                if (subcategory == null) {
+                    return new ApiResponse<>(false, null, "Subcategory not found");
+                }
+                // convert the speification to json
+                JsonNode specsNode = MapperConfig.mapper.readTree(
+                        MapperConfig.getParser(productDTO.getSpecifications()));
+                Product p = new Product(productDTO.getName(), productDTO.getBrand(), productDTO.getDescription(),
+                        productDTO.getBasePrice(), productDTO.getSalePrice(), productDTO.getStock(), category,
+                        subcategory,
+                        productDTO.getImages(), specsNode);
+                p.setSpecifications(specsNode);
+                p = productRepository.save(p);
+                return new ApiResponse(true, p, "Product created");
+            }
+        } catch (Exception e) {
+            return new ApiResponse(false, null, "Something went wrong", List.of(e.getMessage()));
+        }
+        return null;
+    }
+
 }
