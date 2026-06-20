@@ -20,8 +20,7 @@ app:
   # url: ${APP_URL}
 
 # jwt:
-  # secret: ${JWT_SECRET}
-  # secret: mMZJH4r9K2fJ0XK6uXJbK3KJpXc7JtJxqN4v7FJQkQw=mMZJH4r9K2fJ0XK6uXJbK3KJpXc7JtJxqN4v7FJQkQw=
+# secret: ${JWT_SECRET}
 
 # # Stripe
 # stripe:

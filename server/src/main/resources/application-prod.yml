@@ -10,7 +10,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-        ddl-auto: update
+        ddl-auto: validate
   application:
     name: ClickShop
 
