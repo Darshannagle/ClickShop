@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { endPoint } from "../config/siteConfig";
-import { getAPIData } from "../helpers/apiHelper";
 import toast from "react-hot-toast";
+import { getAPIData } from "@/helper/apiHelper";
 
 const SeedingPage = () => {
   const [categoryList, setCategoryList] = useState<any[]>([]);
@@ -54,7 +54,7 @@ const SeedingPage = () => {
     const response = await getAPIData(
       endPoint.subcategory.listByCategory,
       { field: "id", category: categoryId },
-      "GET"
+      "GET",
     );
     if (response?.status) {
       setSubCategoryList(response?.data);
@@ -68,7 +68,7 @@ const SeedingPage = () => {
     const response = await getAPIData(
       endPoint.category.create,
       { name: categoryName },
-      "POST"
+      "POST",
     );
     if (response?.status) {
       toast.success("Category created successfully");
@@ -84,7 +84,7 @@ const SeedingPage = () => {
     const response = await getAPIData(
       endPoint.subcategory.create,
       { name: subCategoryName, categoryId: selectedCategory },
-      "POST"
+      "POST",
     );
     if (response?.status) {
       toast.success("Subcategory created successfully");
@@ -112,7 +112,7 @@ const SeedingPage = () => {
         images: images.split(",").map((img) => img.trim()),
         specifications: JSON.parse((specifications as any).toString()),
       },
-      "POST"
+      "POST",
     );
     if (response?.status) {
       toast.success("Product created successfully");
