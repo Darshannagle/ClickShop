@@ -2,7 +2,7 @@ import ContainedButton from "@/Components/Button/ContainedButton";
 import OutlinedButton from "@/Components/Button/OutlinedButton";
 import { endPoint } from "@/config/siteConfig";
 import { useLoader } from "@/context/LoaderContext";
-import { getAPIData } from "@/helpers/apiHelper";
+import { getAPIData } from "@/helper/apiHelper";
 import { toString } from "@/models/Address.interface";
 import { AttachMoney, CreditCard } from "@mui/icons-material";
 import {
@@ -47,7 +47,7 @@ const Payment = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [order, setOrder] = useState<any>({
     cartItems: [],
-    address_id: null,
+    addressId: null,
     paymentMethod: null,
     totalAmount: 0,
     subTotal: 0,
@@ -61,7 +61,7 @@ const Payment = () => {
   const fetchAddresses = async () => {
     try {
       const res = await getAPIData(endPoint.address.list, {}, "GET");
-      if (res?.status) {
+      if (res?.code === "0000") {
         setAddresses(res?.data);
       } else {
         toast.error(res?.message || "Something went wrong");
@@ -76,7 +76,7 @@ const Payment = () => {
       showLoader();
       const res = await getAPIData(endPoint.cartItem.list, {}, "GET");
 
-      if (res?.status) {
+      if (res?.code === "0000") {
         setOrder((prev: any) => ({
           ...prev,
           subTotal: res?.data?.subTotal ?? 0,
@@ -126,60 +126,80 @@ const Payment = () => {
               }}
               // onChange={(e, value) => setSelectedAddress(value)}
             >
-              {addresses.map((address) => (
-                <Card
-                  key={address?.id}
-                  onClick={() => {
-                    setSelectedAddress(address);
-                  }}
-                  sx={{
-                    m: 1,
-                    borderRadius: 2,
-                    transition: "0.3s",
-                    border: () =>
-                      String(selectedAddress?.id) === String(address?.id)
-                        ? `2px solid var(--secondary-color)`
-                        : "1px solid #ddd",
-                    "&:hover": {
-                      boxShadow: 4,
-                      borderColor: "var(--secondary-color)",
-                    },
-                  }}
-                  elevation={
-                    String(selectedAddress?.id) === String(address?.id) ? 2 : 1
-                  }
-                >
-                  <FormControlLabel
-                    value={address?.id}
-                    checked={
-                      String(selectedAddress?.id) === String(address?.id)
-                    }
-                    control={<Radio />}
-                    onSelect={() => {
-                      setSelectedAddress(address?.id);
+              {Array.isArray(addresses) && addresses.length ? (
+                addresses.map((address) => (
+                  <Card
+                    key={address?.id}
+                    onClick={() => {
+                      setSelectedAddress(address);
                     }}
-                    sx={{ width: "100%", m: 1 }}
-                    label={
-                      <CardHeader
-                        // avatar={
-                        //   <Avatar sx={{ bgcolor: "primary.main" }}>🏠</Avatar>
-                        // }
-                        title={
-                          <Typography fontWeight={600}>
-                            {address?.addressLine1}, {address?.addressLine2}
-                          </Typography>
-                        }
-                        subheader={
-                          <Typography variant="body2" color="text.secondary">
-                            {address?.city}, {address?.state},{" "}
-                            {address?.country} - {address?.pinCode}
-                          </Typography>
-                        }
-                      />
+                    sx={{
+                      m: 1,
+                      borderRadius: 2,
+                      transition: "0.3s",
+                      border: () =>
+                        String(selectedAddress?.id) === String(address?.id)
+                          ? `2px solid var(--secondary-color)`
+                          : "1px solid #ddd",
+                      "&:hover": {
+                        boxShadow: 4,
+                        borderColor: "var(--secondary-color)",
+                      },
+                    }}
+                    elevation={
+                      String(selectedAddress?.id) === String(address?.id)
+                        ? 2
+                        : 1
                     }
-                  />
-                </Card>
-              ))}
+                  >
+                    <FormControlLabel
+                      value={address?.id}
+                      checked={
+                        String(selectedAddress?.id) === String(address?.id)
+                      }
+                      control={<Radio />}
+                      onSelect={() => {
+                        setSelectedAddress(address?.id);
+                      }}
+                      sx={{ width: "100%", m: 1 }}
+                      label={
+                        <CardHeader
+                          // avatar={
+                          //   <Avatar sx={{ bgcolor: "primary.main" }}>🏠</Avatar>
+                          // }
+                          title={
+                            <Typography fontWeight={600}>
+                              {address?.addressLine1}, {address?.addressLine2}
+                            </Typography>
+                          }
+                          subheader={
+                            <Typography variant="body2" color="text.secondary">
+                              {address?.city}, {address?.state},{" "}
+                              {address?.country} - {address?.pinCode}
+                            </Typography>
+                          }
+                        />
+                      }
+                    />
+                  </Card>
+                ))
+              ) : (
+                <>
+                  <Typography variant="body2">No address found</Typography>
+                  <OutlinedButton
+                    onClick={() => {
+                      navigate("/profile/1");
+                    }}
+                    sx={{
+                      mt: 1,
+                      textTransform: "none",
+                      color: "var(--secondary-color)",
+                    }}
+                  >
+                    +
+                  </OutlinedButton>
+                </>
+              )}
             </RadioGroup>{" "}
           </Box>
         </Box>
@@ -429,7 +449,7 @@ const Payment = () => {
                       fontWeight: 500,
                     },
                   }}
-                  value={"CASH"}
+                  value={"COD"}
                   control={
                     <Radio
                       sx={{
@@ -523,14 +543,14 @@ const Payment = () => {
       }
       const reqData = {
         ...order,
-        address_id: selectedAddress?.id,
+        addressId: selectedAddress?.id,
       };
       const res: any = await getAPIData(
         endPoint?.order?.create,
         reqData,
         "POST",
       );
-      if (res?.status) {
+      if (res?.code === "0000") {
         toast.success(res?.message);
         if (order?.paymentMethod == "ONLINE") {
           if (res?.data?.checkoutUrl) {
@@ -542,6 +562,8 @@ const Payment = () => {
         } else {
           navigate("/order/" + res?.data?.id);
         }
+      } else {
+        toast.error(res?.message || "Something went wrong");
       }
     }
     setActiveStep((prev) => prev + 1);

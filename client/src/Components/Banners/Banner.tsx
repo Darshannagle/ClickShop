@@ -17,7 +17,6 @@ const Banner = () => {
         width: "100%",
         p: 0,
         m: 0,
-        // border: "1px solid black",
       }}
     >
       {/* ▬▬▬ MAIN BANNER ▬▬▬ */}
@@ -25,12 +24,21 @@ const Banner = () => {
         sx={{
           width: "100%",
           mx: 0,
+          overflowX: "hidden",
           height: "100%",
           // minHeight: { xs: 500, sm: 600, md: 700 },
           background: "#211C24",
         }}
       >
-        <Grid container sx={{ height: "100%" }}>
+        <Grid
+          container
+          sx={{
+            height: "100%",
+            "--Grid-padding": 0,
+            p: 0,
+            m: 0,
+          }}
+        >
           {/* LEFT */}
           <Grid
             size={{
@@ -153,6 +161,7 @@ const Banner = () => {
               container
               size={{ xs: 12 }}
               sx={{
+                borderRight: "1px solid #ccc",
                 // border: "1px solid black",
                 display: "flex",
                 flexDirection: { xs: "column", md: "row" },
@@ -165,12 +174,12 @@ const Banner = () => {
                 src={PlayStation}
                 sx={{
                   display: "block",
-                  p: 0,
+                  p: 1,
                   height: "auto",
                   width: "40%",
                 }}
               />
-              <Box sx={{ width: "60%" }}>
+              <Box sx={{ width: "55%" }}>
                 <Typography variant="body1" sx={{ fontWeight: 300 }}>
                   Playstation 5
                 </Typography>
@@ -296,7 +305,7 @@ const Banner = () => {
               variant="body1"
               sx={{
                 textAlign: "center",
-                fontWeight: 300,
+                fontWeight: 600,
                 // border: "1px solid",
               }}
             >
@@ -329,11 +338,9 @@ const Banner = () => {
             src={MacbookAir14}
             sx={{
               display: "block",
-              p: 0,
               marginBottom: { xs: 10, md: 0 },
-              // height: "25%",
-              // height: "auto",
-              // width: "auto",
+              m: 0,
+              p: 0,
               width: "30%",
             }}
           />

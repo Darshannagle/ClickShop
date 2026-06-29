@@ -12,12 +12,12 @@ import {
 import { Facebook, Google, Apple, Email, Lock } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../store";
+// import { useAppDispatch, useAppSelector } from "../../store";
 import { useLoader } from "../../context/LoaderContext";
-import { getAPIData } from "../../helpers/apiHelper";
+import { getAPIData } from "../../helper/apiHelper";
 import { endPoint } from "../../config/siteConfig";
 import toast from "react-hot-toast";
-import { setToken } from "../../store/authSlice";
+// import { setToken } from "../../store/authSlice";
 
 interface LoginForm {
   email: string;
@@ -26,10 +26,10 @@ interface LoginForm {
 
 const Login = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const { showLoader, hideLoader } = useLoader();
 
-  const { token, authState } = useAppSelector((state) => state.auth);
+  // const { token, authState } = useAppSelector((state) => state.auth);
 
   const {
     handleSubmit,
@@ -52,18 +52,18 @@ const Login = () => {
       const response = await getAPIData(endPoint.logIn, payload, "POST");
       console.log("response: ", response);
 
-      if (response?.status) {
+      if (response?.code === "0000") {
         toast.success(response?.data?.message || response?.message, {
           id: toastId,
         });
-        localStorage.setItem("token", response?.data);
+        localStorage.setItem("token", response?.data?.token);
         navigate("/home");
       } else {
         toast.error(response?.message || "An error occurred", { id: toastId });
       }
 
       if (response?.token) {
-        dispatch(setToken(response.token));
+        // dispatch(setToken(response.token));
         navigate("/dashboard");
       }
     } catch (error) {

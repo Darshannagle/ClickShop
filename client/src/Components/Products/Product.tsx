@@ -7,18 +7,20 @@ import {
   CardMedia,
   CardActions,
 } from "@mui/material";
-import OutlinedButton from "../Button/OutlinedButton";
+import { useNavigate } from "react-router-dom";
+import ContainedButton from "../Button/ContainedButton";
 
 const Product = (props) => {
   const { product } = props;
+  const naviate = useNavigate();
   return (
     <Grid
       // border={"1px solid red"}
       key={product?.id}
-      p={1}
+      p={2}
       // border={"1px solid red"}
       height={"max-width"}
-      size={{ xs: 6, sm: 5, md: 4, lg: 3, xl: 2 }}
+      size={{ xs: 6, sm: 4, md: 4, lg: 3, xl: 2 }}
       width={"100%"}
       display={"flex"}
       flexDirection={"column"}
@@ -26,10 +28,13 @@ const Product = (props) => {
       justifyContent={"space-around"}
     >
       <Card
+        onClick={() => naviate(`/product/${product?.id}`)}
         sx={{
           width: "100%",
           height: "100%",
           p: 1,
+          cursor: "pointer",
+          textAlign: "center",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -46,7 +51,7 @@ const Product = (props) => {
           src={product?.images}
           sx={{ width: "50%", height: "auto" }}
         ></Box>
-        <Typography variant="body1" fontWeight={900}>
+        <Typography variant="body1" fontWeight={100} textOverflow={"clip"}>
           {product?.name}
         </Typography>
         <Typography variant="body2" fontWeight={700}>
@@ -54,9 +59,9 @@ const Product = (props) => {
         </Typography>
         {/* <s>${product?.basePrice}</s> */}
         <CardActions>
-          <OutlinedButton href={`/product/${product?.id}`} fullWidth>
+          <ContainedButton href={`/product/${product?.id}`} fullWidth>
             Buy Now
-          </OutlinedButton>
+          </ContainedButton>
         </CardActions>
       </Card>
     </Grid>

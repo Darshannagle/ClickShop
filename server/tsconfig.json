@@ -1,0 +1,58 @@
+{
+  "compilerOptions": {
+    // "baseUrl": ".", // This defines the base directory for relative module paths.
+    "paths": {
+      "@common/*": ["./src/common/*"],
+
+      "@config": ["./src/config/index"],
+      "@config/*": ["./src/config/*"],
+
+      "@controllers/*": ["./src/controllers/*"],
+
+      "@cron": ["./src/cron/index"],
+      "@cron/*": ["./src/cron/*"],
+
+      "@core": ["./src/core"],
+
+      "@data/*": ["./src/data/*"],
+      "@data": ["./src/data/index"],
+
+      "@infrastructure": ["./src/infrastructure"],
+      "@infrastructure/*": ["./src/infrastructure/*"],
+
+      "@middleware/*": ["./src/middleware/*"],
+
+      "@models": ["./src/models/index"],
+      "@models/*": ["./src/models/*"],
+
+      "@routes/*": ["./src/routes/*"],
+
+      "@secrets/*": ["./src/secrets/*"],
+
+      "@services/*": ["./src/services/*"],
+
+      "@socket": ["./src/socket/index"],
+      "@socket/*": ["./src/socket/*"],
+
+      "@utils": ["./src/utils/index"],
+      "@utils/*": ["./src/utils/*"],
+
+      "@storage/*": ["./src/storage/*"]
+    },
+    "rootDir": ".",
+    "moduleResolution": "node16",
+    "target": "ESNext", // Specifies the ECMAScript target version (ESNext).
+    // "module": "commonjs", // CommonJS is used as the module system (for Node.js).
+    "module": "node16", // CommonJS is used as the module system (for Node.js).
+    "outDir": "./dist", // The output directory for the compiled files.
+    "strict": true, // Enables all strict type-checking options.
+    "esModuleInterop": true, // Enables interoperability between CommonJS and ES Modules.
+    "skipLibCheck": true, // Skips type checking of declaration files (to speed up compilation).
+    "forceConsistentCasingInFileNames": true, // Ensures consistent casing of file names.
+    "resolveJsonModule": true, // Allows importing `.json` files as modules.
+    "ignoreDeprecations": "5.0",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false
+  }
+}
