@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
-import { getAPIData } from "../helpers/apiHelper";
+import { getAPIData } from "../helper/apiHelper";
 import Grid from "@mui/material/Grid";
 import {
   Card,

@@ -35,7 +35,7 @@ const ContainedButton = styled(Button, {
     fontWeight: 500,
     borderRadius: "5px",
     padding: "5px 7px",
-    width,
+    width: width,
     fontSize,
     margin: m,
 
@@ -64,7 +64,7 @@ const ContainedButton = styled(Button, {
       transform: "none",
       boxShadow: "none",
     },
-  })
+  }),
 );
 
 export default ContainedButton;

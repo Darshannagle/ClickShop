@@ -1,7 +1,7 @@
 // pages/CancelPage.jsx
 import { endPoint } from "@/config/siteConfig";
 import { useLoader } from "@/context/LoaderContext";
-import { getAPIData } from "@/helpers/apiHelper";
+import { getAPIData } from "@/helper/apiHelper";
 import { Typography, Button } from "@mui/material";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
@@ -20,7 +20,7 @@ export default function CancelPage() {
           { session_id: sessionId },
           "POST",
         );
-        if (res?.status) {
+        if (res?.code === "0000") {
           toast.success(res?.message);
           // navigate("/order");
         } else {

@@ -9,7 +9,7 @@ const Products = ({ products = [] }) => {
         container
         padding={"10px"}
         width={"100%"}
-        spacing={{ xs: 1, sm: 1, md: 0.5 }}
+        spacing={{ xs: 1, sm: 2, md: 1, lg: 5, xl: 1 }}
       >
         {Array.isArray(products) && products?.length > 0 ? (
           products.map((product: any) => {

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { endPoint } from "@/config/siteConfig";
-import { getAPIData } from "@/helpers/apiHelper";
+import { getAPIData } from "@/helper/apiHelper";
 import toast from "react-hot-toast";
 import { useLoader } from "@/context/LoaderContext";
 
@@ -21,7 +21,7 @@ export default function SuccessPage() {
           { session_id: sessionId },
           "POST",
         );
-        if (res?.status) {
+        if (res?.code === "0000") {
           toast.success(res?.message);
           // navigate("/order");
         } else {

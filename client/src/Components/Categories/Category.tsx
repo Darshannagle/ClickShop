@@ -23,7 +23,7 @@ const Category = ({
     <Card
       component={"button"}
       elevation={4}
-      sx={{ width: "100%", height: "100%" }}
+      sx={{ width: "100%", height: "100%", backgroundColor: "transperent" }}
     >
       {icon}
       <Typography variant="body1" textAlign={"center"}>

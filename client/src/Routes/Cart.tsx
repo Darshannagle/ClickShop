@@ -2,12 +2,9 @@ import {
   Card,
   Grid,
   Typography,
-  CardHeader,
   Avatar,
-  CardActions,
   Box,
   Button,
-  ButtonGroup,
   TextField,
   CardContent,
   IconButton,
@@ -22,7 +19,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLoader } from "../context/LoaderContext";
-import { getAPIData } from "../helpers/apiHelper";
+import { getAPIData } from "../helper/apiHelper";
 import { endPoint } from "../config/siteConfig";
 import toast from "react-hot-toast";
 import { Delete } from "@mui/icons-material";
@@ -43,7 +40,7 @@ const Cart = () => {
     try {
       showLoader();
       const res = await getAPIData(endPoint.cartItem.list, {}, "GET");
-      if (res?.status) {
+      if (res?.code === "0000") {
         setCart(res?.data?.records ?? []);
         setTotalDetails({
           subTotal: res?.data?.subTotal ?? 0,
@@ -71,7 +68,7 @@ const Cart = () => {
 
       const res = await getAPIData(endPoint.cartItem.delete, { id }, "DELETE");
 
-      if (res?.status) {
+      if (res?.code === "0000") {
         toast.success("Item deleted successfully");
         fetchCart();
       } else {
@@ -96,11 +93,11 @@ const Cart = () => {
 
       const res: any = await getAPIData(
         endPoint.cartItem.setQuantity,
-        { cart_id: id, quantity },
+        { id: id, quantity },
         "POST",
       );
 
-      if (res?.status) {
+      if (res?.code === "0000") {
         fetchCart();
       } else {
         toast.error(res?.message || "Something went wrong");
@@ -115,34 +112,34 @@ const Cart = () => {
     }
   };
 
-  const handleCheckout = async () => {
-    try {
-      showLoader();
-      const res = await getAPIData(
-        endPoint.order.create,
-        { cartItems: cart },
-        "POST",
-      );
-      if (res?.status) {
-        toast.success(res?.message);
-        window.location.href = res?.data?.session?.url;
-        // setCart(res?.data?.records ?? []);
-        // setTotalDetails({
-        //   subTotal: res?.data?.subTotal ?? 0,
-        //   estimatedTax: res?.data?.estimatedTax ?? 0,
-        //   estimatedShipping: res?.data?.estimatedShipping ?? 0,
-        //   total: res?.data?.total ?? 0,
-        // });
-      } else {
-        toast.error(res?.message || "Something went wrong");
-      }
-    } catch (error) {
-      //   setError(err.message);
-      toast.error(error.message || "Something went wrong");
-    } finally {
-      hideLoader();
-    }
-  };
+  // const handleCheckout = async () => {
+  //   try {
+  //     showLoader();
+  //     const res = await getAPIData(
+  //       endPoint.order.create,
+  //       { cartItems: cart },
+  //       "POST",
+  //     );
+  //     if (res?.code==="0000") {
+  //       toast.success(res?.message);
+  //       window.location.href = res?.data?.session?.url;
+  //       // setCart(res?.data?.records ?? []);
+  //       // setTotalDetails({
+  //       //   subTotal: res?.data?.subTotal ?? 0,
+  //       //   estimatedTax: res?.data?.estimatedTax ?? 0,
+  //       //   estimatedShipping: res?.data?.estimatedShipping ?? 0,
+  //       //   total: res?.data?.total ?? 0,
+  //       // });
+  //     } else {
+  //       toast.error(res?.message || "Something went wrong");
+  //     }
+  //   } catch (error) {
+  //     //   setError(err.message);
+  //     toast.error(error.message || "Something went wrong");
+  //   } finally {
+  //     hideLoader();
+  //   }
+  // };
 
   useEffect(() => {
     fetchCart();
@@ -164,113 +161,130 @@ const Cart = () => {
             Shopping Cart
           </Typography>
           {cart?.length ? (
-            <Box>
-              {cart?.map((item, index) => {
+            <Box display="flex" flexDirection="column" gap={2}>
+              {cart?.map((item) => {
+                const isDeleting = loading.items.includes(item.id);
+                const isUpdatingQty = loading.quantity.includes(item.id);
+
                 return (
-                  <Card key={index} elevation={3} sx={{}}>
-                    <CardHeader
-                      sx={{ m: 0 }}
-                      titleTypographyProps={{
-                        fontWeight: "bold",
-                        color: "black",
+                  <Card
+                    key={item.id}
+                    elevation={0}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      p: 2,
+                      borderRadius: 3,
+                      border: "1px solid",
+                      borderColor: "divider",
+                      transition: "0.2s",
+                      "&:hover": {
+                        boxShadow: 3,
+                      },
+                    }}
+                  >
+                    {/* Product Image */}
+                    <Avatar
+                      variant="rounded"
+                      src={item?.product?.images?.[0]}
+                      sx={{
+                        width: 100,
+                        height: 100,
+                        borderRadius: 2,
+                        mr: 2,
                       }}
-                      subheaderTypographyProps={{
-                        fontWeight: "bold",
-                        color: "black",
-                      }}
-                      avatar={
-                        <Avatar
-                          variant="square"
-                          sx={{
-                            width: "auto",
-                            height: "20vh",
-                          }}
-                          src={item?.product?.images[0]}
-                        />
-                      }
-                      title={item?.product?.name}
-                      subheader={"$ " + item?.soldPrice}
-                      action={
-                        <CardActions disableSpacing sx={{ p: 0 }}>
-                          <IconButton
-                            sx={{ m: 0 }}
-                            size="small"
-                            onClick={() => handleDelete(item?.id)}
-                            disabled={loading.items.includes(item.id)}
-                          >
-                            {loading.items.includes(item.id) ? (
-                              <CircularProgress size={16} color="error" />
-                            ) : (
-                              <Delete htmlColor="darkred" />
-                            )}
-                          </IconButton>
-                        </CardActions>
-                      }
                     />
-                    <CardContent sx={{ m: 0, p: 0 }}>
-                      <ButtonGroup
-                        variant="outlined"
-                        color="inherit"
-                        size="small"
-                        sx={{ m: 0, p: 0 }}
+
+                    {/* Product Info */}
+                    <Box flex={1}>
+                      <Typography
+                        fontWeight={600}
+                        fontSize={16}
+                        sx={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          display: "block",
+                          pr: 1.5, // ← Gap between text and right edge
+                          maxWidth: "100%",
+                        }}
+                        title={item?.product?.name} // Optional: Full name on hover
                       >
-                        <Button
-                          sx={{ height: 32, width: "1%" }}
-                          onClick={(e: any) => {
-                            setQuantity(item?.id, Number(e?.target?.value));
-                            //   setQuantity((prev) => {
-                            // prev = prev > 1 ? --prev : 1;
-                            // return prev;
-                            //   });
+                        {item?.product?.name?.substring(0, 25) + " ..."}
+                      </Typography>
+
+                      <Typography color="text.secondary" mt={0.5}>
+                        ${item?.soldPrice}
+                      </Typography>
+
+                      {/* Quantity Controls */}
+                      <Box mt={2} display="flex" alignItems="center" gap={1}>
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            setQuantity(item.id, Math.max(1, item.quantity - 1))
+                          }
+                          disabled={item.quantity <= 1}
+                          sx={{
+                            border: "1px solid",
+                            borderColor: "divider",
+                            borderRadius: 1,
+                            py: 0,
                           }}
-                          disabled={item?.quantity <= 1}
                         >
                           -
-                        </Button>
+                        </IconButton>
+
                         <TextField
+                          size="small"
+                          type="number"
+                          value={item.quantity}
+                          onChange={(e) => {
+                            const value = Number(e.target.value);
+                            if (value > 0) setQuantity(item.id, value);
+                          }}
                           sx={{
-                            fontSize: "1%",
-                            width: 50,
-                            height: 1,
-                            "& .MuiInputBase-root": {
-                              borderRadius: 0,
-                              height: 32,
-                            },
+                            width: 60,
+                            "& input": { textAlign: "center" },
                           }}
                           InputProps={{
-                            endAdornment: loading.quantity.includes(
-                              item?.id,
-                            ) && (
-                              <InputAdornment
-                                position="start"
-                                variant="standard"
-                              >
-                                <CircularProgress size={20} />
+                            endAdornment: isUpdatingQty && (
+                              <InputAdornment position="end">
+                                <CircularProgress size={16} />
                               </InputAdornment>
                             ),
                           }}
-                          value={item?.quantity > 0 ? item?.quantity : 1}
-                          size="small"
-                          type="number"
-                          onInput={
-                            (e: any) => {
-                              if (e.target.value > 0) {
-                                setQuantity(item?.id, Number(e.target.value));
-                              }
-                            }
-                            //   setQuantity(Number(e.target.value ?? quantity))
-                          }
                         />
-                        <Button
-                          sx={{ height: 32, width: "1%" }}
-                          onClick={() => {
-                            setQuantity(item?.id, item?.quantity + 1);
+
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            setQuantity(item.id, item.quantity + 1)
+                          }
+                          sx={{
+                            border: "1px solid",
+                            borderColor: "divider",
+                            borderRadius: 1,
+                            py: 0,
                           }}
                         >
                           +
-                        </Button>
-                      </ButtonGroup>
-                    </CardContent>
+                        </IconButton>
+                      </Box>
+                    </Box>
+
+                    {/* Delete Button */}
+                    <IconButton
+                      onClick={() => handleDelete(item.id)}
+                      disabled={isDeleting}
+                      sx={{ ml: 2 }}
+                    >
+                      {isDeleting ? (
+                        <CircularProgress size={20} />
+                      ) : (
+                        <Delete color="error" />
+                      )}
+                    </IconButton>
                   </Card>
                 );
               })}

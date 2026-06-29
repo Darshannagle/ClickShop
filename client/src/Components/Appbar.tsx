@@ -1,4 +1,3 @@
-import * as React from "react";
 import "../index.scss";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -14,7 +13,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -31,6 +30,7 @@ import { Close, Favorite, Search, ShoppingCart } from "@mui/icons-material";
 import { isLoggedIn } from "../config/loginConfig";
 import { pages } from "../Routes";
 import Logo from "../assets/ClickShop.png";
+import { useState } from "react";
 const navLinkStyles: unknown = ({ isActive }: { isActive: boolean }) => ({
   width: "100%",
   margin: 0,
@@ -44,6 +44,7 @@ const navLinkStyles: unknown = ({ isActive }: { isActive: boolean }) => ({
   // fontWeight: isActive ? "bold" : "normal",
   // padding: "5px 10px",
 });
+
 const deskNavLinkStyle = ({ isActive }: { isActive: boolean }) => ({
   // width: "100%",
   margin: 20,
@@ -93,27 +94,46 @@ const notifications = [
 ];
 function Appbar() {
   const navigate = useNavigate();
-  // Add this with your other useStates
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams.get("search") || "",
+  );
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorElNotification, setAnchorElNotification] =
-    React.useState<null | HTMLElement>(null);
+    useState<null | HTMLElement>(null);
 
-  // const handleNotificationClick = (event: React.MouseEvent<HTMLElement>) => {
-  //   setAnchorElNotification(event.currentTarget);
-  // };
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("searchTerm: ", searchTerm);
+    if (searchTerm.trim()) {
+      setSearchParams({ search: searchTerm.trim() });
+      navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
+    } else {
+      setSearchParams({});
+      navigate("/products");
+    }
+  };
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
+  // Search on Enter key
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch(e);
+    }
+  };
   const handleNotificationClose = () => {
     setAnchorElNotification(null);
   };
 
-  const [notificationCount, setNotificationCount] = React.useState(
+  const [notificationCount, setNotificationCount] = useState(
     notifications.length,
   );
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   // const [openNotification, setOpenNotification] = React.useState(false);
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null,
-  );
+  // const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const handleDrawerToggle = () => {
     setLoading(true);
@@ -193,26 +213,27 @@ function Appbar() {
               ClickShop
             </Typography> */}
 
-            <Box sx={{ flexGrow: 1 }}>
-              <TextField
-                sx={{ display: { xs: "none", sm: "block" } }}
-                size="small"
-                id="serch"
-                label=""
-                value={""}
-                type="search"
-                placeholder="Search"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton edge="end">
-                        <Search />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                onChange={() => {}}
-              />
+            <Box sx={{ flexGrow: 1, mx: 2, maxWidth: 500 }}>
+              <form onSubmit={handleSearch}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  onKeyDown={handleKeyDown}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton type="submit" edge="end">
+                          <Search />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{ display: { xs: "none", sm: "block" } }}
+                />
+              </form>
             </Box>
 
             {/* Desktop Menu */}

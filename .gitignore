@@ -2,8 +2,11 @@
 client/node_modules/
 client/dist/
 
+
 # Backend
+server/node_modules
 server/target/
+server/dist
 
 # Env
 .env
@@ -17,3 +20,4 @@ client/.env.dev
 client/.env.prod
 server/src/main/resources/application.properties
 *.proper
+

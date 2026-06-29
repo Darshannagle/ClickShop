@@ -7,7 +7,7 @@ import { Box, Tab } from "@mui/material";
 import CustomTabPanel from "../Components/CustomTabPanel";
 import Products from "../Components/Products/Products";
 import { endPoint } from "../config/siteConfig";
-import { getAPIData } from "../helpers/apiHelper";
+import { getAPIData } from "../helper/apiHelper";
 const Home = () => {
   const [tab, setTab] = useState(0);
   const [products, setProducts] = useState([]);
@@ -16,12 +16,12 @@ const Home = () => {
     const queryparams = {
       page: 0,
       size: 10,
-      sortField: "name",
-      direction: "asc",
+      sortBy: "name",
+      sortOrder: "asc",
     };
-    const prodRes = await getAPIData(url, queryparams, "GET");
-    if (prodRes?.status) {
-      setProducts(prodRes?.data?.content);
+    const prodRes = await getAPIData(url, queryparams, "POST");
+    if (prodRes?.code === "0000") {
+      setProducts(prodRes?.data?.records);
     } else {
       console.log("error while fetching products : ", prodRes?.errors[1]);
     }
@@ -34,7 +34,11 @@ const Home = () => {
     setTab(tab);
   };
   return (
-    <>
+    <Box
+      sx={{
+        overflowX: "hidden",
+      }}
+    >
       <Banner />
       {/* <Box>
         <Box
@@ -134,7 +138,7 @@ const Home = () => {
           1
         </CustomTabPanel>
       </Box>
-    </>
+    </Box>
   );
 };
 

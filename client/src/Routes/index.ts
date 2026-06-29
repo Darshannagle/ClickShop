@@ -4,15 +4,19 @@ export const pages = [
     path: "home",
   },
   {
-    label: "About",
-    path: "about",
+    label: "Products",
+    path: "products",
   },
-  {
-    label: "Contact Us",
-    path: "contactus",
-  },
-{
-  label: "Seed",
-  path: "seed",
-}
+  // {
+  //   label: "About",
+  //   path: "about",
+  // },
+  // {
+  //   label: "Contact Us",
+  //   path: "contactus",
+  // },
+  // {
+  //   label: "Seed",
+  //   path: "seed",
+  // }
 ];

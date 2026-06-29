@@ -31,6 +31,12 @@ a:hover {
   color: #535bf2;
 }
 
+html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
 body {
   padding: 0;
   margin: 0;
@@ -88,7 +94,8 @@ h1 {
   scale: 110%;
 }
 
-Button,button {
+Button,
+button {
   border-radius: 8px;
   border: 1px solid silver;
   padding: 0.6em 1.2em;
@@ -135,4 +142,8 @@ NavLink {
 .container {
   background-color: var(--background-color);
   color: var(--text-color);
+}
+
+img {
+  max-width: 100%;
 }

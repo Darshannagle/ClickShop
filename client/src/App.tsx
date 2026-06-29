@@ -16,10 +16,12 @@ import ProductsRoute from "./Routes/ProductsRoute";
 import PaymentSuccess from "./Routes/PaymentSuccess";
 import PaymentCancel from "./Routes/PaymentCancel";
 import SeedingPage from "./Routes/SeedingPage";
+import Todos from "./Components/todo/todos";
+import { Box } from "@mui/material";
 
 function App() {
   return (
-    <>
+    <Box>
       <GoogleOAuthProvider clientId="875846851705-58p1br0lbq3j3ppc0jkua7sveeveo8km.apps.googleusercontent.com">
         <Appbar />
         <Toaster position="top-center" />
@@ -38,6 +40,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/order/:orderId" element={<Order />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="=/product-list" element={<ProductsRoute />} />
           <Route
             path={`/${import.meta.env.VITE_STRIPE_SUCCESS_URL}/:sessionId`}
             element={<PaymentSuccess />}
@@ -47,10 +50,11 @@ function App() {
             element={<PaymentCancel />}
           />
           <Route path="/seed" element={<SeedingPage />} />
+          <Route path="/todos" element={<Todos />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </GoogleOAuthProvider>
-    </>
+    </Box>
   );
 }
 

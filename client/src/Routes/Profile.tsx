@@ -32,7 +32,7 @@ import {
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PersonIcon from "@mui/icons-material/Person";
-import { getAPIData } from "../helpers/apiHelper";
+import { getAPIData } from "../helper/apiHelper";
 import { endPoint } from "../config/siteConfig";
 import toast from "react-hot-toast";
 import { useLoader } from "../context/LoaderContext";
@@ -74,7 +74,7 @@ export default function MyAccount() {
   const fetchProfile = async () => {
     try {
       const res = await getAPIData(endPoint.user.profile, {}, "GET");
-      if (res?.status) {
+      if (res?.code === "0000") {
         // toast.success(res?.message);
         return res?.data;
       } else {
@@ -91,7 +91,7 @@ export default function MyAccount() {
   const getOrders = async () => {
     try {
       const res = await getAPIData(endPoint.order.list, {}, "GET");
-      if (res?.status) {
+      if (res?.code === "0000") {
         // toast.success(res?.message);
         return res?.data;
       } else {
@@ -108,7 +108,7 @@ export default function MyAccount() {
   const updateProfile = async () => {
     try {
       const res = await getAPIData(endPoint.user.update, profile, "PUT");
-      if (res?.status) {
+      if (res?.code === "0000") {
         showLoader();
         toast.success(res?.message);
         setProfile(res?.data);
@@ -485,7 +485,7 @@ export default function MyAccount() {
                 boxShadow: "0 4px 12px rgba(25, 118, 210, 0.3)",
               }}
             >
-              Save  
+              Save
             </Button>
           </Box>
         </CardContent>
@@ -502,7 +502,7 @@ export default function MyAccount() {
     country: string;
     pinCode: string;
     addressType: "HOME" | "OFFICE";
-    default: boolean;
+    isDefault: boolean;
   }
 
   function AddressTab() {
@@ -515,7 +515,7 @@ export default function MyAccount() {
       country: "",
       pinCode: "",
       addressType: "HOME",
-      default: false,
+      isDefault: false,
     };
 
     const [addresses, setAddresses] = useState<Address[]>([]);
@@ -533,7 +533,7 @@ export default function MyAccount() {
       setLoading((prev) => ({ ...prev, address: true }));
       try {
         const res = await getAPIData(endPoint.address.list, {}, "GET");
-        if (res?.status) {
+        if (res?.code === "0000") {
           setAddresses(res?.data ?? []);
         } else {
           toast.error(res?.message || "Failed to fetch addresses");
@@ -553,7 +553,7 @@ export default function MyAccount() {
           "DELETE",
         );
 
-        if (res?.status) {
+        if (res?.code === "0000") {
           toast.success(res?.message);
           fetchAddresses();
         } else {
@@ -566,13 +566,11 @@ export default function MyAccount() {
 
     const addAddress = async () => {
       try {
-        const res = await getAPIData(
-          endPoint.address.create,
-          selectedAddress,
-          "POST",
-        );
+        const data = selectedAddress;
+        delete data.id;
+        const res = await getAPIData(endPoint.address.create, data, "POST");
 
-        if (res?.status) {
+        if (res?.code === "0000") {
           fetchAddresses();
           closeModal();
         } else {
@@ -591,7 +589,7 @@ export default function MyAccount() {
           "PUT",
         );
 
-        if (res?.status) {
+        if (res?.code === "0000") {
           fetchAddresses();
           closeModal();
         } else {
@@ -733,8 +731,10 @@ export default function MyAccount() {
                 control={
                   <Checkbox
                     size="small"
-                    checked={selectedAddress.default}
-                    onChange={(e) => handleChange("default", e.target.checked)}
+                    checked={selectedAddress.isDefault}
+                    onChange={(e) =>
+                      handleChange("isDefault", e.target.checked)
+                    }
                   />
                 }
               />
@@ -752,67 +752,71 @@ export default function MyAccount() {
           {/* ---------------------------- ADDRESS LIST ---------------------------- */}
 
           <List>
-            {addresses.map((addr) => (
-              <ListItem
-                key={addr.id}
-                sx={{
-                  border: "1px solid #ddd",
-                  borderRadius: 2,
-                  my: 1,
-                  display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
-                  alignItems: { xs: "flex-start", sm: "center" },
-                  gap: 1,
-                }}
-              >
-                {/* Address Text */}
-                <Box sx={{ flex: 1, width: "100%" }}>
-                  <Typography fontWeight={500}>
-                    {addr.addressLine1}, {addr.addressLine2}
-                  </Typography>
-
-                  <Typography variant="body2" color="text.secondary">
-                    {addr.city}, {addr.state} - {addr.pinCode}
-                  </Typography>
-                </Box>
-
-                {/* Actions */}
-                <Box
+            {addresses?.length ? (
+              addresses.map((addr) => (
+                <ListItem
+                  key={addr.id}
                   sx={{
+                    border: "1px solid #ddd",
+                    borderRadius: 2,
+                    my: 1,
                     display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                    alignItems: { xs: "flex-start", sm: "center" },
                     gap: 1,
-                    flexWrap: "wrap",
-                    justifyContent: { xs: "flex-start", sm: "flex-end" },
-                    width: { xs: "100%", sm: "auto" },
                   }}
                 >
-                  {addr.default && (
-                    <Typography fontSize="10px">Default</Typography>
-                  )}
+                  {/* Address Text */}
+                  <Box sx={{ flex: 1, width: "100%" }}>
+                    <Typography fontWeight={500}>
+                      {addr.addressLine1}, {addr.addressLine2}
+                    </Typography>
 
-                  <Typography
-                    fontSize="10px"
+                    <Typography variant="body2" color="text.secondary">
+                      {addr.city}, {addr.state} - {addr.pinCode}
+                    </Typography>
+                  </Box>
+
+                  {/* Actions */}
+                  <Box
                     sx={{
-                      height: "max-content",
-                      backgroundColor: "black",
-                      color: "white",
-                      p: 1,
-                      borderRadius: 1,
+                      display: "flex",
+                      gap: 1,
+                      flexWrap: "wrap",
+                      justifyContent: { xs: "flex-start", sm: "flex-end" },
+                      width: { xs: "100%", sm: "auto" },
                     }}
                   >
-                    {addr.addressType}
-                  </Typography>
+                    {addr.isDefault && (
+                      <Typography fontSize="10px">Default</Typography>
+                    )}
 
-                  <IconButton onClick={() => showModal(addr, true)}>
-                    <Mode color="warning" />
-                  </IconButton>
+                    <Typography
+                      fontSize="10px"
+                      sx={{
+                        height: "max-content",
+                        backgroundColor: "var(--secondary-color)",
+                        color: "var(--primary-color)",
+                        p: 1,
+                        borderRadius: 1,
+                      }}
+                    >
+                      {addr.addressType}
+                    </Typography>
 
-                  <IconButton onClick={() => deleteAddress(addr.id)}>
-                    <Delete color="error" />
-                  </IconButton>
-                </Box>
-              </ListItem>
-            ))}
+                    <IconButton onClick={() => showModal(addr, true)}>
+                      <Mode color="warning" />
+                    </IconButton>
+
+                    <IconButton onClick={() => deleteAddress(addr.id)}>
+                      <Delete color="error" />
+                    </IconButton>
+                  </Box>
+                </ListItem>
+              ))
+            ) : (
+              <Typography variant="body1">No addresses found</Typography>
+            )}
 
             {/* Add New */}
             <ListItem
@@ -900,12 +904,12 @@ export default function MyAccount() {
           <Divider sx={{ mb: 3 }} />
 
           <Stack spacing={2}>
-            {orders.map((order) => {
+            {orders.map((order: any) => {
               const statusProps = getStatusProps(order.orderStatus);
 
               return (
                 <Box
-                  key={order.id}
+                  key={order?.id}
                   sx={{
                     display: "flex",
                     alignItems: "center",

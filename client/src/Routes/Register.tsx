@@ -29,7 +29,7 @@ import {
 import toast from "react-hot-toast";
 import { useLoader } from "../context/LoaderContext";
 import { useGoogleLogin } from "@react-oauth/google";
-import { getAPIData } from "../helpers/apiHelper";
+import { getAPIData } from "../helper/apiHelper";
 import { endPoint } from "../config/siteConfig";
 
 const Register = () => {
@@ -98,7 +98,7 @@ const Register = () => {
         fullName: registrationData?.fullName,
         email: registrationData?.email,
         password: registrationData?.password,
-        confirmPassword: registrationData?.confirmPassword,
+        // confirmPassword: registrationData?.confirmPassword,
         phone: registrationData?.phone,
         gender: registrationData?.gender,
         location: registrationData?.location,
@@ -106,9 +106,11 @@ const Register = () => {
       };
       const res = await getAPIData(endPoint.signUp, body, "POST");
 
-      if (res?.status) {
+      if (res?.code === "0000") {
         toast.success(res?.message);
-        navigate("/login");
+        localStorage.setItem("token", res?.data?.token);
+
+        navigate("/");
       } else {
         toast.error(res?.message || "Something went wrong");
       }
