@@ -174,10 +174,10 @@ export default class BaseDao {
     return normalized;
   }
   // ==================== CRUD ====================
-  static async create(data: any, tx?: any) {
+  static async create(data: any, tx?: any, options?: any) {
     try {
       const repo = tx ? tx[this.modelName] : this.repository;
-      return await repo.create({ data });
+      return await repo.create({ data, ...options });
     } catch (e) {
       logError(e, "[BASE-DAO-CREATE]");
       return null;
@@ -210,10 +210,16 @@ export default class BaseDao {
     }
   }
 
-  static async findByIdAndUpdate(id: string, data: any = {}) {
+  static async findByIdAndUpdate(
+    id: string,
+    data: any = {},
+    tx?: any,
+    options: any = {},
+  ) {
     try {
       // if (empty(id) || !ulidValidate(id)) throw new Error("Invalid ID");
-      await this.repository.update({ where: { id }, data });
+      const repo = tx ? tx[this.modelName] : this.repository;
+      await repo.update({ where: { id }, data, ...options });
       return await this.repository.findUnique({ where: { id } });
     } catch (e) {
       logError(e, "[BASE-DAO-FIND-BY-ID-AND-UPDATE]");
@@ -221,10 +227,11 @@ export default class BaseDao {
     }
   }
 
-  static async findById(id: string, options: any = {}) {
+  static async findById(id: string, tx?: any, options: any = {}) {
     try {
       // if (empty(id) || !ulidValidateid)) throw new Error("Invalid ID");
-      return await this.repository.findUnique({ where: { id }, ...options });
+      const repo = tx ? tx[this.modelName] : this.repository;
+      return await repo.findUnique({ where: { id }, ...options });
     } catch (e) {
       logError(e, "[BASE-DAO-FIND-BY-ID]");
       return null;

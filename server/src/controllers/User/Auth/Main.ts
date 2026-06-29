@@ -120,7 +120,7 @@ export default class Main {
   static async getProfile(req: any) {
     const { contextResponse, contextError, contextUser } = req;
     try {
-      const user = await UserDao.findById(contextUser.id, {
+      const user = await UserDao.findById(contextUser.id, null, {
         include: { addresses: true },
       });
       if (!user)
