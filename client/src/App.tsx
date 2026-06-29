@@ -16,7 +16,7 @@ import ProductsRoute from "./Routes/ProductsRoute";
 import PaymentSuccess from "./Routes/PaymentSuccess";
 import PaymentCancel from "./Routes/PaymentCancel";
 import SeedingPage from "./Routes/SeedingPage";
-import Todos from "./Components/todo/todos";
+// import Todos from "./Components/todo/todos";
 import { Box } from "@mui/material";
 
 function App() {
@@ -50,7 +50,7 @@ function App() {
             element={<PaymentCancel />}
           />
           <Route path="/seed" element={<SeedingPage />} />
-          <Route path="/todos" element={<Todos />} />
+          {/* <Route path="/todos" element={<Todos />} /> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </GoogleOAuthProvider>
