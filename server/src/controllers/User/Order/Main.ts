@@ -67,7 +67,7 @@ export default class Main {
         // const orderItems = [];
 
         for (const cartItem of cartItems) {
-          const product = await ProductDao.findById(cartItem.productId);
+          const product = await ProductDao.findById(cartItem.productId, tx);
           if (isQueryError(product))
             throw contextError.client(USER_MSG.ORDER.CREATE.FAILED);
           totalAmount += cartItem.quantity * cartItem.soldPrice;
@@ -86,12 +86,15 @@ export default class Main {
             throw contextError.client(USER_MSG.ORDER.CREATE.FAILED);
           // orderItems.push(orderItem);
         }
-        order.addressId = body.addressId;
-        order.totalAmount = totalAmount;
 
-        order = await OrderDao.findByIdAndUpdate(order.id, order, tx, {
-          include: { orderItems: true, address: true },
-        });
+        order = await OrderDao.findByIdAndUpdate(
+          order.id,
+          { addressId: body.addressId, totalAmount: totalAmount },
+          tx,
+          {
+            include: { orderItems: true, address: true },
+          },
+        );
         if (isQueryError(order))
           throw contextError.client(USER_MSG.ORDER.CREATE.FAILED);
 
@@ -140,8 +143,12 @@ export default class Main {
           });
           if (!session || !session?.id)
             throw contextError.client(USER_MSG.ORDER.CREATE.FAILED);
-          order.checkoutSessionId = session.id;
-          order = await OrderDao.findByIdAndUpdate(order.id, order, tx);
+
+          order = await OrderDao.findByIdAndUpdate(
+            order.id,
+            { checkoutSessionId: session.id },
+            tx,
+          );
           if (isQueryError(order))
             throw contextError.client(USER_MSG.ORDER.CREATE.FAILED);
 
