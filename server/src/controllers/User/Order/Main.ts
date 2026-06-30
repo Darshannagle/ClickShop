@@ -51,7 +51,7 @@ export default class Main {
       const result = await prisma.$transaction(async (tx) => {
         order = await OrderDao.create(
           {
-            totalAmount: body.totalAmount,
+            totalAmount: 0,
             orderStatus: OrderStatus.PENDING,
             paymentStatus: PaymentStatus.PENDING,
             paymentMethod: body.paymentMethod,
@@ -66,7 +66,7 @@ export default class Main {
             USER_MSG.ORDER.CREATE.FAILED + " while createing order",
           );
 
-        // let totalAmount = 0;
+        let totalAmount = 0;
         // const orderItems = [];
 
         for (const cartItem of cartItems) {
@@ -75,7 +75,7 @@ export default class Main {
             throw contextError.client(
               USER_MSG.ORDER.CREATE.FAILED + " while fetching product",
             );
-          // totalAmount += cartItem.quantity * cartItem.soldPrice;
+          totalAmount += cartItem.quantity * cartItem.soldPrice;
           const orderItem = await OrderItemDao.create(
             {
               // productId: cartItem.productId,
@@ -93,23 +93,24 @@ export default class Main {
             );
           // orderItems.push(orderItem);
         }
-        // order = await OrderDao.findByIdAndUpdate(
-        //   order.id,
-        //   { totalAmount: totalAmount },
-        //   tx,
-        //   {
-        //     include: { orderItems: true, address: true },
-        //   },
-        // );
-        // console.log("order: ", order);
-        // if (isQueryError(order))
-        //   throw contextError.client(
-        //     USER_MSG.ORDER.CREATE.FAILED +
-        //       "while saving address and totalAmount",
-        //   );
+        order = await OrderDao.findByIdAndUpdate(
+          order.id,
+          { totalAmount: totalAmount },
+          tx,
+          {
+            include: { orderItems: true, address: true },
+          },
+        );
+        console.log("order: ", order);
+        if (isQueryError(order))
+          throw contextError.client(
+            USER_MSG.ORDER.CREATE.FAILED +
+              "while saving address and totalAmount",
+          );
       });
 
       if (body.paymentMethod === PaymentMethod.ONLINE) {
+        console.log("order?.orderItems: ", order?.orderItems);
         const lineItems = (order?.orderItems || [])?.map((orderItem: any) => {
           return {
             price_data: {
