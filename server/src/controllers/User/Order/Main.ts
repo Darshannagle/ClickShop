@@ -5,7 +5,7 @@ import OrderDao from "@models/OrderDao";
 import OrderItemDao from "@models/OrderItemDao";
 import { ProductDao } from "@models/ProductDao";
 import { PaymentMethod } from "@prisma/client";
-import { isQueryError, sanitize } from "@utils";
+import { isQueryError, logError, sanitize } from "@utils";
 import { OrderStatus, PaymentStatus } from "@prisma/client";
 import { CartItemDao } from "@models/CartItemDao";
 import stripe from "@config/Stripe";
@@ -31,7 +31,7 @@ export default class Main {
       const body = sanitizeResult.body;
       // } sanitize data
 
-      const cartItemsRes = Promise.all(
+      const cartItemsRes = await Promise.all(
         body.cartItems.map(async (cartItem: any) => {
           const res = await sanitize(cartItem, {
             id: `required | exist: CartItem.id (${USER_MSG.CART_ITEM.SET_QUANTITY.CART_ITEM_NOT_FOUND})`,
@@ -114,18 +114,22 @@ export default class Main {
           });
           lineItems.push(
             {
-              currency: "inr",
-              product_data: {
-                name: "Estimated Shipping",
+              price_data: {
+                currency: "inr",
+                product_data: {
+                  name: "Estimated Shipping",
+                },
+                unit_amount: Math.round(Constant.ESTIMATED_SHIPPING * 100),
               },
-              unit_amount: Math.round(Constant.ESTIMATED_SHIPPING * 100),
             },
             {
-              currency: "inr",
-              product_data: {
-                name: "Estimated Tax",
+              price_data: {
+                currency: "inr",
+                product_data: {
+                  name: "Estimated Tax",
+                },
+                unit_amount: Math.round(Constant.ESTIMATED_TAX * 100),
               },
-              unit_amount: Math.round(Constant.ESTIMATED_TAX * 100),
             },
           );
           const session = await stripe.checkout.sessions.create({
@@ -169,6 +173,7 @@ export default class Main {
       contextResponse.sendOk(result?.data, result?.message);
       // await CartItemDao.deleteMany({ userId: contextUser.id });
     } catch (e) {
+      logError(e);
       contextResponse.sendError(e);
     }
   }
