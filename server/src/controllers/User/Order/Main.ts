@@ -116,20 +116,18 @@ export default class Main {
             {
               price_data: {
                 currency: "inr",
-                product_data: {
-                  name: "Estimated Shipping",
-                },
+                product_data: { name: "Estimated Shipping" },
                 unit_amount: Math.round(Constant.ESTIMATED_SHIPPING * 100),
               },
+              quantity: 1,
             },
             {
               price_data: {
                 currency: "inr",
-                product_data: {
-                  name: "Estimated Tax",
-                },
+                product_data: { name: "Estimated Tax" },
                 unit_amount: Math.round(Constant.ESTIMATED_TAX * 100),
               },
+              quantity: 1,
             },
           );
           const session = await stripe.checkout.sessions.create({
