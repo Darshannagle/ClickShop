@@ -220,7 +220,7 @@ export default class BaseDao {
       // if (empty(id) || !ulidValidate(id)) throw new Error("Invalid ID");
       const repo = tx ? tx[this.modelName] : this.repository;
       await repo.update({ where: { id }, data, ...options });
-      return await this.repository.findUnique({ where: { id } });
+      return await repo.findUnique({ where: { id } });
     } catch (e) {
       logError(e, "[BASE-DAO-FIND-BY-ID-AND-UPDATE]");
       return null;

@@ -35,6 +35,7 @@ export default class Main {
         body.cartItems.map(async (cartItem: any) => {
           const res = await sanitize(cartItem, {
             id: `required | exist: CartItem.id (${USER_MSG.CART_ITEM.SET_QUANTITY.CART_ITEM_NOT_FOUND})`,
+            productId: `required | exist: Product.id (${USER_MSG.CART_ITEM.CREATE.PRODUCT_NOT_FOUND})`,
             quantity: `required | number | min: 1 | normalize: number`,
             soldPrice: `required | number | normalize: number`,
           });
@@ -43,14 +44,14 @@ export default class Main {
         }),
       );
 
-      const cartItems = await cartItemsRes;
+      const cartItems = cartItemsRes;
       body.cartItems = cartItems;
       const user = contextUser;
-
+      let order: any;
       const result = await prisma.$transaction(async (tx) => {
-        let order = await OrderDao.create(
+        order = await OrderDao.create(
           {
-            totalAmount: 0,
+            totalAmount: body.totalAmount,
             orderStatus: OrderStatus.PENDING,
             paymentStatus: PaymentStatus.PENDING,
             paymentMethod: body.paymentMethod,
@@ -61,16 +62,20 @@ export default class Main {
           { include: { orderItems: true } },
         );
         if (isQueryError(order))
-          throw contextError.client(USER_MSG.ORDER.CREATE.FAILED);
+          throw contextError.client(
+            USER_MSG.ORDER.CREATE.FAILED + " while createing order",
+          );
 
-        let totalAmount = 0;
+        // let totalAmount = 0;
         // const orderItems = [];
 
         for (const cartItem of cartItems) {
           const product = await ProductDao.findById(cartItem.productId, tx);
           if (isQueryError(product))
-            throw contextError.client(USER_MSG.ORDER.CREATE.FAILED);
-          totalAmount += cartItem.quantity * cartItem.soldPrice;
+            throw contextError.client(
+              USER_MSG.ORDER.CREATE.FAILED + " while fetching product",
+            );
+          // totalAmount += cartItem.quantity * cartItem.soldPrice;
           const orderItem = await OrderItemDao.create(
             {
               // productId: cartItem.productId,
@@ -83,96 +88,100 @@ export default class Main {
             tx,
           );
           if (isQueryError(orderItem))
-            throw contextError.client(USER_MSG.ORDER.CREATE.FAILED);
+            throw contextError.client(
+              USER_MSG.ORDER.CREATE.FAILED + " while creating order item",
+            );
           // orderItems.push(orderItem);
         }
+        // order = await OrderDao.findByIdAndUpdate(
+        //   order.id,
+        //   { totalAmount: totalAmount },
+        //   tx,
+        //   {
+        //     include: { orderItems: true, address: true },
+        //   },
+        // );
+        // console.log("order: ", order);
+        // if (isQueryError(order))
+        //   throw contextError.client(
+        //     USER_MSG.ORDER.CREATE.FAILED +
+        //       "while saving address and totalAmount",
+        //   );
+      });
+
+      if (body.paymentMethod === PaymentMethod.ONLINE) {
+        const lineItems = (order?.orderItems || [])?.map((orderItem: any) => {
+          return {
+            price_data: {
+              currency: "inr",
+              product_data: {
+                name: orderItem?.productSnapshot?.name,
+              },
+              unit_amount: Math.round(orderItem.soldPrice * 100),
+            },
+            quantity: orderItem.quantity,
+          };
+        });
+        lineItems.push(
+          {
+            price_data: {
+              currency: "inr",
+              product_data: { name: "Estimated Shipping" },
+              unit_amount: Math.round(Constant.ESTIMATED_SHIPPING * 100),
+            },
+            quantity: 1,
+          },
+          {
+            price_data: {
+              currency: "inr",
+              product_data: { name: "Estimated Tax" },
+              unit_amount: Math.round(Constant.ESTIMATED_TAX * 100),
+            },
+            quantity: 1,
+          },
+        );
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ["card"],
+          line_items: lineItems,
+          mode: "payment",
+          success_url: `${config.WEB_APP.URL}/${config.STRIPE.STRIPE_SUCCESS_URL}/{CHECKOUT_SESSION_ID}`,
+          cancel_url: `${config.WEB_APP.URL}/${config.STRIPE.STRIPE_CANCEL_URL}/{CHECKOUT_SESSION_ID}`,
+          metadata: {
+            id: contextUser.id,
+            user: contextUser.fullName,
+            order: order.id,
+          },
+        });
+        if (!session || !session?.id)
+          throw contextError.client(USER_MSG.ORDER.CREATE.FAILED);
 
         order = await OrderDao.findByIdAndUpdate(
           order.id,
-          { addressId: body.addressId, totalAmount: totalAmount },
-          tx,
-          {
-            include: { orderItems: true, address: true },
-          },
+          { stripeSessionId: session.id },
+          // tx,
         );
         if (isQueryError(order))
-          throw contextError.client(USER_MSG.ORDER.CREATE.FAILED);
-
-        if (body.paymentMethod === PaymentMethod.ONLINE) {
-          console.log("order?.orderItems: ", order?.orderItems);
-          const lineItems = (order?.orderItems || [])?.map((orderItem: any) => {
-            return {
-              price_data: {
-                currency: "inr",
-                product_data: {
-                  name: orderItem?.productSnapshot?.name,
-                },
-                unit_amount: Math.round(orderItem.soldPrice * 100),
-              },
-              quantity: orderItem.quantity,
-            };
-          });
-          lineItems.push(
-            {
-              price_data: {
-                currency: "inr",
-                product_data: { name: "Estimated Shipping" },
-                unit_amount: Math.round(Constant.ESTIMATED_SHIPPING * 100),
-              },
-              quantity: 1,
-            },
-            {
-              price_data: {
-                currency: "inr",
-                product_data: { name: "Estimated Tax" },
-                unit_amount: Math.round(Constant.ESTIMATED_TAX * 100),
-              },
-              quantity: 1,
-            },
+          throw contextError.client(
+            USER_MSG.ORDER.CREATE.FAILED + " while saving session",
           );
-          const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card", "amazon_pay"],
-            line_items: lineItems,
-            mode: "payment",
-            success_url: `${config.WEB_APP.URL}/${config.STRIPE.STRIPE_SUCCESS_URL}/{CHECKOUT_SESSION_ID}`,
-            cancel_url: `${config.WEB_APP.URL}/${config.STRIPE.STRIPE_CANCEL_URL}/{CHECKOUT_SESSION_ID}`,
 
-            metadata: {
-              id: contextUser.id,
-              user: contextUser.fullName,
-              order: order.id,
-            },
-          });
-          if (!session || !session?.id)
-            throw contextError.client(USER_MSG.ORDER.CREATE.FAILED);
+        return contextResponse.sendOk(
+          {
+            orderId: order.id,
+            totalAmount: order.totalAmount,
+            sessionId: session.id,
+            checkoutUrl: session.url,
+          },
+          USER_MSG.PAYMENT.CREATE.SUCCESS,
+        );
+      } else {
+        return contextResponse.sendOk(order, USER_MSG.PAYMENT.CREATE.SUCCESS);
+      }
 
-          order = await OrderDao.findByIdAndUpdate(
-            order.id,
-            { checkoutSessionId: session.id },
-            tx,
-          );
-          if (isQueryError(order))
-            throw contextError.client(USER_MSG.ORDER.CREATE.FAILED);
-
-          return {
-            data: {
-              orderId: order.id,
-              totalAmount: order.totalAmount,
-              sessionId: session.id,
-              checkoutUrl: session.url,
-            },
-            message: USER_MSG.PAYMENT.CREATE.SUCCESS,
-          };
-        } else {
-          return { data: order, message: USER_MSG.PAYMENT.CREATE.SUCCESS };
-        }
-      });
-
-      contextResponse.sendOk(result?.data, result?.message);
-      // await CartItemDao.deleteMany({ userId: contextUser.id });
+      // return contextResponse.sendOk(result?.data, result?.message);
     } catch (e) {
       logError(e);
-      contextResponse.sendError(e);
+      return contextResponse.sendError(e);
     }
   }
 
