@@ -2,7 +2,7 @@
 import { USER_MSG } from "@common/messages";
 import stripe from "@config/Stripe";
 import Payment from "@services/stripe/Payment";
-import { isQueryError, logError, logInfo, sanitize } from "@utils";
+import { empty, isQueryError, logError, logInfo, sanitize } from "@utils";
 
 //--------------------------------------------------------------
 export default class Main {
@@ -30,49 +30,56 @@ export default class Main {
   // }
 
   static async webhookHandler(req: any, res: any) {
-    const { contextResponse, contextError } = req;
+    const signature = req.headers["stripe-signature"];
+    const endpointSecret: string = process.env.STRIPE_WEBHOOK_SECRET || "";
+    let event;
+
     try {
-      const signature = req.headers["stripe-signature"];
-      const endpointSecret: string = process.env.STRIPE_WEBHOOK_SECRET || "";
-      let event;
-      try {
-        event = stripe.webhooks.constructEvent(
-          req?.body,
-          signature,
-          endpointSecret,
-        );
-      } catch (error) {
-        logError(error, "[STRIPE-WEBHOOK-ERROR]");
-        return contextResponse.sendError(error);
-      }
-      logInfo(`[STRIPE-WEBHOOK] EVENT : ${event.type}`);
-      try {
-        switch (event.type) {
-          case "checkout.session.completed":
-            const session = event.data.object;
-            if (session.payment_status === "paid") {
-              const order = await Payment.handleSuccessfulPayment({ session });
-            }
-            break;
-          case "checkout.session.async_payment_succeeded":
-            const asyncSession = event.data.object;
+      event = stripe.webhooks.constructEvent(
+        req?.body,
+        signature,
+        endpointSecret,
+      );
+    } catch (error: any) {
+      logError(error, "[STRIPE-WEBHOOK-ERROR]");
+      return res.status(400).send(`Webhook Error: ${error.message}`);
+    }
 
-            const order = await Payment.handleSuccessfulPayment({
-              session: asyncSession,
-            });
+    logInfo(`[STRIPE-WEBHOOK] EVENT : ${event.type}`);
 
-            break;
+    try {
+      let order: any;
 
-          default:
-            logError(`[STRIPE-WEBHOOK] - Unhandled event type: ${event.type}`);
-            break;
+      switch (event.type) {
+        case "checkout.session.completed": {
+          const session = event.data.object;
+          if (session.payment_status === "paid") {
+            order = await Payment.handleSuccessfulPayment({ session });
+          }
+          break;
         }
-      } catch (error) {
-        logError(error, "[STRIPE-WEBHOOK-ERROR]");
-        return contextResponse.sendError(error);
+        case "checkout.session.async_payment_succeeded": {
+          const asyncSession = event.data.object;
+          order = await Payment.handleSuccessfulPayment({
+            session: asyncSession,
+          });
+          break;
+        }
+        default:
+          logInfo(`[STRIPE-WEBHOOK] - Unhandled event type: ${event.type}`);
+          break;
       }
-    } catch (e) {
-      contextResponse.sendError(e);
+
+      // Always respond 200 to acknowledge receipt — Stripe just needs an ack, not your full response shape
+      return res
+        .status(200)
+        .json({ received: true, orderId: order?.id ?? null });
+    } catch (error) {
+      logError(error, "[STRIPE-WEBHOOK-ERROR]");
+      // Still must respond, or Stripe will keep retrying and you'll hit the same hang
+      return res
+        .status(500)
+        .json({ received: false, error: "Webhook handler failed" });
     }
   }
 }
