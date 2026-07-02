@@ -5,17 +5,16 @@ import OrderDao from "@models/OrderDao";
 //--------------------------------------------------------------
 export default class Payment {
   static async handleSuccessfulPayment(data: any) {
-    const sessionId = data.sessionId;
-    if (!sessionId) return;
-    const sessionObject = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ["payment_intent", "metadata"],
-    });
+    const sessionObject = data.session;
+    if (!sessionObject) return;
 
-    const orderId = sessionObject?.metadata?.orderId;
+    const orderId = sessionObject?.metadata?.order; // matches Main.ts's metadata key
+    console.log("orderId: ", orderId);
     if (!orderId) return;
 
     let order = await OrderDao.findById(orderId);
     if (!order) return;
+
     order = await OrderDao.findByIdAndUpdate(orderId, {
       paymentStatus: "PAID",
       orderStatus: "CONFIRMED",

@@ -26,7 +26,6 @@ const ProductsRoute = ({
 }: productPropType) => {
   const [searchParams] = useSearchParams();
   const urlSearchTerm = searchParams.get("search") || "";
-  console.log("urlSearchTerm: ", urlSearchTerm);
   const [products, setProducts] = useState<any[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);

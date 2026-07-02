@@ -29,7 +29,7 @@ export default function SuccessPage() {
         }
       }
     } catch (error) {
-      console.log("error: ", error);
+      console.error("error: ", error);
       toast.error(error?.message || "Something went wrong");
     } finally {
       hideLoader();

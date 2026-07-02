@@ -57,7 +57,7 @@ const extractQueryWithRelation = (
   };
 };
 
-const splitCamelCase = (str: any) => {
+export const splitCamelCase = (str: any) => {
   let result = "";
 
   for (let i = 0; i < str.length; i++) {
@@ -755,7 +755,6 @@ export const sanitize = async (rawData: any, validation: any): Promise<any> => {
             // const modelAndKey: string[] = expFull[1].trim().split('.');
             const modelAndKey: string[] =
               extractQueryWithRelationResult.query.split(".");
-            console.log("modelAndKey: ", modelAndKey);
 
             // split column name for query {
             const columns = (modelAndKey.slice(1).join(".") || "").split(",");
@@ -778,13 +777,10 @@ export const sanitize = async (rawData: any, validation: any): Promise<any> => {
             if (!empty(extractQueryWithRelationResult.relations))
               options.relations = extractQueryWithRelationResult.relations;
 
-            console.log("models[modelAndKey[0]]", models[modelAndKey[0]]);
-
             const record: any = await models[modelAndKey[0]][
               `${modelAndKey[0]}Dao`
             ].findOne(query, options);
 
-            console.log("record: ", record);
             if (!record) {
               messageObject[dataKey] = formatMessage(
                 `${label || splitCamelCase(dataKey)} already exist in ${modelAndKey[0].toLowerCase()}.`,

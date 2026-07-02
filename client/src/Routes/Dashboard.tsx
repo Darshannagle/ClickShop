@@ -19,7 +19,7 @@ const Dashboard = () => {
       const data = await getAPIData("/api/user/list");
       setUsers(data);
     } catch (error) {
-      console.log("error while fetching users : ", error);
+      console.error("error while fetching users : ", error);
     }
   };
   useEffect(() => {

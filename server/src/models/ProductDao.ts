@@ -1,8 +1,8 @@
-import { ModelNames } from "./Base";
+import { ModelName, ModelNames } from "./Base";
 import BaseDao from "./BaseDao";
 
 export class ProductDao extends BaseDao {
-  protected static modelName: ModelNames = "product";
+  protected static modelName: ModelName = "Product";
   constructor() {
     super();
   }
@@ -47,12 +47,6 @@ export class ProductDao extends BaseDao {
     if (filters.maxPrice) query.salePrice = { lte: filters.maxPrice };
     if (filters.brand) query.brand = filters.brand;
 
-    console.log("query: ", query);
-    console.log("filters?.sortBy: ", filters?.sortBy);
-    console.log("filters?.sortOrder: ", filters?.sortOrder);
-    console.log(
-      `${{ [filters?.sortBy || "createdAt"]: filters?.sortOrder || "DESC" }.toString()}`,
-    );
     const result = await this.paginate(query, {
       page,
       limit,

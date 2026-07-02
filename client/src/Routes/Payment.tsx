@@ -556,7 +556,7 @@ const Payment = () => {
           if (res?.data?.checkoutUrl) {
             window.location.href = res?.data?.checkoutUrl;
           } else {
-            console.log("error while creating order: ", res?.errors[1]);
+            console.error("error while creating order: ", res?.errors[0]);
             toast.error("Something went wrong");
           }
         } else {

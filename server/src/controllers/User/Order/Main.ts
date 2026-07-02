@@ -5,13 +5,14 @@ import OrderDao from "@models/OrderDao";
 import OrderItemDao from "@models/OrderItemDao";
 import { ProductDao } from "@models/ProductDao";
 import { PaymentMethod } from "@prisma/client";
-import { isQueryError, logError, sanitize } from "@utils";
+import { empty, isQueryError, logError, sanitize } from "@utils";
 import { OrderStatus, PaymentStatus } from "@prisma/client";
 import { CartItemDao } from "@models/CartItemDao";
 import stripe from "@config/Stripe";
 import config from "@config";
 import Constant from "@config/Constant";
 import prisma from "../../../prisma";
+import Format from "./helper";
 
 //--------------------------------------------------------------
 export default class Main {
@@ -19,7 +20,6 @@ export default class Main {
     const { contextResponse, contextError, contextUser } = req;
     try {
       // sanitize data {
-      console.log("req.body: ", req.body);
       const sanitizeResult = await sanitize(req.body, {
         addressId: `required | exist: Address.id (${USER_MSG.ORDER.CREATE.ADDRESS_NOT_FOUND})`,
         totalAmount: `required | number | normalize: number`,
@@ -48,69 +48,70 @@ export default class Main {
       body.cartItems = cartItems;
       const user = contextUser;
       let order: any;
-      const result = await prisma.$transaction(async (tx) => {
-        order = await OrderDao.create(
-          {
-            totalAmount: 0,
-            orderStatus: OrderStatus.PENDING,
-            paymentStatus: PaymentStatus.PENDING,
-            paymentMethod: body.paymentMethod,
-            user: { connect: { id: user.id } },
-            address: { connect: { id: body.addressId } },
-          },
-          tx,
-          { include: { orderItems: true } },
-        );
-        if (isQueryError(order))
-          throw contextError.client(
-            USER_MSG.ORDER.CREATE.FAILED + " while createing order",
-          );
-
-        let totalAmount = 0;
-        // const orderItems = [];
-
-        for (const cartItem of cartItems) {
-          const product = await ProductDao.findById(cartItem.productId, tx);
-          if (isQueryError(product))
-            throw contextError.client(
-              USER_MSG.ORDER.CREATE.FAILED + " while fetching product",
-            );
-          totalAmount += cartItem.quantity * cartItem.soldPrice;
-          const orderItem = await OrderItemDao.create(
+      const result = await prisma.$transaction(
+        async (tx) => {
+          order = await OrderDao.create(
             {
-              // productId: cartItem.productId,
-              product: { connect: { id: cartItem.productId } },
-              quantity: cartItem.quantity,
-              soldPrice: cartItem.soldPrice,
-              productSnapshot: JSON.parse(JSON.stringify(product)),
-              order: { connect: { id: order.id } },
+              totalAmount: 0,
+              orderStatus: OrderStatus.PENDING,
+              paymentStatus: PaymentStatus.PENDING,
+              paymentMethod: body.paymentMethod,
+              user: { connect: { id: user.id } },
+              address: { connect: { id: body.addressId } },
             },
             tx,
+            { include: { orderItems: true } },
           );
-          if (isQueryError(orderItem))
+          if (isQueryError(order))
             throw contextError.client(
-              USER_MSG.ORDER.CREATE.FAILED + " while creating order item",
+              USER_MSG.ORDER.CREATE.FAILED + " while createing order",
             );
-          // orderItems.push(orderItem);
-        }
-        order = await OrderDao.findByIdAndUpdate(
-          order.id,
-          { totalAmount: totalAmount },
-          tx,
-          {
-            include: { orderItems: true, address: true },
-          },
-        );
-        console.log("order: ", order);
-        if (isQueryError(order))
-          throw contextError.client(
-            USER_MSG.ORDER.CREATE.FAILED +
-              "while saving address and totalAmount",
+
+          let totalAmount = 0;
+          // const orderItems = [];
+
+          for (const cartItem of cartItems) {
+            const product = await ProductDao.findById(cartItem.productId, tx);
+            if (isQueryError(product))
+              throw contextError.client(
+                USER_MSG.ORDER.CREATE.FAILED + " while fetching product",
+              );
+            totalAmount += cartItem.quantity * cartItem.soldPrice;
+            const orderItem = await OrderItemDao.create(
+              {
+                // productId: cartItem.productId,
+                product: { connect: { id: cartItem.productId } },
+                quantity: cartItem.quantity,
+                soldPrice: cartItem.soldPrice,
+                productSnapshot: JSON.parse(JSON.stringify(product)),
+                order: { connect: { id: order.id } },
+              },
+              tx,
+            );
+            if (isQueryError(orderItem))
+              throw contextError.client(
+                USER_MSG.ORDER.CREATE.FAILED + " while creating order item",
+              );
+            // orderItems.push(orderItem);
+          }
+          order = await OrderDao.findByIdAndUpdate(
+            order.id,
+            { totalAmount: totalAmount },
+            tx,
+            {
+              include: { orderItems: true, address: true },
+            },
           );
-      });
+          if (isQueryError(order))
+            throw contextError.client(
+              USER_MSG.ORDER.CREATE.FAILED +
+                "while saving address and totalAmount",
+            );
+        },
+        { timeout: 15000 },
+      );
 
       if (body.paymentMethod === PaymentMethod.ONLINE) {
-        console.log("order?.orderItems: ", order?.orderItems);
         const lineItems = (order?.orderItems || [])?.map((orderItem: any) => {
           return {
             price_data: {
@@ -191,9 +192,34 @@ export default class Main {
     try {
       const list = await OrderDao.find(
         { userId: contextUser.id },
-        { include: { address: true }, orderBy: { createdAt: "desc" } },
+        {
+          include: {
+            address: true,
+            orderItems: {
+              include: {
+                product: {
+                  select: {
+                    images: true,
+                  },
+                },
+              },
+            },
+          },
+          // select: {
+          //   id: true,
+          //   totalAmount: true,
+          //   orderStatus: true,
+          //   paymentStatus: true,
+          //   paymentMethod: true,
+          //   createdAt: true,
+          //   "address.id": true,
+          //   "orderItems.product.images": true,
+          // },
+          orderBy: { createdAt: "desc" },
+        },
       );
-      contextResponse.sendOk(list, USER_MSG.ORDER.LIST.SUCCESS);
+      if (empty(list)) throw contextError.client(USER_MSG.ORDER.LIST.FAILED);
+      contextResponse.sendOk(Format.list(list), USER_MSG.ORDER.LIST.SUCCESS);
     } catch (e) {
       contextResponse.sendError(e);
     }

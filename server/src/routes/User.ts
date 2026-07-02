@@ -46,5 +46,7 @@ route.get("/order/list", userAuth, Order.Main.list);
 // Address ------------------------------------------
 route.post("/address/create", userAuth, Address.Main.create);
 route.get("/address/list", userAuth, Address.Main.list);
+route.put("/address/update", userAuth, Address.Main.update);
+route.delete("/address/delete", userAuth, Address.Main.delete);
 
 export default route;

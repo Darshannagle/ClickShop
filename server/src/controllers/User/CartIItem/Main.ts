@@ -80,11 +80,9 @@ export default class Main {
       }
 
       const body = sanitizeResult.body;
-      console.log("body: ", body);
       // } sanitize data
       let cartItem = sanitizeResult.records["id"];
       const product = await ProductDao.findById(cartItem.productId);
-      console.log("product: ", product);
       if (product.stock < body.quantity) {
         throw contextError.client(USER_MSG.CART_ITEM.CREATE.INSUFFICIENT_STOCK);
       }

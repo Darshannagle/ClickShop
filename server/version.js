@@ -17,12 +17,11 @@ const versionData = {
     buildNo,
     timestamp,
     note: `Version: ${packageJson.version} | Build No: ${buildNo}`,
-    asciiBranding: " _______            _ _               _____  _       _    __                     \n |__   __|          | (_)             |  __ \\| |     | |  / _|                    \n    | |_ __ __ _  __| |_ _ __   __ _  | |__) | | __ _| |_| |_ ___  _ __ _ __ ___  \n    | | '__/ _` |/ _` | | '_ \\ / _` | |  ___/| |/ _` | __|  _/ _ \\| '__| '_ ` _ \\ \n    | | | | (_| | (_| | | | | | (_| | | |    | | (_| | |_| || (_) | |  | | | | | |\n    |_|_|  \\__,_|\\__,_|_|_| |_|\\__, | |_|    |_|\\__,_|\\__|_| \\___/|_|  |_| |_| |_|\n                                __/ |                                             \n                               |___/                                              ",
-    quote: ``
+    asciiBranding: "______ _ _      _        _                 \n/  ____| (_)    | |      | |                \n| |    | |_  ___| | _____| |__   ___  _ __  \n| |    | | |/ __| |/ / __| '_ \\ / _ \\| '_ \\ \n| |____| | | (__|   <\\__ \\ | | | (_) | |_) |\n\\______|_|_|\\___|_|\\_\\___/_| |_|\\___/| .__/ \n                                     | |    \n                                     |_|    \n"
+    , quote: ``
 
 };
-// https://patorjk.com/software/taag/#p=display&f=Big&t=Trading+Platform&x=none&v=4&h=4&w=80&we=false
-
+//https://patorjk.com/software/taag/#p=display&f=Big&t=Clickshop&x=none&v=4&h=4&w=80&we=false
 fs.writeFileSync(path.join('version.json'), JSON.stringify(versionData, null, 2));
 
 

@@ -45,10 +45,11 @@ import {
   Email,
   Mode,
   Phone,
-  ReceiptLongOutlined,
   SaveOutlined,
   ShoppingBagOutlined,
 } from "@mui/icons-material";
+import ContainedButton from "@/Components/Button/ContainedButton";
+import Constant from "@/config/Constant";
 
 export default function MyAccount() {
   // check whether it is desktop :
@@ -191,15 +192,15 @@ export default function MyAccount() {
                 height: isDesktop ? "100%" : "auto",
                 "& .MuiTabs-indicator": {
                   // display: "none",
-                  backgroundColor: "black",
+                  backgroundColor: "transparent",
                 },
                 "& .MuiTab-root": {
                   color: "#6e6e6e", // inactive tab color
                 },
                 "& .MuiTab-root.Mui-selected": {
-                  border: "1px solid black",
-                  // backgroundColor: "black",
-                  color: "#000", // 🔥 active tab text/icon color
+                  // border: "1px solid black",
+                  backgroundColor: "black",
+                  color: "whitesmoke", // 🔥 active tab text/icon color
                   fontWeight: 600,
                 },
                 "& .MuiTabs-flexContainer": {
@@ -501,7 +502,8 @@ export default function MyAccount() {
     state: string;
     country: string;
     pinCode: string;
-    addressType: "HOME" | "OFFICE";
+    addressType: "HOME" | "WORK";
+    // addressType: { key: string; label: string };
     isDefault: boolean;
   }
 
@@ -609,8 +611,21 @@ export default function MyAccount() {
       }));
     };
 
-    const showModal = (address: Address = initialAddress, update = false) => {
-      setSelectedAddress({ ...address }); // clone
+    const showModal = async (
+      address: Address = initialAddress,
+      update = false,
+    ) => {
+      setSelectedAddress({
+        addressLine1: address?.addressLine1,
+        addressLine2: address?.addressLine2,
+        city: address?.city,
+        state: address?.state,
+        country: address?.country,
+        pinCode: address?.pinCode,
+        addressType: (address?.addressType as any)?.key ?? address?.addressType,
+        isDefault: address?.isDefault,
+        id: address?.id,
+      }); // clone
       setIsUpdate(update);
       setIsOpen(true);
     };
@@ -719,9 +734,9 @@ export default function MyAccount() {
                     label="Home"
                   />
                   <FormControlLabel
-                    value="OFFICE"
+                    value="WORK"
                     control={<Radio size="small" />}
-                    label="Office"
+                    label="Work"
                   />
                 </RadioGroup>
               </FormControl>
@@ -739,13 +754,13 @@ export default function MyAccount() {
                 }
               />
 
-              <Button
+              <ContainedButton
                 variant="contained"
                 onClick={isUpdate ? updateAddress : addAddress}
                 sx={{ gridColumn: "1 / -1", textTransform: "none" }}
               >
                 {isUpdate ? "Update Address" : "Add Address"}
-              </Button>
+              </ContainedButton>
             </Box>
           </Modal>
 
@@ -759,6 +774,7 @@ export default function MyAccount() {
                   sx={{
                     border: "1px solid #ddd",
                     borderRadius: 2,
+                    p: 2,
                     my: 1,
                     display: "flex",
                     flexDirection: { xs: "column", sm: "row" },
@@ -782,7 +798,9 @@ export default function MyAccount() {
                     sx={{
                       display: "flex",
                       gap: 1,
+                      border: "ActiveBorder",
                       flexWrap: "wrap",
+                      alignItems: "center",
                       justifyContent: { xs: "flex-start", sm: "flex-end" },
                       width: { xs: "100%", sm: "auto" },
                     }}
@@ -791,24 +809,25 @@ export default function MyAccount() {
                       <Typography fontSize="10px">Default</Typography>
                     )}
 
-                    <Typography
-                      fontSize="10px"
+                    <Chip
+                      size="small"
+                      label={(addr.addressType as any)?.label}
+                      // fontSize="10px"
+
                       sx={{
-                        height: "max-content",
+                        // height: "max-content",
                         backgroundColor: "var(--secondary-color)",
                         color: "var(--primary-color)",
-                        p: 1,
+                        // p: 1,
                         borderRadius: 1,
                       }}
-                    >
-                      {addr.addressType}
-                    </Typography>
+                    ></Chip>
 
                     <IconButton onClick={() => showModal(addr, true)}>
                       <Mode color="warning" />
                     </IconButton>
 
-                    <IconButton onClick={() => deleteAddress(addr.id)}>
+                    <IconButton onClick={() => deleteAddress(addr?.id)}>
                       <Delete color="error" />
                     </IconButton>
                   </Box>
@@ -847,6 +866,7 @@ export default function MyAccount() {
           return { color: "success", label: "Delivered" };
         case "processing":
         case "preparing":
+        case "confirmed":
           return { color: "primary", label: "Processing" };
         case "shipped":
           return { color: "info", label: "Shipped" };
@@ -905,7 +925,7 @@ export default function MyAccount() {
 
           <Stack spacing={2}>
             {orders.map((order: any) => {
-              const statusProps = getStatusProps(order.orderStatus);
+              const statusProps = getStatusProps(order?.orderStatus?.label);
 
               return (
                 <Box
@@ -941,7 +961,8 @@ export default function MyAccount() {
                         justifyContent: "center",
                       }}
                     >
-                      <ReceiptLongOutlined color="action" />
+                      <Box component={"img"} src={order?.images[0]}></Box>
+                      {/* <ReceiptLongOutlined color="action" /> */}
                     </Box>
 
                     <Box>
@@ -950,7 +971,7 @@ export default function MyAccount() {
                         fontWeight="600"
                         color="text.primary"
                       >
-                        Order #{order.id}
+                        {order?.orderStatus?.label}
                       </Typography>
                       <Stack
                         direction="row"
@@ -979,13 +1000,14 @@ export default function MyAccount() {
                   >
                     <Box>
                       <Typography variant="subtitle1" fontWeight="bold">
-                        ${order.totalAmount}
+                        {Constant.CURRENCY[Constant.PRIAMRY_CURRENCY].SYMBOL}
+                        {order.totalAmount}
                       </Typography>
                       <Chip
                         label={statusProps.label}
                         size="small"
-                        // color={statusProps.color}
-                        sx={{ mt: 0.5, fontWeight: 500 }}
+                        color={statusProps.color as any}
+                        sx={{ mt: 0.5, fontWeight: 500, borderRadius: "5px" }}
                       />
                     </Box>
 

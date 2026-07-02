@@ -86,7 +86,7 @@ const ProductDetails = ({ isCart = false }) => {
         toast.error(cartReponse?.message || "Something went wrong");
       }
     } catch (error) {
-      console.log("error: ", error);
+      console.error("error: ", error);
       toast.error(error?.message || "Something went wrong");
     }
   };

@@ -51,7 +51,6 @@ const ContainedButton = styled(Button, {
 
     transition: "transform 0.2s ease, box-shadow 0.2s ease",
 
-    /* ❌ Disable hover when disabled */
     "&:hover": {
       transform: scaleOnHover ? "scale(1.1)" : "none",
       boxShadow: scaleOnHover ? "0 0 8px 6px var(--primary-color)" : "none",

@@ -115,7 +115,7 @@ const Register = () => {
         toast.error(res?.message || "Something went wrong");
       }
     } catch (err) {
-      console.log("error while fetching users : ", err);
+      console.error("error while fetching users : ", err);
       toast.error("Something went wrong");
     } finally {
       hideLoader();
@@ -130,8 +130,12 @@ const Register = () => {
         );
         const data = await response.json();
         console.log(data);
+        navigate("/dashboard");
       }
-      navigate("/dashboard");
+      if (authResult["error"]) {
+        console.error(authResult["error"]);
+        toast.error(authResult["error"]?.message || "Something went wrong");
+      }
     } catch (error) {
       console.error("error: ", error);
     }

@@ -6,14 +6,14 @@ import {
   TextField,
   InputAdornment,
 } from "@mui/material";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 
 const ForgotPassword = () => {
-  const [path, setPath] = useState("reset-password");
+  // const [path, setPath] = useState("reset-password");
   const [registrationData, setRegistrationData] = useState({} as any);
+
   const handleDataChange = (field: string, value: string) => {
-    console.log("field: ", field);  
-    const { field: f, ...rest } = registrationData;
+    const { [field]: f, ...rest } = registrationData;
     setRegistrationData({ [f]: value, ...rest });
   };
   return (
@@ -205,8 +205,8 @@ const ForgotPassword = () => {
 //   );
 // };
 
-const paths: Record<string, ReactNode> = {
-  // email: EmailInput(),
-  // "email-sent": EmailSent(),
-};
+// const paths: Record<string, ReactNode> = {
+// email: EmailInput(),
+// "email-sent": EmailSent(),
+// };
 export default ForgotPassword;

@@ -23,14 +23,13 @@ const Home = () => {
     if (prodRes?.code === "0000") {
       setProducts(prodRes?.data?.records);
     } else {
-      console.log("error while fetching products : ", prodRes?.errors[1]);
+      console.error("error while fetching products : ", prodRes?.errors[1]);
     }
   };
   useEffect(() => {
     fetchProducts();
   }, [tab]);
-  const changeTab = (event, tab) => {
-    console.log(event);
+  const changeTab = (_event: any, tab) => {
     setTab(tab);
   };
   return (

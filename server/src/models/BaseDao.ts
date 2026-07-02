@@ -1,12 +1,10 @@
 // base.dao.ts
-import { PrismaClient } from "@prisma/client";
-import { isValid as ulidValidate } from "ulid";
-import { d, empty, logError, logSuccess, newULID } from "@utils";
-import prisma from "../prisma";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { empty, logError, logSuccess, newULID } from "@utils";
 
 export default class BaseDao {
   protected static prisma: PrismaClient;
-  protected static modelName: string; // each subclass declares its own
+  protected static modelName: Prisma.ModelName; // each subclass declares its own
 
   static async init(prisma: PrismaClient) {
     await prisma.$connect();
@@ -15,14 +13,13 @@ export default class BaseDao {
     logSuccess("[BaseDao] ✅ Prisma initialized successfully");
   }
 
-  // ✅ static getter — accessible as this.repository or SubClass.repository
   protected static get repository() {
     if (!BaseDao.prisma) {
       throw new Error(
         "[BaseDao] Prisma not initialized. Call BaseDao.init(prisma) first!",
       );
     }
-    // ✅ `this.modelName` resolves to the *subclass* value, not BaseDao's
+
     const repo = (BaseDao.prisma as any)[(this as typeof BaseDao).modelName];
     if (!repo) {
       throw new Error(
@@ -277,7 +274,7 @@ export default class BaseDao {
   static async findByIdAndDelete(id: string) {
     try {
       // if (empty(id) || !ulidValidate(id)) throw new Error("Invalid ID");
-      const data = await BaseDao.findById(id);
+      const data = await this.repository.findUnique({ where: { id } });
       await this.repository.delete({ where: { id } });
       return data;
     } catch (e) {
@@ -299,7 +296,6 @@ export default class BaseDao {
 
   // ==================== PAGINATION ====================
   static async paginate(query: any = {}, options: any = {}) {
-    console.log("options: ", options);
     try {
       const page = options.page || 1;
       const limit = options.limit || 10;

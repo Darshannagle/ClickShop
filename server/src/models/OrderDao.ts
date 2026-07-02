@@ -1,4 +1,4 @@
-import { ModelNames, prisma } from "./Base";
+import { ModelNames } from "./Base";
 import BaseDao from "./BaseDao";
 
 export default class OrderDao extends BaseDao {

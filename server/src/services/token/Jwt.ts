@@ -12,7 +12,6 @@ import { IHelperError, IVerifyRet } from "./interface";
 //--------------------------------------------------------------
 export default class Jwt {
   static sign(identity: any): string {
-    console.log("Config.JWT.EXPIRES_IN: ", Config.JWT.EXPIRES_IN);
     return jsonwebtoken.sign(identity, Config.JWT.SECRET_KEY, {
       expiresIn: Config.JWT.EXPIRES_IN,
     } as any);

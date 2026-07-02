@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ContainedButton from "../Button/ContainedButton";
+import Constant from "@/config/Constant";
 
 const Product = (props) => {
   const { product } = props;
@@ -55,7 +56,8 @@ const Product = (props) => {
           {product?.name}
         </Typography>
         <Typography variant="body2" fontWeight={700}>
-          ${product?.salePrice}
+          {Constant.CURRENCY[Constant.PRIAMRY_CURRENCY].SYMBOL}
+          {product?.salePrice}
         </Typography>
         {/* <s>${product?.basePrice}</s> */}
         <CardActions>

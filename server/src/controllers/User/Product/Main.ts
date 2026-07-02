@@ -47,7 +47,6 @@ export default class Main {
       if (sanitizeResult.error || !sanitizeResult.body)
         throw contextError.client(sanitizeResult);
       const body = sanitizeResult.body;
-      console.log("body: ", body);
 
       sanitizeResult = await sanitize(body?.filters || {}, {
         search: `text`,
@@ -63,7 +62,6 @@ export default class Main {
       if (sanitizeResult.error || !sanitizeResult.body)
         throw contextError.client(sanitizeResult);
       const rawFilters = sanitizeResult.body || {};
-      console.log("rawFilters: ", rawFilters);
       const page = body.page || 1;
       const limit = body.limit || 10;
       // } sanitize data

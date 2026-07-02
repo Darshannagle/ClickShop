@@ -104,7 +104,6 @@ function Appbar() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("searchTerm: ", searchTerm);
     if (searchTerm.trim()) {
       setSearchParams({ search: searchTerm.trim() });
       navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);

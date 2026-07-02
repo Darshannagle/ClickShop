@@ -143,6 +143,7 @@ export const ORDER = {
   LIST: {
     SUCCESS: `Order fetched successfully`,
     INVALID_PAYLOAD: `Invalid order payload`,
+    FAILED: `Failed to fetch order`,
   },
 };
 
@@ -152,6 +153,12 @@ export const ADDRESS = {
     INVALID_PAYLOAD: `Invalid address payload`,
     ALREADY_EXIST: `Address already exist`,
     FAILED: `Failed to create address`,
+  },
+  UPDATE: {
+    SUCCESS: `Address updated successfully`,
+    INVALID_PAYLOAD: `Invalid address payload`,
+    ADDRESS_NOT_FOUND: `Address not found`,
+    FAILED: `Failed to update address`,
   },
   LIST: {
     SUCCESS: `Address fetched successfully`,

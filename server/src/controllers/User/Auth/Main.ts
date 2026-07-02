@@ -84,8 +84,6 @@ export default class Main {
 
       const { token } = await prisma.$transaction(async (tx) => {
         const user = sanitizeResult?.records["email"];
-        console.log("user: ", user);
-        console.log("user?.password: ", user?.password);
 
         // check password {
         const isPasswordMatch = Password.verifyPassword(
