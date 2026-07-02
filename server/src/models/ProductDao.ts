@@ -1,4 +1,4 @@
-import { ModelName, ModelNames } from "./Base";
+import { ModelName } from "./Base";
 import BaseDao from "./BaseDao";
 
 export class ProductDao extends BaseDao {

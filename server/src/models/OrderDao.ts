@@ -1,8 +1,8 @@
-import { ModelNames } from "./Base";
+import { ModelName } from "./Base";
 import BaseDao from "./BaseDao";
 
 export default class OrderDao extends BaseDao {
-  protected static modelName: ModelNames = "order";
+  protected static modelName: ModelName = "Order";
   constructor() {
     super();
   }

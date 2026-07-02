@@ -1,8 +1,8 @@
-import { ModelNames, prisma } from "./Base";
+import { ModelName } from "./Base";
 import BaseDao from "./BaseDao";
 
 export default class RoleDao extends BaseDao {
-  protected static modelName: ModelNames = "role";
+  protected static modelName: ModelName = "Role";
   constructor() {
     super();
   }

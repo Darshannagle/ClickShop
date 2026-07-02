@@ -1,8 +1,8 @@
-import { ModelNames } from "./Base";
+import { ModelName } from "./Base";
 import BaseDao from "./BaseDao";
 
 export class CartItemDao extends BaseDao {
-  protected static modelName: ModelNames = "cartItem";
+  protected static modelName: ModelName = "CartItem";
 
   constructor() {
     super();
