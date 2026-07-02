@@ -1,5 +1,6 @@
 import ContainedButton from "@/Components/Button/ContainedButton";
 import OutlinedButton from "@/Components/Button/OutlinedButton";
+import Constant from "@/config/Constant";
 import { endPoint } from "@/config/siteConfig";
 import { useLoader } from "@/context/LoaderContext";
 import { getAPIData } from "@/helper/apiHelper";
@@ -277,7 +278,8 @@ const Payment = () => {
                       }
                       subheader={
                         <Typography variant="body2" color="text.secondary">
-                          ${shipping?.price}
+                          {Constant.CURRENCY[Constant.PRIAMRY_CURRENCY].SYMBOL}
+                          {shipping?.price}
                         </Typography>
                       }
                       // action={
@@ -330,7 +332,10 @@ const Payment = () => {
                 }
                 action={<IconButton aria-label=""></IconButton>}
                 title={item?.product?.name}
-                subheader={`$ ${item?.soldPrice}`}
+                subheader={`
+                    ${Constant.CURRENCY[Constant.PRIAMRY_CURRENCY].SYMBOL}
+                  
+                  ${item?.soldPrice}`}
               />
             ))}
             <Box sx={{ p: 1, gap: 1 }}>
@@ -367,7 +372,8 @@ const Payment = () => {
                       </TableCell>
                       <TableCell>
                         <Typography variant="body2" fontWeight={900}>
-                          ${order?.subTotal}
+                          {Constant.CURRENCY[Constant.PRIAMRY_CURRENCY].SYMBOL}
+                          {order?.subTotal}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -383,7 +389,8 @@ const Payment = () => {
                       </TableCell>
                       <TableCell>
                         <Typography variant="body2" fontWeight={900}>
-                          ${order?.estimatedTax}
+                          {Constant.CURRENCY[Constant.PRIAMRY_CURRENCY].SYMBOL}
+                          {order?.estimatedTax}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -399,7 +406,8 @@ const Payment = () => {
                       </TableCell>
                       <TableCell>
                         <Typography variant="body2" fontWeight={900}>
-                          ${order?.estimatedShipping}
+                          {Constant.CURRENCY[Constant.PRIAMRY_CURRENCY].SYMBOL}
+                          {order?.estimatedShipping}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -415,7 +423,8 @@ const Payment = () => {
                       </TableCell>
                       <TableCell>
                         <Typography variant="body2" fontWeight={900}>
-                          ${order?.totalAmount}
+                          {Constant.CURRENCY[Constant.PRIAMRY_CURRENCY].SYMBOL}
+                          {order?.totalAmount}
                         </Typography>
                       </TableCell>
                     </TableRow>

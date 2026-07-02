@@ -18,7 +18,8 @@ const Products = ({ products = [] }) => {
         ) : (
           <Grid size={12}>
             <Alert
-              severity="info"
+              variant="filled"
+              severity="warning"
               sx={{ margin: " 10px auto", textAlign: "center", width: 200 }}
             >
               No products found

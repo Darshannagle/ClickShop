@@ -218,7 +218,8 @@ export default class Main {
           orderBy: { createdAt: "desc" },
         },
       );
-      if (empty(list)) throw contextError.client(USER_MSG.ORDER.LIST.FAILED);
+      if (isQueryError(list))
+        throw contextError.client(USER_MSG.ORDER.LIST.FAILED);
       contextResponse.sendOk(Format.list(list), USER_MSG.ORDER.LIST.SUCCESS);
     } catch (e) {
       contextResponse.sendError(e);

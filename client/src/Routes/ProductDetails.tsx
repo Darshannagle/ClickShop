@@ -31,6 +31,7 @@ import {
   LocalOfferOutlined,
   AddShoppingCart,
 } from "@mui/icons-material";
+import Constant from "@/config/Constant";
 
 const ProductDetails = ({ isCart = false }) => {
   const [product, setProduct] = useState(null);
@@ -171,7 +172,8 @@ const ProductDetails = ({ isCart = false }) => {
               <CardContent>
                 <Stack direction="row" alignItems="baseline" spacing={1.5}>
                   <Typography variant="h6" color="textPrimary" fontWeight={500}>
-                    ${product.salePrice}
+                    {Constant.CURRENCY[Constant.PRIAMRY_CURRENCY].SYMBOL}
+                    {product.salePrice}
                   </Typography>
                   {product.basePrice > product.salePrice && (
                     <Typography
@@ -179,7 +181,8 @@ const ProductDetails = ({ isCart = false }) => {
                       color="text.disabled"
                       sx={{ textDecoration: "line-through" }}
                     >
-                      ${product.basePrice}
+                      {Constant.CURRENCY[Constant.PRIAMRY_CURRENCY].SYMBOL}
+                      {product.basePrice}
                     </Typography>
                   )}
                 </Stack>

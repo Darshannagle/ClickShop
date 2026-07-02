@@ -118,7 +118,11 @@ const ProductsRoute = ({
   if (error) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Alert severity="info" sx={{ maxWidth: 500, mx: "auto" }}>
+        <Alert
+          severity="info"
+          variant="outlined"
+          sx={{ maxWidth: 500, mx: "auto" }}
+        >
           {error}
         </Alert>
       </Container>

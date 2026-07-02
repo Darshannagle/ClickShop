@@ -16,6 +16,7 @@ import {
   TableRow,
   CircularProgress,
   InputAdornment,
+  Alert,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLoader } from "../context/LoaderContext";
@@ -290,7 +291,12 @@ const Cart = () => {
               })}
             </Box>
           ) : (
-            <Box></Box>
+            <Box>
+              <Alert variant="outlined" severity="info">
+                You haven't added any item to cart, Go and explore our products
+                and add them to your cart !!
+              </Alert>
+            </Box>
           )}
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
@@ -349,7 +355,7 @@ const Cart = () => {
                       </TableCell>
                       <TableCell>
                         <Typography variant="body2" fontWeight={900}>
-                          ${totalDetails?.estimatedTax}
+                          ${cart?.length ? totalDetails?.estimatedTax : 0}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -365,7 +371,7 @@ const Cart = () => {
                       </TableCell>
                       <TableCell>
                         <Typography variant="body2" fontWeight={900}>
-                          ${totalDetails?.estimatedShipping}
+                          ${cart?.length ? totalDetails?.estimatedShipping : 0}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -381,7 +387,7 @@ const Cart = () => {
                       </TableCell>
                       <TableCell>
                         <Typography variant="body2" fontWeight={900}>
-                          ${totalDetails?.total}
+                          ${cart?.length ? totalDetails?.total : 0}
                         </Typography>
                       </TableCell>
                     </TableRow>

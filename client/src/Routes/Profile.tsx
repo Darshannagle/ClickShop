@@ -159,7 +159,9 @@ export default function MyAccount() {
   if (error) {
     return (
       <Box maxWidth={500} mx="auto" mt={6}>
-        <Alert severity="warning">{error}</Alert>
+        <Alert severity="warning" variant="outlined">
+          {error}
+        </Alert>
       </Box>
     );
   }
@@ -924,7 +926,7 @@ export default function MyAccount() {
           <Divider sx={{ mb: 3 }} />
 
           <Stack spacing={2}>
-            {orders.map((order: any) => {
+            {orders?.map((order: any) => {
               const statusProps = getStatusProps(order?.orderStatus?.label);
 
               return (
