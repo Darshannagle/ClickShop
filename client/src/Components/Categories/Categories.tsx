@@ -25,7 +25,7 @@ const categories = [
 const Categories = () => {
   const scrollRef = useRef(null);
 
-  const scroll = (offset) => {
+  const scroll = (offset: number) => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({
         left: offset,

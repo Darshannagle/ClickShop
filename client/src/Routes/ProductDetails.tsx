@@ -287,7 +287,7 @@ const ProductDetails = ({ isCart = false }) => {
                       }
                       disabled={quantity <= 1}
                     >
-                      <Remove />
+                      <Remove htmlColor={quantity <= 1 ? "grey" : "black"} />
                     </IconButton>
                     <Typography
                       sx={{
@@ -299,7 +299,7 @@ const ProductDetails = ({ isCart = false }) => {
                       {quantity}
                     </Typography>
                     <IconButton onClick={() => setQuantity((prev) => prev + 1)}>
-                      <Add />
+                      <Add htmlColor="black" />
                     </IconButton>
                   </Paper>
 

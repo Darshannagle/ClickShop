@@ -41,6 +41,7 @@ const navLinkStyles: unknown = ({ isActive }: { isActive: boolean }) => ({
   // borderRadius: "5px",
   textAlign: "center",
   border: isActive ? "1px solid black" : "none",
+
   // fontWeight: isActive ? "bold" : "normal",
   // padding: "5px 10px",
 });

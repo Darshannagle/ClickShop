@@ -23,7 +23,7 @@ import { useLoader } from "../context/LoaderContext";
 import { getAPIData } from "../helper/apiHelper";
 import { endPoint } from "../config/siteConfig";
 import toast from "react-hot-toast";
-import { Delete } from "@mui/icons-material";
+import { Add, Delete, Remove } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
@@ -220,60 +220,79 @@ const Cart = () => {
 
                       {/* Quantity Controls */}
                       <Box mt={2} display="flex" alignItems="center" gap={1}>
-                        <IconButton
-                          size="small"
-                          onClick={() =>
-                            setQuantity(item.id, Math.max(1, item.quantity - 1))
-                          }
-                          disabled={item.quantity <= 1}
+                        <Paper
+                          variant="outlined"
                           sx={{
-                            border: "1px solid",
-                            borderColor: "divider",
-                            borderRadius: 1,
-                            py: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            borderRadius: 2,
                           }}
                         >
-                          -
-                        </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() =>
+                              setQuantity(
+                                item.id,
+                                Math.max(1, item.quantity - 1),
+                              )
+                            }
+                            disabled={item.quantity <= 1}
+                            sx={{
+                              // border: "1px solid",
+                              // borderColor: "divider",
+                              // borderRadius: 1,
+                              py: 0,
+                            }}
+                          >
+                            <Remove
+                              htmlColor={item?.quantity <= 1 ? "grey" : "black"}
+                            />
+                          </IconButton>
 
-                        <TextField
-                          size="small"
-                          type="number"
-                          value={item.quantity}
-                          onChange={(e) => {
-                            const value = Number(e.target.value);
-                            if (value > 0) setQuantity(item.id, value);
-                          }}
-                          sx={{
-                            width: 60,
-                            "& input": { textAlign: "center" },
-                          }}
-                          InputProps={{
-                            endAdornment: isUpdatingQty && (
-                              <InputAdornment position="end">
-                                <CircularProgress size={16} />
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
+                          <TextField
+                            size="small"
+                            type="number"
+                            value={item.quantity}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              if (value > 0) setQuantity(item.id, value);
+                            }}
+                            sx={{
+                              border: "none",
+                              py: 0,
+                              width: 60,
+                              "& fieldset": { border: "none" },
+                              "& input": {
+                                textAlign: "center",
+                                border: "none",
+                              },
+                            }}
+                            InputProps={{
+                              endAdornment: isUpdatingQty && (
+                                <InputAdornment position="end">
+                                  <CircularProgress size={16} />
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
 
-                        <IconButton
-                          size="small"
-                          onClick={() =>
-                            setQuantity(item.id, item.quantity + 1)
-                          }
-                          sx={{
-                            border: "1px solid",
-                            borderColor: "divider",
-                            borderRadius: 1,
-                            py: 0,
-                          }}
-                        >
-                          +
-                        </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() =>
+                              setQuantity(item.id, item.quantity + 1)
+                            }
+                            sx={{
+                              // border: "1px solid",
+                              // borderColor: "divider",
+                              // borderRadius: 1,
+                              py: 0,
+                            }}
+                          >
+                            <Add htmlColor="black" />
+                          </IconButton>
+                        </Paper>
                       </Box>
                     </Box>
-
                     {/* Delete Button */}
                     <IconButton
                       onClick={() => handleDelete(item.id)}
