@@ -126,7 +126,7 @@ model Address {
   country      String
   pinCode      String
   addressType  AddressType?
-  isDefault    Boolean      @default(false)
+  default    Boolean      @default(false)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 

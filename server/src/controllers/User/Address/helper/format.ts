@@ -34,7 +34,7 @@ export const list = (rawData: any[], extra?: IObj): IObj[] => {
       country: getStr(r?.country),
       pinCode: getStr(r?.pinCode),
       addressType: getKeyLabel(r?.addressType, DataSets.Address.AddressType),
-      isDefault: getBool(r?.isDefault),
+      default: getBool(r?.default),
       createdAt: formatDate(r?.createdAt),
     });
   }

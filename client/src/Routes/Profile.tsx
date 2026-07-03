@@ -506,7 +506,7 @@ export default function MyAccount() {
     pinCode: string;
     addressType: "HOME" | "WORK";
     // addressType: { key: string; label: string };
-    isDefault: boolean;
+    default: boolean;
   }
 
   function AddressTab() {
@@ -519,7 +519,7 @@ export default function MyAccount() {
       country: "",
       pinCode: "",
       addressType: "HOME",
-      isDefault: false,
+      default: false,
     };
 
     const [addresses, setAddresses] = useState<Address[]>([]);
@@ -625,7 +625,7 @@ export default function MyAccount() {
         country: address?.country,
         pinCode: address?.pinCode,
         addressType: (address?.addressType as any)?.key ?? address?.addressType,
-        isDefault: address?.isDefault,
+        default: address?.default,
         id: address?.id,
       }); // clone
       setIsUpdate(update);
@@ -748,10 +748,8 @@ export default function MyAccount() {
                 control={
                   <Checkbox
                     size="small"
-                    checked={selectedAddress.isDefault}
-                    onChange={(e) =>
-                      handleChange("isDefault", e.target.checked)
-                    }
+                    checked={selectedAddress.default}
+                    onChange={(e) => handleChange("default", e.target.checked)}
                   />
                 }
               />
@@ -807,7 +805,7 @@ export default function MyAccount() {
                       width: { xs: "100%", sm: "auto" },
                     }}
                   >
-                    {addr.isDefault && (
+                    {addr.default && (
                       <Typography fontSize="10px">Default</Typography>
                     )}
 

@@ -155,6 +155,7 @@ const Payment = () => {
                   >
                     <FormControlLabel
                       value={address?.id}
+                      defaultChecked={address?.default}
                       checked={
                         String(selectedAddress?.id) === String(address?.id)
                       }
@@ -182,6 +183,9 @@ const Payment = () => {
                         />
                       }
                     />
+                    {/* <CardContent> */}
+                    {address?.default && "Default Address"}
+                    {/* </CardContent> */}
                   </Card>
                 ))
               ) : (

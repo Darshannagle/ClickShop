@@ -36,6 +36,12 @@ export default class Main {
       const address = await AddressDao.create(body);
       if (isQueryError(address))
         return contextError.client(USER_MSG.ADDRESS.CREATE.FAILED);
+      if (body?.default) {
+        await AddressDao.updateMany(
+          { userId: contextUser?.id, id: { $ne: address?.id } },
+          { default: false },
+        );
+      }
       contextResponse.sendOk(address, USER_MSG.ADDRESS.CREATE.SUCCESS);
     } catch (e) {
       contextResponse.sendError(e);
@@ -68,6 +74,12 @@ export default class Main {
       const address = await AddressDao.findByIdAndUpdate(body.id, body);
       if (isQueryError(address))
         return contextError.client(USER_MSG.ADDRESS.UPDATE.FAILED);
+      if (body?.default) {
+        await AddressDao.updateMany(
+          { userId: contextUser?.id, id: { $ne: address?.id } },
+          { default: false },
+        );
+      }
       contextResponse.sendOk(address, USER_MSG.ADDRESS.UPDATE.SUCCESS);
     } catch (e) {
       contextResponse.sendError(e);
