@@ -30,6 +30,7 @@ const ContainedButton = styled(Button, {
     m = 0,
     visibility = "visible",
   }) => ({
+    position: "static",
     visibility,
     textTransform: "none",
     fontWeight: 500,

@@ -1,16 +1,15 @@
-import { Box, Grid, Typography, Button, styled } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import IphoneImage from "../../assets/Images/IphoneImage.png";
 import MacbookAir14 from "../../assets/Images/MacbookAir14.png";
 import PlayStation from "../../assets/Images/PlayStation.png";
 import AppleAirpodsMax from "../../assets/Images/AppleAirpodsMax.png";
 import AppleVisionPro from "../../assets/Images/AppleVisionPro.png";
 import "../../index.scss";
-
-const CustomButton = styled(Button)(() => ({
-  textTransform: "none",
-}));
+import { useNavigate } from "react-router-dom";
+import OutlinedButton from "../Button/OutlinedButton";
 
 const Banner = () => {
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -55,7 +54,10 @@ const Banner = () => {
               px: { xs: 2, sm: 4 },
             }}
           >
-            <Typography variant="body1" sx={{ color: "gray" }}>
+            <Typography
+              variant="body1"
+              sx={{ textAlign: "center", color: "gray" }}
+            >
               Pro. Beyond.
             </Typography>
 
@@ -81,16 +83,25 @@ const Banner = () => {
               Created to change everything for the better. For everyone.
             </Typography>
 
-            <CustomButton
+            <OutlinedButton
+              width={{ xs: "70%", md: "25%" }}
               variant="outlined"
               sx={{
+                height: "40px",
+                mx: "5px",
                 mt: 2,
                 color: "var(--primary-color)",
                 borderColor: "var(--primary-color)",
               }}
+              onClick={() => {
+                const queryString = new URLSearchParams({
+                  category: "iPhone 14 Pro",
+                }).toString();
+                navigate(`/products?${queryString}`);
+              }}
             >
               Shop Now
-            </CustomButton>
+            </OutlinedButton>
           </Grid>
 
           {/* RIGHT IMAGE */}
@@ -183,7 +194,10 @@ const Banner = () => {
                 <Typography variant="body1" sx={{ fontWeight: 300 }}>
                   Playstation 5
                 </Typography>
-                <Typography variant="body1" sx={{ color: "gray" }}>
+                <Typography
+                  variant="body1"
+                  sx={{ fontSize: "10px", color: "gray" }}
+                >
                   Incredibly powerful CPUs, GPUs, and an SSD with integrated I/O
                   will redefine your PlayStation experience.
                 </Typography>
@@ -223,21 +237,30 @@ const Banner = () => {
                     component="img"
                     src={AppleAirpodsMax}
                     sx={{
+                      transform: { md: "translateX(-50%)" },
+
                       display: "block",
                       marginLeft: 0,
                       p: 0,
                       // border: "1px solid red",
-                      height: "auto",
+                      height: { xs: "auto", sm: "80%" },
                       width: "40%",
                     }}
                   />
 
-                  <Box sx={{ width: "60%" }}>
+                  <Box
+                    sx={{
+                      width: "60%",
+                    }}
+                  >
                     <Typography variant="body1" sx={{ fontWeight: 300 }}>
-                      Apple Vision Pro{" "}
+                      Apple AirPods Max
                     </Typography>
-                    <Typography variant="body1" sx={{ color: "gray" }}>
-                      An immersive way to experience entertainment{" "}
+                    <Typography
+                      variant="body1"
+                      sx={{ fontSize: "10px", color: "gray" }}
+                    >
+                      Computational audio. Listen, it's powerful
                     </Typography>
                   </Box>
                 </Grid>
@@ -245,7 +268,6 @@ const Banner = () => {
                 <Grid
                   size={{ xs: 12, sm: 6 }}
                   sx={{
-                    // border: "1px solid black",
                     display: "flex",
                     color: "white",
                     backgroundColor: "#353535",
@@ -262,17 +284,23 @@ const Banner = () => {
                       marginLeft: 0,
                       p: 0,
                       // border: "1px solid red",
+                      // height: { xs: "auto", sm: "80%" },
+                      transform: { md: "translateX(-20%)" },
                       height: "auto",
-                      width: "40%",
+                      // width: { xs: "40%", md: "80%" },
+                      width: { xs: "40%", md: "30%" },
                     }}
                   />
 
                   <Box sx={{ width: "60%" }}>
                     <Typography variant="body1" sx={{ fontWeight: 300 }}>
-                      Apple AirPods Max
+                      Apple Vision Pro
                     </Typography>
-                    <Typography variant="body1" sx={{ color: "#909090" }}>
-                      Computational audio. Listen, it's powerful
+                    <Typography
+                      variant="body1"
+                      sx={{ fontSize: "10px", color: "gray" }}
+                    >
+                      An immersive way to experience entertainment
                     </Typography>
                   </Box>
                 </Grid>
@@ -286,27 +314,31 @@ const Banner = () => {
           container
           size={{ xs: 12, sm: 6 }}
           sx={{
+            // m: 1,
             display: "flex",
             flexDirection: { xs: "column-reverse", md: "row" },
             justifyContent: { xs: "center", md: "space-around" },
             alignItems: { xs: "center", md: "space-around" },
-            p: 0,
+            p: 1,
           }}
         >
           <Box
             sx={{
-              width: "60%",
-              // display: "flex",
+              width: { xs: "100%", md: "40%" },
+              my: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
               textAlign: "center",
-              // flexDirection: { xs: "column", md: "row" },
             }}
           >
             <Typography
               variant="body1"
               sx={{
+                fontSize: "20px",
                 textAlign: "center",
-                fontWeight: 600,
-                // border: "1px solid",
+                fontWeight: 500,
               }}
             >
               Macbook
@@ -315,33 +347,39 @@ const Banner = () => {
               Air
             </Typography>
 
-            <Typography variant="body1" sx={{ color: "gray" }}>
+            <Typography
+              variant="body1"
+              sx={{ fontSize: "10px", color: "gray" }}
+            >
               The new 15-inch MacBook Air makes room for more of what you love
               with a spacious Liquid Retina display.
             </Typography>
 
-            <CustomButton
+            <OutlinedButton
               variant="outlined"
+              width={"40%"}
               sx={{
                 mt: 2,
-                width: { sm: "100%", md: 100 },
                 color: "var(--secondary-color)",
                 borderColor: "var(--secondary-color)",
               }}
             >
               Shop Now
-            </CustomButton>
+            </OutlinedButton>
           </Box>
 
           <Box
             component="img"
             src={MacbookAir14}
             sx={{
-              display: "block",
-              marginBottom: { xs: 10, md: 0 },
+              height: { xs: "auto", sm: "80%" },
+              transform: { md: "translateX(60%)" },
+
+              display: "flex",
+              marginBottom: { xs: 0, md: 0 },
               m: 0,
               p: 0,
-              width: "30%",
+              width: { xs: "60%", sm: "50%" },
             }}
           />
         </Grid>

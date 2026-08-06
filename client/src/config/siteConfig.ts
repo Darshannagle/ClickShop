@@ -15,8 +15,11 @@ interface SiteConfig {
 
 // Endpoint type
 interface EndPoint {
-  logIn: string;
-  signUp: string;
+  auth: {
+    logIn: string;
+    signUp: string;
+    googleLogin: string;
+  };
   product: {
     create: string;
     list: string;
@@ -72,8 +75,11 @@ const siteConfig: SiteConfig = {
 };
 
 const endPoint: EndPoint = {
-  logIn: "/api/auth/login",
-  signUp: "/api/auth/signup",
+  auth: {
+    logIn: "/api/auth/login",
+    signUp: "/api/auth/signup",
+    googleLogin: "/api/auth/google-login",
+  },
   product: {
     create: "/api/product/create",
     list: "/api/product/list",

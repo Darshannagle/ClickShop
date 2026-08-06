@@ -97,7 +97,7 @@ async function getAPIData(
       throw new Error(err?.message || err);
     }
     const resData = await response.json();
-    if (resData?.message == "INVALID_TOKEN") {
+    if (resData?.code === "T000") {
       localStorage.removeItem("token");
       window.location.href = "/login";
     }

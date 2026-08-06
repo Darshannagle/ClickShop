@@ -10,11 +10,11 @@ export default class Main {
     try {
       // sanitize data {
       const sanitizeResult = await sanitize(req.body, {
-        name: `required | shorttext | unique: Product.name (${USER_MSG.PRODUCT.CREATE.ALREADY_EXIST})`,
+        name: `required | text | unique: Product.name (${USER_MSG.PRODUCT.CREATE.ALREADY_EXIST})`,
         categoryId: `required | exist: Category.id (${USER_MSG.PRODUCT.CREATE.CATEGORY_NOT_FOUND})`,
         subcategoryId: `required | exist: Subcategory.id (${USER_MSG.PRODUCT.CREATE.SUBCATEGORY_NOT_FOUND})`,
-        brand: `required | shorttext`,
-        description: `shorttext`,
+        brand: `required | text`,
+        description: `longtext`,
         basePrice: `required | number | normalize: number`,
         salePrice: `required | number | normalize: number`,
         stock: `required | number | normalize: number`,
@@ -91,6 +91,16 @@ export default class Main {
         throw contextError.client(USER_MSG.PRODUCT.DETAILS.PRODUCT_NOT_FOUND);
 
       contextResponse.sendOk(product, USER_MSG.PRODUCT.LIST.SUCCESS);
+    } catch (e) {
+      contextResponse.sendError(e);
+    }
+  }
+
+  static async brandList(req: any) {
+    const { contextResponse, contextError } = req;
+    try {
+      const list = await ProductDao.brandList();
+      contextResponse.sendOk(list, USER_MSG.PRODUCT.LIST.SUCCESS);
     } catch (e) {
       contextResponse.sendError(e);
     }

@@ -15,7 +15,6 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { FcGoogle } from "react-icons/fc";
 import { FaApple, FaFacebook } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
@@ -28,11 +27,16 @@ import {
 } from "@mui/icons-material";
 import toast from "react-hot-toast";
 import { useLoader } from "../context/LoaderContext";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, useGoogleOAuth } from "@react-oauth/google";
 import { getAPIData } from "../helper/apiHelper";
 import { endPoint } from "../config/siteConfig";
 
 const Register = () => {
+  const context = useGoogleOAuth();
+  console.log("context: ", context);
+  const { clientId, scriptLoadedSuccessfully } = context;
+  console.log("Inside Register → clientId from context:", clientId);
+  console.log("scriptLoadedSuccessfully:", scriptLoadedSuccessfully);
   const navigate = useNavigate();
   const { showLoader, hideLoader } = useLoader();
 
@@ -104,7 +108,7 @@ const Register = () => {
         location: registrationData?.location,
         pinCode: registrationData?.pinCode,
       };
-      const res = await getAPIData(endPoint.signUp, body, "POST");
+      const res = await getAPIData(endPoint.auth.signUp, body, "POST");
 
       if (res?.code === "0000") {
         toast.success(res?.message);
@@ -122,31 +126,55 @@ const Register = () => {
     }
   };
 
-  const responseGoogle = async (authResult) => {
+  // const responseGoogle = async (authResult) => {
+  //   try {
+  //     if (authResult["code"]) {
+  //       const response = await fetch(
+  //         `/api/auth/google?code=${authResult["code"]}`,
+  //       );
+  //       const data = await response.json();
+  //       console.log(data);
+  //       navigate("/dashboard");
+  //     }
+  //     if (authResult["error"]) {
+  //       console.error(authResult["error"]);
+  //       toast.error(authResult["error"]?.message || "Something went wrong");
+  //     }
+  //   } catch (error) {
+  //     console.error("error: ", error);
+  //   }
+  // };
+
+  const googleSuccessHandler = async (credentialResponse: any) => {
     try {
-      if (authResult["code"]) {
-        const response = await fetch(
-          `/api/auth/google?code=${authResult["code"]}`,
-        );
-        const data = await response.json();
-        console.log(data);
-        navigate("/dashboard");
-      }
-      if (authResult["error"]) {
-        console.error(authResult["error"]);
-        toast.error(authResult["error"]?.message || "Something went wrong");
+      showLoader();
+      console.log("credentialResponse: ", credentialResponse);
+      const res = await getAPIData(
+        endPoint.auth.googleLogin,
+        {
+          token: credentialResponse?.credential,
+        },
+        "POST",
+      );
+      console.log("res: ", res);
+      if (res?.code === "0000") {
+        toast.success(res?.message);
+        localStorage.setItem("token", res?.data?.token);
+        navigate("/");
+      } else {
+        toast.error(res?.message || "Google login failed");
       }
     } catch (error) {
-      console.error("error: ", error);
+      console.error("Google login error:", error);
+      toast.error("Something went wrong with Google login");
+    } finally {
+      hideLoader();
     }
   };
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: responseGoogle,
-    onError: responseGoogle,
-    flow: "auth-code",
-  });
-
+  const googleErrorHandler = () => {
+    toast.error("Something went wrong with Google login");
+  };
   return (
     <Container className="mainContainer" component="main" maxWidth="xs">
       <Paper
@@ -158,7 +186,11 @@ const Register = () => {
           p: 3,
         }}
       >
-        <Typography fontSize={20} fontWeight="bold" color="var(--text-color)">
+        <Typography
+        // fontSize={20}
+        // fontWeight="bold"
+        // color="var(--text-color)"
+        >
           Register
         </Typography>
         <Typography variant="body2" color="text.secondary" gutterBottom>
@@ -325,9 +357,24 @@ const Register = () => {
 
         <Divider sx={{ my: 2 }}>OR</Divider>
 
-        <Box display="flex" justifyContent="space-around" width="80%">
+        <Box
+        // display="flex"
+        // justifyContent="space-around"
+        // width="80%"
+        >
           <FaFacebook size={30} />
-          <FcGoogle size={30} onClick={googleLogin} />
+          <GoogleLogin
+            onSuccess={googleSuccessHandler}
+            onError={googleErrorHandler}
+            useOneTap
+            // ={false}
+            theme="outline"
+            // size="large"
+            text="continue_with"
+            shape="square"
+            // width="280"
+          />
+          {/* <FcGoogle size={30} onClick={googleLogin} /> */}
           <FaApple size={30} />
         </Box>
 

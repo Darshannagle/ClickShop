@@ -49,7 +49,7 @@ const Login = () => {
 
     try {
       showLoader();
-      const response = await getAPIData(endPoint.logIn, payload, "POST");
+      const response = await getAPIData(endPoint.auth.logIn, payload, "POST");
 
       if (response?.code === "0000") {
         toast.success(response?.data?.message || response?.message, {

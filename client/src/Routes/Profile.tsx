@@ -201,8 +201,8 @@ export default function MyAccount() {
                 },
                 "& .MuiTab-root.Mui-selected": {
                   // border: "1px solid black",
-                  backgroundColor: "black",
-                  color: "whitesmoke", // 🔥 active tab text/icon color
+                  backgroundColor: "var(--secondary-color)",
+                  color: "whitesmoke",
                   fontWeight: 600,
                 },
                 "& .MuiTabs-flexContainer": {
@@ -364,9 +364,9 @@ export default function MyAccount() {
                       <Radio
                         size="small"
                         sx={{
-                          color: "var(--secondary-color)", // unchecked
+                          // color: "black",
                           "&.Mui-checked": {
-                            color: "black", // checked
+                            color: "var(--secondary-color)",
                           },
                         }}
                       />
@@ -380,9 +380,9 @@ export default function MyAccount() {
                       <Radio
                         size="small"
                         sx={{
-                          color: "var(--secondary-color)", // unchecked
+                          // color: "black",
                           "&.Mui-checked": {
-                            color: "black", // checked
+                            color: "var(--secondary-color)",
                           },
                         }}
                       />
@@ -396,18 +396,18 @@ export default function MyAccount() {
                       <Radio
                         size="small"
                         sx={{
-                          color: "var(--secondary-color)", // unchecked
+                          // color: "black",
                           "&.Mui-checked": {
-                            color: "black", // checked
+                            color: "var(--secondary-color)",
                           },
                         }}
                       />
                     }
                     label="Others"
                     sx={{
-                      color: "var(--secondary-color)", // unchecked
+                      color: "black",
                       "&.Mui-checked": {
-                        color: "black", // checked
+                        color: "var(--secondary-color)",
                       },
                     }}
                   />

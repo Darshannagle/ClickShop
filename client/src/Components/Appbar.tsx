@@ -105,12 +105,22 @@ function Appbar() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchTerm.trim()) {
-      setSearchParams({ search: searchTerm.trim() });
-      navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
+    const term = searchTerm.trim();
+
+    if (term) {
+      if (location.pathname === "/products") {
+        // Already on products → just update the query string
+        setSearchParams({ search: term });
+      } else {
+        // Coming from another page
+        navigate(`/products?search=${encodeURIComponent(term)}`);
+      }
     } else {
-      setSearchParams({});
-      navigate("/products");
+      if (location.pathname === "/products") {
+        setSearchParams({}); // clear search
+      } else {
+        navigate("/products");
+      }
     }
   };
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

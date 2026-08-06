@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 interface OutlinedButtonProps {
   colorType?: "primary" | "secondary";
   scaleOnHover?: boolean;
-  width?: string | number;
+  width?: string | number | any;
   fontSize?: string | number;
   m?: string | number;
   visibility?: "visible" | "hidden";
@@ -27,7 +27,7 @@ const OutlinedButton = styled(Button, {
   ({
     colorType = "secondary",
     scaleOnHover = true,
-    width = "100%",
+    width,
     fontSize = "12px",
     m = 0,
     visibility = "visible",

@@ -4,22 +4,47 @@ import {
   ArrowRight,
   CameraAlt,
   Computer,
-  Games,
   Headphones,
   PhoneAndroid,
+  TabletAndroid,
   Watch,
 } from "@mui/icons-material";
 import { useRef } from "react";
 import Category from "./Category";
 // import Category from "../Category";
 // List of categories
+
 const categories = [
-  { icon: <PhoneAndroid />, title: "Phones" },
-  { icon: <Computer />, title: "Computers" },
-  { icon: <Watch />, title: "Watches" },
-  { icon: <Headphones />, title: "Headphones" },
-  { icon: <CameraAlt />, title: "Cameras" },
-  { icon: <Games />, title: "Games" },
+  {
+    icon: <PhoneAndroid />,
+    title: "Phones",
+    subcategoryId: "b795d9fa-ca40-40cb-9366-e6db707b03eb",
+  },
+  {
+    icon: <TabletAndroid />,
+    title: "Tablets",
+    subcategoryId: "ef9eb8d6-4523-4488-b343-656431cc2b29",
+  },
+  {
+    icon: <Computer />,
+    title: "Computers",
+    subcategoryId: "12a74110-708f-4580-b8c9-3e5b3df62383",
+  },
+  {
+    icon: <Watch />,
+    title: "Watches",
+    subcategoryId: "52db2156-6cdf-4e63-adc2-3a836735681d",
+  },
+  {
+    icon: <Headphones />,
+    title: "Headphones",
+    subcategoryId: "de25d82d-0dac-4b8a-b40c-131c7b07f2bd",
+  },
+  {
+    icon: <CameraAlt />,
+    title: "Cameras",
+    subcategoryId: "746b6453-d5f1-470f-b892-07ee8b427079",
+  },
 ];
 
 const Categories = () => {
@@ -82,40 +107,39 @@ const Categories = () => {
           display: "flex",
           gap: 2,
           mt: 2,
-          overflowX: "auto",
+          p: 2,
+          overflowX: "scroll",
           scrollBehavior: "smooth",
           pb: 1,
           "&::-webkit-scrollbar": { display: "none" },
         }}
       >
         {(categories || []).map((category, i: number) => (
-          <Box
-            key={i}
-            sx={{
-              width: 125,
-              border: "none",
-              bordeRadius: 20,
-              // width: "max-content",
-              height: 125,
-              bgcolor: "primary.main",
-              color: "#fff",
-              borderRadius: 2,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexShrink: 0,
-            }}
-          >
-            <Category icon={category.icon} title={category.title} />
-          </Box>
+          // <Box
+          //   key={i}
+          //   sx={{
+          //     width: 125,
+          //     border: "none",
+          //     bordeRadius: 20,
+          //     // width: "max-content",
+          //     height: 125,
+          //     bgcolor: "primary.main",
+          //     color: "#fff",
+          //     borderRadius: 2,
+          //     display: "flex",
+          //     justifyContent: "center",
+          //     alignItems: "center",
+          //     flexShrink: 0,
+          //   }}
+          // >
+          <Category
+            keyIndex={i}
+            icon={category?.icon}
+            title={category?.title}
+            subcategoryId={category?.subcategoryId}
+          />
+          // </Box>
         ))}
-
-        {/* <Category icon={<PhoneAndroid />} title={"Phones"} />
-        <Category icon={<Watch />} title={"Smart Watches"} />
-        <Category icon={<CameraAlt />} title={"Cameras"} />
-        <Category icon={<Headphones />} title={"Headphones"} />
-        <Category icon={<Computer />} title={"Computers"} />
-        <Category icon={<Games />} title={"Gaming"} /> */}
       </Box>
     </Box>
   );

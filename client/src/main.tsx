@@ -3,15 +3,23 @@ import "./index.scss";
 import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import { LoaderProvider } from "./context/LoaderContext.tsx";
-import { Provider } from "react-redux";
-import { store } from "./store/index.ts";
-
+import { GoogleOAuthProvider } from "@react-oauth/google";
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
+console.log("clientId: ", clientId);
 createRoot(document.getElementById("root")!).render(
-  <BrowserRouter>
-    <Provider store={store}>
+  <GoogleOAuthProvider
+    clientId={clientId}
+    onScriptLoadSuccess={() => console.log("GSI script loaded")}
+    onScriptLoadError={() => console.error("GSI script failed to load")}
+  >
+    <BrowserRouter>
+      {/* <Provider store={store}> */}
+      {/* <PersistGate loading={null} persistor={persistor}> */}
       <LoaderProvider>
         <App />
       </LoaderProvider>
-    </Provider>
-  </BrowserRouter>
+      {/* </PersistGate> */}
+      {/* </Provider> */}
+    </BrowserRouter>
+  </GoogleOAuthProvider>,
 );

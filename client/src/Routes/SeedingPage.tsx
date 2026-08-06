@@ -33,7 +33,7 @@ const SeedingPage = () => {
   const [stock, setStock] = useState<number>(0);
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>("");
   const [images, setImages] = useState<string>(""); // comma-separated string
-  const [specifications, setSpecifications] = useState({}); // comma-separated string
+  const [specifications, setSpecifications] = useState(""); // comma-separated string
   const [loding, SetLoading] = useState({
     categoryLoading: false,
     subCategoryLoading: false,
@@ -42,7 +42,7 @@ const SeedingPage = () => {
   // Fetch categories
   const fetchCategories = async () => {
     const response = await getAPIData(endPoint.category.list, {}, "GET");
-    if (response?.status) {
+    if (response?.code === "0000") {
       setCategoryList(response?.data);
     } else {
       toast.error(response?.message || "Something went wrong");
@@ -56,7 +56,7 @@ const SeedingPage = () => {
       { field: "id", category: categoryId },
       "GET",
     );
-    if (response?.status) {
+    if (response?.code === "0000") {
       setSubCategoryList(response?.data);
     } else {
       toast.error(response?.message || "Something went wrong");
@@ -70,7 +70,7 @@ const SeedingPage = () => {
       { name: categoryName },
       "POST",
     );
-    if (response?.status) {
+    if (response?.code === "0000") {
       toast.success("Category created successfully");
       setCategoryName("");
       fetchCategories();
@@ -86,7 +86,7 @@ const SeedingPage = () => {
       { name: subCategoryName, categoryId: selectedCategory },
       "POST",
     );
-    if (response?.status) {
+    if (response?.code === "0000") {
       toast.success("Subcategory created successfully");
       setSubCategoryName("");
       fetchSubCategories(selectedCategory);
@@ -107,14 +107,14 @@ const SeedingPage = () => {
         basePrice,
         salePrice,
         stock,
-        category_id: selectedCategory,
-        subcategory_id: selectedSubCategory,
+        categoryId: selectedCategory,
+        subcategoryId: selectedSubCategory,
         images: images.split(",").map((img) => img.trim()),
         specifications: JSON.parse((specifications as any).toString()),
       },
       "POST",
     );
-    if (response?.status) {
+    if (response?.code === "0000") {
       toast.success("Product created successfully");
       setProductName("");
       setBrand("");
@@ -124,7 +124,7 @@ const SeedingPage = () => {
       setStock(0);
       setImages("");
       setSelectedSubCategory("");
-      setSpecifications({});
+      setSpecifications("");
     } else {
       toast.error(response?.message || "Something went wrong");
     }
@@ -245,6 +245,8 @@ const SeedingPage = () => {
           sx={{ mb: 2 }}
         />
         <TextField
+          multiline
+          rows={6}
           fullWidth
           label="Description"
           value={description}

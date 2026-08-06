@@ -20,6 +20,7 @@ const route = Router();
 route.post("/auth/signup", Auth.Main.signup);
 route.post("/auth/login", Auth.Main.login);
 route.get("/user/get-profile", userAuth, Auth.Main.getProfile);
+route.post("/auth/google-login", Auth.Main.googleLogin);
 
 // Category ------------------------------------------
 route.post("/category/create", userAuth, Category.Main.create);
@@ -28,10 +29,17 @@ route.get("/category/list", userAuth, Category.Main.list);
 // Subcategory ------------------------------------------
 route.post("/subcategory/create", userAuth, Subcategory.Main.create);
 route.get("/subcategory/list", userAuth, Subcategory.Main.list);
+route.get(
+  "/subcategory/list-by-category",
+  userAuth,
+  Subcategory.Main.categorisedList,
+);
 
 // Product ------------------------------------------
-route.post("/product/list", userAuth, Product.Main.list);
-route.get("/product/details", userAuth, Product.Main.details);
+route.post("/product/list", Product.Main.list);
+route.get("/product/details", Product.Main.details);
+route.post("/product/create", userAuth, Product.Main.create);
+route.get("/product/brand-list", Product.Main.brandList);
 
 // Cart Item ------------------------------------------
 route.post("/cart-item/create", userAuth, CartIItem.Main.create);

@@ -16,12 +16,16 @@ interface FilterSidebarProps {
   onFilterChange: (filters: any) => void;
   onReset: () => void;
   isMobile?: boolean;
+  categories?: any[];
+  subCategories?: any[];
 }
 
 const FilterSidebar: React.FC<FilterSidebarProps> = ({
   filters,
   onFilterChange,
   onReset,
+  categories,
+  subCategories,
 }) => {
   return (
     <Box
@@ -32,8 +36,10 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         p: 3,
         bgcolor: "background.paper",
         height: "fit-content",
-        position: "sticky",
         top: 24,
+        flex: 1,
+        position: { xs: "static", sm: "sticky" },
+        minWidth: 200,
       }}
     >
       <Typography variant="h6" gutterBottom>
@@ -51,7 +57,28 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           onChange={(e) => onFilterChange({ categoryId: e.target.value })}
         >
           <MenuItem value="">All Categories</MenuItem>
-          {/* Add your categories dynamically if you have them */}
+          {(categories || []).map((category) => (
+            <MenuItem key={category?.id} value={category?.id}>
+              {category?.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      {/* Subcategory Filter */}
+      <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+        <InputLabel>Subcategory</InputLabel>
+        <Select
+          value={filters.subcategoryId || ""}
+          label="Category"
+          onChange={(e) => onFilterChange({ subcategoryId: e.target.value })}
+        >
+          <MenuItem value="">All Subcategories</MenuItem>
+          {(subCategories || []).map((subCategory) => (
+            <MenuItem key={subCategory?.id} value={subCategory?.id}>
+              {subCategory?.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
 

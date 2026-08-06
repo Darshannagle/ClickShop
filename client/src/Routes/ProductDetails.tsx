@@ -1,5 +1,4 @@
 import {
-  Alert,
   Box,
   Grid,
   Container,
@@ -14,9 +13,9 @@ import {
   Divider,
   Button,
   IconButton,
-  Chip,
   Card,
   CardContent,
+  Chip,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -32,7 +31,6 @@ import {
   AddShoppingCart,
 } from "@mui/icons-material";
 import Constant from "@/config/Constant";
-
 const ProductDetails = ({ isCart = false }) => {
   const [product, setProduct] = useState(null);
   const [error, setError] = useState(null);
@@ -101,17 +99,6 @@ const ProductDetails = ({ isCart = false }) => {
     }
     return 0;
   };
-
-  if (error) {
-    return (
-      <Container maxWidth="sm" sx={{ mt: 6 }}>
-        <Alert severity="warning" variant="filled">
-          {error}
-        </Alert>
-      </Container>
-    );
-  }
-
   if (!product) return null;
 
   const discount = calculateDiscount();
@@ -134,6 +121,7 @@ const ProductDetails = ({ isCart = false }) => {
           </Paper>
         </Grid>
 
+        {/* RIGHT: Product Info */}
         {/* RIGHT: Product Info */}
         <Grid size={{ xs: 12, md: 6 }}>
           <Stack spacing={3}>
@@ -237,7 +225,6 @@ const ProductDetails = ({ isCart = false }) => {
             </Box>
 
             <Divider />
-
             {/* Action Section (Cart Logic) */}
             <Box>
               {isCart ? (
@@ -337,7 +324,12 @@ const ProductDetails = ({ isCart = false }) => {
           <Typography
             variant="body1"
             color="text.secondary"
-            sx={{ lineHeight: 1.7, whiteSpace: "pre-line" }}
+            sx={{
+              lineHeight: 1.5,
+              whiteSpace: "pre-line",
+              wordBreak: "break-word",
+              fontSize: "14px",
+            }}
           >
             {product.description}
           </Typography>
@@ -346,5 +338,4 @@ const ProductDetails = ({ isCart = false }) => {
     </Container>
   );
 };
-
 export default ProductDetails;

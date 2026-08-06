@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { endPoint } from "@/config/siteConfig";
 import { getAPIData } from "@/helper/apiHelper";
 import {
@@ -16,16 +16,25 @@ import { useSearchParams } from "react-router-dom";
 interface productPropType {
   products?: Array<any>;
   searchTerm?: string; // Changed from 'type' for clarity
-  categoryId?: string;
+  // categoryId?: string;
+  // subcategoryId?: string;
 }
 
 const ProductsRoute = ({
   products: prods,
   searchTerm = "",
-  categoryId,
+  // categoryId,
+  // subcategoryId,
 }: productPropType) => {
-  const [searchParams] = useSearchParams();
+  const allSearchParams = useSearchParams();
+  const searchParams = new URLSearchParams(allSearchParams[0]);
+  console.log("searchParams: ", searchParams);
   const urlSearchTerm = searchParams.get("search") || "";
+  console.log("urlSearchTerm: ", urlSearchTerm);
+  const categoryId = searchParams.get("categoryId") || "";
+  const subcategoryId = searchParams.get("subcategoryId") || "";
+  const [categories, setCategories] = useState<any[] | null>(null);
+  const [subCategories, setSubCategories] = useState<any[] | null>(null);
   const [products, setProducts] = useState<any[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -33,6 +42,7 @@ const ProductsRoute = ({
   const [filters, setFilters] = useState<Record<string, any>>({
     search: urlSearchTerm || "",
     categoryId: categoryId || "",
+    subcategoryId: subcategoryId || "",
     minPrice: "",
     maxPrice: "",
     brand: "",
@@ -43,48 +53,81 @@ const ProductsRoute = ({
   // const theme = useTheme();
   // const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const fetchProducts = async (currentFilters: Record<string, any>) => {
-    try {
-      setLoading(true);
+  const fetchProducts = useCallback(
+    async (currentFilters: Record<string, any>) => {
+      try {
+        setLoading(true);
 
-      if (prods && Array.isArray(prods)) {
-        setProducts(prods);
-        return;
-      }
-
-      const url = endPoint.product.list;
-
-      const queryparams: Record<string, any> = {
-        page: 0,
-        size: 10,
-        filters: currentFilters,
-      };
-
-      // Remove empty values
-      Object.keys(queryparams).forEach((key) => {
-        if (
-          queryparams[key] === "" ||
-          queryparams[key] === null ||
-          queryparams[key] === undefined
-        ) {
-          delete queryparams[key];
+        if (prods && Array.isArray(prods)) {
+          setProducts(prods);
+          return;
         }
-      });
 
-      const prodRes = await getAPIData(url, queryparams, "POST");
+        const url = endPoint.product.list;
 
-      if (prodRes?.code === "0000") {
-        setProducts(prodRes?.data?.records || []);
+        const queryparams: Record<string, any> = {
+          page: 0,
+          size: 10,
+          filters: currentFilters,
+        };
+
+        // Remove empty values
+        Object.keys(queryparams).forEach((key) => {
+          if (
+            queryparams[key] === "" ||
+            queryparams[key] === null ||
+            queryparams[key] === undefined
+          ) {
+            delete queryparams[key];
+          }
+        });
+
+        const prodRes = await getAPIData(url, queryparams, "POST");
+
+        if (prodRes?.code === "0000") {
+          setProducts(prodRes?.data?.records || []);
+        } else {
+          setError(prodRes?.message || "Failed to load products");
+        }
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError("Something went wrong while loading products");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [prods],
+  );
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const response = await getAPIData(endPoint.category.list, {}, "GET");
+      if (response?.code === "0000") {
+        setCategories(response?.data);
       } else {
-        setError(prodRes?.message || "Failed to load products");
+        console.error("Error fetching categories:", response?.message);
       }
     } catch (err) {
-      console.error("Error fetching products:", err);
-      setError("Something went wrong while loading products");
-    } finally {
-      setLoading(false);
+      console.error("Error fetching categories:", err);
     }
-  };
+  }, []);
+
+  const fetchSubCategories = useCallback(async () => {
+    try {
+      const response = await getAPIData(
+        endPoint.subcategory.listByCategory,
+        { id: categoryId },
+        "GET",
+      );
+      if (response?.code === "0000") {
+        setSubCategories(response?.data);
+      } else {
+        console.error("Error fetching subcategories:", response?.message);
+      }
+    } catch (err) {
+      console.error("Error fetching subcategories:", err);
+    }
+  }, [categoryId]);
 
   // Refetch when searchTerm from App Bar changes or filters change
   useEffect(() => {
@@ -92,12 +135,17 @@ const ProductsRoute = ({
   }, [searchTerm]);
 
   useEffect(() => {
+    fetchCategories();
+    fetchSubCategories();
+  }, [fetchCategories, fetchSubCategories]);
+
+  useEffect(() => {
     if (prods) {
       setProducts(prods);
     } else {
       fetchProducts(filters);
     }
-  }, [filters]);
+  }, [filters, prods, fetchProducts]);
 
   const handleFilterChange = (newFilters: Partial<Record<string, any>>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
@@ -133,13 +181,16 @@ const ProductsRoute = ({
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Box
         sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            sm: "320px 1fr",
-            lg: "360px 1fr",
-          },
-          gap: { xs: 3, sm: 4 },
+          // display: "grid",
+          // gridTemplateColumns: {
+          //   xs: "1fr",
+          //   sm: "320px 1fr",
+          //   lg: "360px 1fr",
+          // },
+          // gap: { xs: 3, sm: 4 },
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          gap: 1,
         }}
       >
         {/* Filter Sidebar */}
@@ -147,6 +198,9 @@ const ProductsRoute = ({
           filters={filters}
           onFilterChange={handleFilterChange}
           onReset={resetFilters}
+          categories={categories}
+          subCategories={subCategories}
+
           // searchTerm={searchTerm}
         />
 
@@ -154,11 +208,12 @@ const ProductsRoute = ({
         <Box>
           <Box
             sx={{
+              flex: 1,
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              mb: 3,
-              flexWrap: "wrap",
+              // mb: 3,
+              // flexWrap: "wrap",
               gap: 2,
             }}
           >

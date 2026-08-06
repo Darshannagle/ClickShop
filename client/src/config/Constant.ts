@@ -10,5 +10,13 @@ const Constant = {
       CODE: "inr",
     },
   },
+
+  APP: {
+    NAME_KEY: "CLICKSHOP",
+  },
+
+  OAUTH: {
+    CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID || "",
+  },
 };
 export default Constant;

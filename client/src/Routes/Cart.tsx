@@ -141,6 +141,34 @@ const Cart = () => {
   //     hideLoader();
   //   }
   // };
+  // const handleCheckout = async () => {
+  //   try {
+  //     showLoader();
+  //     const res = await getAPIData(
+  //       endPoint.order.create,
+  //       { cartItems: cart },
+  //       "POST",
+  //     );
+  //     if (res?.code==="0000") {
+  //       toast.success(res?.message);
+  //       window.location.href = res?.data?.session?.url;
+  //       // setCart(res?.data?.records ?? []);
+  //       // setTotalDetails({
+  //       //   subTotal: res?.data?.subTotal ?? 0,
+  //       //   estimatedTax: res?.data?.estimatedTax ?? 0,
+  //       //   estimatedShipping: res?.data?.estimatedShipping ?? 0,
+  //       //   total: res?.data?.total ?? 0,
+  //       // });
+  //     } else {
+  //       toast.error(res?.message || "Something went wrong");
+  //     }
+  //   } catch (error) {
+  //     //   setError(err.message);
+  //     toast.error(error.message || "Something went wrong");
+  //   } finally {
+  //     hideLoader();
+  //   }
+  // };
 
   useEffect(() => {
     fetchCart();

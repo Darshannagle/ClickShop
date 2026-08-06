@@ -7,9 +7,12 @@ import Jwt from "@services/token/Jwt";
 import Password from "@services/token/Password";
 import { isQueryError, sanitize } from "@utils";
 import { USER_MSG } from "@common/messages";
+import { OAuth2Client } from "google-auth-library";
+import Constant from "@config/Constant";
 
 //--------------------------------------------------------------
 export default class Main {
+  static client = new OAuth2Client(Constant.OAUTH.GOOGLE_CLIENT_ID);
   static async signup(req: any, res: any) {
     const { contextResponse, contextError } = req;
     try {
@@ -130,6 +133,73 @@ export default class Main {
         user,
         USER_MSG.MIDDLEWARE_APP_AUTH.AUTH.GET_PROFILE.SUCCESS,
       );
+    } catch (e) {
+      contextResponse.sendError(e);
+    }
+  }
+
+  static async googleLogin(req: any, res: any) {
+    const { contextResponse, contextError } = req;
+    try {
+      console.log(
+        "Constant.OAUTH.GOOGLE_CLIENT_ID",
+        Constant.OAUTH.GOOGLE_CLIENT_ID,
+      );
+
+      // sanitize data {
+      const sanitizeResult = await sanitize(req.body, {
+        token: `required | string`,
+      });
+      if (sanitizeResult?.error || !sanitizeResult?.body) {
+        throw contextError.client(sanitizeResult);
+      }
+      const body = sanitizeResult.body;
+      // } sanitize data
+
+      const ticket = await Main.client.verifyIdToken({
+        idToken: body.token,
+        audience: Constant.OAUTH.GOOGLE_CLIENT_ID,
+      });
+      console.log("ticket: ", ticket);
+
+      const payload = ticket.getPayload();
+      console.log("payload: ", payload);
+      let user = await UserDao.findOne({
+        $or: [{ googleId: payload?.email }, { email: payload?.email }],
+      });
+      console.log("existing user: ", user);
+      const { token } = await prisma.$transaction(async (tx) => {
+        // check user exist {
+        if (!user) {
+          // create user {
+          user = await UserDao.create({
+            email: payload?.email,
+            fullName: payload?.name,
+            googleId: payload?.sub,
+          });
+          console.log("user: ", user);
+          // } create user
+          if (isQueryError(user)) throw contextError.client(user);
+        }
+
+        // } check user exist
+
+        // create token {
+        const token = Jwt.sign({ id: user.id });
+        // } create token
+
+        // return {
+        return { token };
+        // } return
+      });
+      // response {
+
+      console.log("token: ", token);
+      contextResponse.sendOk(
+        { token, user },
+        USER_MSG.MIDDLEWARE_APP_AUTH.AUTH.SIGNUP.SUCCESS,
+      );
+      // } response
     } catch (e) {
       contextResponse.sendError(e);
     }
