@@ -41,8 +41,8 @@ export class ProductDao extends BaseDao {
         },
       ];
 
-    if (filters.categoryId) query.category = filters.categoryId;
-    if (filters.subcategoryId) query.subcategory = filters.subcategoryId;
+    if (filters.categoryId) query.categoryId = filters.categoryId;
+    if (filters.subcategoryId) query.subcategoryId = filters.subcategoryId;
     if (filters.minPrice) query.salePrice = { gte: filters.minPrice };
     if (filters.maxPrice) query.salePrice = { lte: filters.maxPrice };
     if (filters.brand) query.brand = filters.brand;
@@ -54,4 +54,12 @@ export class ProductDao extends BaseDao {
     });
     return result;
   }
+
+  static brandList = async () => {
+    const result = await this.repository.findMany({
+      select: { brand: true },
+      distinct: ["brand"],
+    });
+    return result.map((item: any) => item.brand);
+  };
 }

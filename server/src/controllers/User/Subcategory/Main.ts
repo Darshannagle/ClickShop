@@ -36,4 +36,15 @@ export default class Main {
       contextResponse.sendError(e);
     }
   }
+
+  static async categorisedList(req: any) {
+    const { contextResponse, contextError } = req;
+    try {
+      const { id } = req?.params;
+      const list = await SubcategoryDao.find({ id });
+      contextResponse.sendOk(list, USER_MSG.CATEGORY.LIST.SUCCESS);
+    } catch (e) {
+      contextResponse.sendError(e);
+    }
+  }
 }
